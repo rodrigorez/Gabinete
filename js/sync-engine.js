@@ -154,14 +154,15 @@ function dequeue(path, action) {
  */
 async function githubGet(path) {
   const repo = getSecret('GITHUB_REPO');
+  const token = getSecret('GITHUB_TOKEN');
   if (!repo) return null;
 
   try {
-    // Leitura sem token — funciona para repositórios públicos (GitHub Pages)
-    // Usamos ?t= e cache: 'no-store' para evitar cache do navegador.
-    // ATENÇÃO: Não adicionar 'Cache-Control' nos headers para não gerar erro de CORS no preflight.
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?t=${Date.now()}`, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' },
+      headers,
       cache: 'no-store'
     });
 
@@ -181,13 +182,14 @@ async function githubGet(path) {
  */
 export async function checkGithubAccess() {
   const repo = getSecret('GITHUB_REPO');
+  const token = getSecret('GITHUB_TOKEN');
   if (!repo) return { ok: false, error: 'GITHUB_REPO não configurado.' };
 
   try {
-    // Verifica existência do repo sem token (público)
-    const res = await fetch(`https://api.github.com/repos/${repo}`, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
-    });
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const res = await fetch(`https://api.github.com/repos/${repo}`, { headers });
     if (res.status === 404) return { ok: false, error: `Repositório "${repo}" não encontrado ou privado.` };
     if (!res.ok) return { ok: false, error: `GitHub retornou ${res.status}.` };
     return { ok: true };
