@@ -359,6 +359,15 @@ export class DevEditor {
                         }
                     }
                 }
+                
+                // Salva a alteração no LocalStorage e marca como mais recente para o Sync Engine perceber!
+                // @ts-ignore
+                if (typeof window.GABINETE_CONFIG !== 'undefined') {
+                    // @ts-ignore
+                    window.GABINETE_CONFIG._lastModified = new Date().toISOString();
+                    // @ts-ignore
+                    localStorage.setItem('gabinete_kiosk_config', JSON.stringify(window.GABINETE_CONFIG));
+                }
             }
         };
 
@@ -463,6 +472,15 @@ export class DevEditor {
 
                 if (c.role === 'static') {
                     configObj.children = configObj.children.filter(ch => ch.part_name !== nodeName);
+                }
+                
+                // Salva a alteração no LocalStorage e marca como mais recente para o Sync Engine perceber!
+                // @ts-ignore
+                if (typeof window.GABINETE_CONFIG !== 'undefined') {
+                    // @ts-ignore
+                    window.GABINETE_CONFIG._lastModified = new Date().toISOString();
+                    // @ts-ignore
+                    localStorage.setItem('gabinete_kiosk_config', JSON.stringify(window.GABINETE_CONFIG));
                 }
                 
                 // Rerenderiza os blocos azuis em tempo real!
