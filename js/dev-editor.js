@@ -75,7 +75,10 @@ export class DevEditor {
             <button id="dev-save-btn" style="width: 100%; margin-top: 10px; background: #0f0; color: #000; border: none; padding: 8px; cursor: pointer; font-weight: bold;">
                 💾 Exportar Backup (Arquivo)
             </button>
-            <button id="dev-clear-btn" style="width: 100%; margin-top: 10px; background: #f00; color: #fff; border: none; padding: 4px; cursor: pointer; font-size: 10px;">
+            <button id="dev-publish-btn" style="width: 100%; margin-top: 15px; background: #00D1FF; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; font-size: 13px; box-shadow: 0 0 10px rgba(0,209,255,0.4);">
+                ☁️ Publicar Alterações (Sync Oficial)
+            </button>
+            <button id="dev-clear-btn" style="width: 100%; margin-top: 10px; background: #f00; color: #fff; border: none; padding: 6px; cursor: pointer; font-size: 11px;">
                 Restaurar Padrão de Fábrica (Apagar Ajustes)
             </button>
         `;
@@ -139,8 +142,41 @@ export class DevEditor {
 
             const btnClear = document.getElementById('dev-clear-btn');
             if (btnClear) btnClear.addEventListener('click', () => {
-                localStorage.removeItem('gabinete_kiosk_config');
-                window.location.reload();
+                if(confirm("Tem certeza que deseja apagar os ajustes locais?")) {
+                    localStorage.removeItem('gabinete_kiosk_config');
+                    window.location.reload();
+                }
+            });
+
+            const btnPublish = document.getElementById('dev-publish-btn');
+            if (btnPublish) btnPublish.addEventListener('click', async () => {
+                const proceed = confirm(
+                    "Atenção: Você está enviando as alterações locais para o servidor oficial.\n\n" +
+                    "As outras máquinas conectadas (Totens) receberão essa atualização automaticamente em até 5 minutos.\n\n" +
+                    "Deseja prosseguir?"
+                );
+                
+                if (proceed) {
+                    const originalText = btnPublish.innerHTML;
+                    btnPublish.innerHTML = "⏳ Sincronizando...";
+                    btnPublish.style.background = "#f1c40f"; // yellow
+                    
+                    try {
+                        const { forceSync } = await import('./sync-engine.js');
+                        await forceSync();
+                        btnPublish.innerHTML = "✅ Publicado com Sucesso!";
+                        btnPublish.style.background = "#2ecc71"; // green
+                    } catch (e) {
+                        console.error(e);
+                        btnPublish.innerHTML = "❌ Erro ao Publicar";
+                        btnPublish.style.background = "#e74c3c"; // red
+                    }
+                    
+                    setTimeout(() => {
+                        btnPublish.innerHTML = originalText;
+                        btnPublish.style.background = "#00D1FF";
+                    }, 4000);
+                }
             });
 
             const searchInput = document.getElementById('dev-mesh-search');
