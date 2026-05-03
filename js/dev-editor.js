@@ -35,7 +35,21 @@ export class DevEditor {
                 <option value="">-- Clique em um objeto na cena --</option>
             </select>
 
-            <div id="dev-controls" style="display: none;">
+            <button id="dev-update-btn" style="width: 100%; margin-top: 5px; background: #000; color: #0f0; border: 1px solid #0f0; padding: 6px; cursor: pointer;">
+                🔄 Salvar Ajustes neste Tablet
+            </button>
+            <button id="dev-save-btn" style="width: 100%; margin-top: 10px; background: #0f0; color: #000; border: none; padding: 8px; cursor: pointer; font-weight: bold;">
+                💾 Exportar Backup (Arquivo)
+            </button>
+            <button id="dev-publish-btn" style="width: 100%; margin-top: 10px; background: #00D1FF; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; font-size: 13px; box-shadow: 0 0 10px rgba(0,209,255,0.4);">
+                ☁️ Publicar Alterações (Sync Oficial)
+            </button>
+            <button id="dev-clear-btn" style="width: 100%; margin-top: 10px; margin-bottom: 15px; background: #f00; color: #fff; border: none; padding: 6px; cursor: pointer; font-size: 11px;">
+                Restaurar Padrão de Fábrica (Apagar Ajustes)
+            </button>
+
+            <div id="dev-controls" style="display: none; max-height: 300px; overflow-y: auto; padding-right: 5px; border-top: 1px dashed #0f0; padding-top: 10px;">
+                <button id="dev-origin-btn" style="width: 100%; margin-bottom: 10px; background: #444; color: #fff; border: 1px solid #fff; padding: 4px; cursor: pointer;">📍 Trazer para X:0 Y:0 Z:0</button>
                 <div class="dev-group">
                     <strong>Position (X, Y, Z)</strong><br>
                     <input type="number" step="0.1" id="dev-pos-x" style="width: 60px;">
@@ -65,22 +79,9 @@ export class DevEditor {
                 <div id="dev-children-container" style="margin-top: 15px; border-top: 1px dashed #0f0; padding-top: 10px; display: none;">
                     <strong>Filhos (Meshes do GLB)</strong>
                     <input type="text" id="dev-mesh-search" placeholder="🔍 Buscar mesh (ex: Door)..." style="width: 100%; margin-top: 5px; background: #000; color: #0f0; border: 1px solid #0f0; padding: 4px; box-sizing: border-box;">
-                    <div id="dev-meshes-list" style="max-height: 200px; overflow-y: auto; margin-top: 5px; font-size: 11px;"></div>
+                    <div id="dev-meshes-list" style="margin-top: 5px; font-size: 11px;"></div>
                 </div>
             </div>
-
-            <button id="dev-update-btn" style="width: 100%; margin-top: 15px; background: #000; color: #0f0; border: 1px solid #0f0; padding: 6px; cursor: pointer;">
-                🔄 Salvar Ajustes neste Tablet
-            </button>
-            <button id="dev-save-btn" style="width: 100%; margin-top: 10px; background: #0f0; color: #000; border: none; padding: 8px; cursor: pointer; font-weight: bold;">
-                💾 Exportar Backup (Arquivo)
-            </button>
-            <button id="dev-publish-btn" style="width: 100%; margin-top: 15px; background: #00D1FF; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; font-size: 13px; box-shadow: 0 0 10px rgba(0,209,255,0.4);">
-                ☁️ Publicar Alterações (Sync Oficial)
-            </button>
-            <button id="dev-clear-btn" style="width: 100%; margin-top: 10px; background: #f00; color: #fff; border: none; padding: 6px; cursor: pointer; font-size: 11px;">
-                Restaurar Padrão de Fábrica (Apagar Ajustes)
-            </button>
         `;
 
         document.body.appendChild(panel);
@@ -131,6 +132,35 @@ export class DevEditor {
 
         // Listen for export and updates
         setTimeout(() => {
+            const btnOrigin = document.getElementById('dev-origin-btn');
+            if (btnOrigin) {
+                let savedPosition = null;
+                btnOrigin.addEventListener('click', () => {
+                    if (!this.activeElementId) return;
+                    const el = document.getElementById(this.activeElementId);
+                    if (!el) return;
+                    
+                    const posX = /** @type {HTMLInputElement} */ (document.getElementById('dev-pos-x'));
+                    const posY = /** @type {HTMLInputElement} */ (document.getElementById('dev-pos-y'));
+                    const posZ = /** @type {HTMLInputElement} */ (document.getElementById('dev-pos-z'));
+                    
+                    if (btnOrigin.innerText.includes('X:0 Y:0 Z:0')) {
+                        savedPosition = { x: posX.value, y: posY.value, z: posZ.value };
+                        posX.value = "0"; posY.value = "0"; posZ.value = "0";
+                        el.setAttribute('position', '0 0 0');
+                        btnOrigin.innerText = '↩️ Restaurar Posição Anterior';
+                    } else {
+                        if (savedPosition) {
+                            posX.value = savedPosition.x; posY.value = savedPosition.y; posZ.value = savedPosition.z;
+                            el.setAttribute('position', `${savedPosition.x} ${savedPosition.y} ${savedPosition.z}`);
+                        }
+                        btnOrigin.innerText = '📍 Trazer para X:0 Y:0 Z:0';
+                    }
+                    // Dispara evento manual de update pros inputs
+                    posX.dispatchEvent(new Event('input'));
+                });
+            }
+
             const btnSave = document.getElementById('dev-save-btn');
             if (btnSave) btnSave.addEventListener('click', () => this.exportConfig());
 

@@ -168,8 +168,19 @@ export class KioskSystem {
       background: rgba(255,68,68,0.85); color: white;
       padding: 6px 14px; border-radius: 20px;
       font-family: sans-serif; font-size: 12px; font-weight: bold;
-      z-index: 10001; pointer-events: none;
+      z-index: 10006; cursor: pointer; box-shadow: 0 0 10px rgba(255,0,0,0.5);
+      pointer-events: auto;
     `;
+    badge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.location.href = 'adm.html';
+    });
+    // Fallback pra touch devices
+    badge.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+      window.location.href = 'adm.html';
+    }, {passive: false});
+    
     document.body.appendChild(badge);
   }
 }

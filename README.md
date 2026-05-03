@@ -106,6 +106,7 @@ git push origin main   # CI/CD dispara automaticamente
 ```
 
 **Variáveis necessárias no repositório GitHub:**
+- `vars.VITE_GITHUB_REPO` — Nome do repositório (ex: `usuario/repo`)
 - `vars.VITE_SUPABASE_URL` — URL do projeto Supabase
 - `secrets.VITE_SUPABASE_ANON_KEY` — Chave anon (leitura pública)
 

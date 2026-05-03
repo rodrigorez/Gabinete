@@ -37,11 +37,11 @@ const HEALTH_CHECK_TIMEOUT_MS = 5000;
 /**
  * @typedef {Object} SyncOperation
  * @property {'push'|'pull'|'delete'} action
- * @property {string} path — Caminho do arquivo
- * @property {'github'|'supabase'} target — Destino
- * @property {string} [sha256] — Hash esperado
- * @property {number} timestamp — Quando foi enfileirado
- * @property {number} retries — Tentativas realizadas
+ * @property {string} path Caminho do arquivo
+ * @property {'github'|'supabase'} target Destino
+ * @property {string} [sha256] Hash esperado
+ * @property {number} timestamp Quando foi enfileirado
+ * @property {number} retries Tentativas realizadas
  */
 
 /**
@@ -149,7 +149,7 @@ function dequeue(path, action) {
 
 /**
  * Lê um arquivo do GitHub via API (Contents endpoint).
- * @param {string} path — Caminho no repo (ex: 'config.json')
+ * @param {string} path Caminho no repo (ex: 'config.json')
  * @returns {Promise<{content: string, sha: string}|null>}
  */
 async function githubGet(path) {
@@ -159,6 +159,7 @@ async function githubGet(path) {
   if (!repo) return null;
 
   try {
+    /** @type {Record<string, string>} */
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -170,7 +171,8 @@ async function githubGet(path) {
     if (!res.ok) return null;
     const data = await res.json();
     // data.content vem em base64 com quebras de linha
-    const content = atob(data.content.replace(/\n/g, ''));
+    // Necessário usar decodeURIComponent e escape para converter UTF-8 corretamente
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
     return { content, sha: data.sha };
   } catch {
     return null;
@@ -187,6 +189,7 @@ export async function checkGithubAccess() {
   if (!repo) return { ok: false, error: 'GITHUB_REPO não configurado.' };
 
   try {
+    /** @type {Record<string, string>} */
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -201,10 +204,10 @@ export async function checkGithubAccess() {
 
 /**
  * Escreve/atualiza um arquivo no GitHub via API.
- * @param {string} path — Caminho no repo
- * @param {string} content — Conteúdo em texto
- * @param {string} message — Mensagem do commit
- * @param {string} [existingSha] — SHA do arquivo existente (para update)
+ * @param {string} path Caminho no repo
+ * @param {string} content Conteúdo em texto
+ * @param {string} message Mensagem do commit
+ * @param {string} [existingSha] SHA do arquivo existente (para update)
  * @returns {Promise<boolean>}
  */
 async function githubPut(path, content, message, existingSha) {
@@ -214,6 +217,7 @@ async function githubPut(path, content, message, existingSha) {
   // 1. Arquitetura Serverless Direta (MVP): Usa o Token do GitHub do secrets.json (Criptografado)
   if (repo && token) {
     try {
+      /** @type {Record<string, string>} */
       const body = {
         message: message,
         content: btoa(unescape(encodeURIComponent(content))),
@@ -237,28 +241,8 @@ async function githubPut(path, content, message, existingSha) {
     }
   }
 
-  // 2. Fallback: Arquitetura Enterprise via Supabase Edge Functions
-  const supabaseUrl = getSecret('SUPABASE_URL');
-  const anonKey     = getSecret('SUPABASE_ANON_KEY');
-  if (!supabaseUrl || !anonKey) {
-    console.warn('⚠️ Sync impossível: GITHUB_TOKEN local não encontrado e Supabase não configurado.');
-    return false;
-  }
-
-  try {
-    const res = await fetch(`${supabaseUrl}/functions/v1/github-sync`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${anonKey}`,
-        'apikey': anonKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ path, content, message, sha: existingSha }),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  console.warn('⚠️ Sync bloqueado: Operação de escrita exige GITHUB_TOKEN. Quiosque não pode enviar dados.');
+  return false;
 }
 
 // ─── Backup de Configuração ──────────────────────────────────
@@ -395,8 +379,8 @@ export async function resolveConfigAtBoot() {
     try { localObj = JSON.parse(localRaw); } catch { return JSON.parse(remoteData.content); }
     try { remoteObj = JSON.parse(remoteData.content); } catch { return localObj; }
 
-    const localTime  = localObj._lastModified  ? new Date(/** @type {any} */ (localObj)._lastModified).getTime()  : 0;
-    const remoteTime = remoteObj._lastModified ? new Date(/** @type {any} */ (remoteObj)._lastModified).getTime() : 0;
+    const localTime  = /** @type {any} */ (localObj)._lastModified  ? new Date(/** @type {any} */ (localObj)._lastModified).getTime()  : 0;
+    const remoteTime = /** @type {any} */ (remoteObj)._lastModified ? new Date(/** @type {any} */ (remoteObj)._lastModified).getTime() : 0;
     const localCount  = Array.isArray(localObj.objects)  ? localObj.objects.length  : 0;
     const remoteCount = Array.isArray(remoteObj.objects) ? remoteObj.objects.length : 0;
 
@@ -596,8 +580,8 @@ export async function sync() {
 
 /**
  * Sincroniza config.json via GitHub (bidirecional).
- * @param {import('./manifest.js').Manifest} localManifest
- * @returns {Promise<boolean>} — true se o sync foi bem-sucedido
+ * @param {import('./manifest.js').Manifest} [_localManifest]
+ * @returns {Promise<boolean>} true se o sync foi bem-sucedido
  */
 async function syncConfigViaGitHub(_localManifest) {
   const remoteConfig = await githubGet('assets/config.json');

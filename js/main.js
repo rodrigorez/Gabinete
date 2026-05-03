@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const colBox = document.createElement('a-box');
                     
                     const isDebug = window.location.search.includes('debug=1');
-                    if (isDebug) window.GABINETE_DEBUG = true;
+                    if (isDebug) /** @type {any} */ (window).GABINETE_DEBUG = true;
 
                     if (isDebug) {
                         // Modo Debug: Caixa rosa choque sobreposta a tudo
@@ -112,9 +112,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     colBox.setAttribute('scale', child.scale || '1 1 1');
                     colBox.setAttribute('position', child.position || '0 0 0');
                     el.appendChild(colBox);
-                } else if (child.type && child.id) {
+                } else if (/** @type {any} */ (child).type && child.id) {
                     // Fallback para Estrutura Legacy (backward compatibility para V1~V4)
-                    createEntity(child, el);
+                    createEntity(/** @type {any} */ (child), el);
                 }
             });
         }
@@ -171,24 +171,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         appState.setConfig(config);
 
-        // ─── VALIDATION LOG (A pedido do dev) ─────────────────────────────────
-        config.objects.forEach(obj => {
-            console.log(`🔎 [Config Validator] Objeto na cena: ${obj.id}`);
-            if (obj.children) {
-                console.log(`   └─ Possui ${obj.children.length} filhos/parâmetros:`, obj.children);
-                obj.children.forEach(c => {
-                    if (c.role === 'animation') console.log(`      └─ [Animação] ${c.part_name} no eixo ${c.anim_axis} até ${c.anim_end}°`);
-                });
-            } else {
-                console.log(`   └─ NENHUM filho ou animação encontrado no JSON.`);
-            }
-        });
+
 
         // ─── 3. Configura ambiente ───────────────────────────────────────────
         const sky   = document.getElementById('main-sky');
         const light = document.getElementById('ambient-light');
         if (sky && light) {
-            sky.setAttribute('src', config.settings.env.sky);
+            const skyVal = config.settings.env.sky;
+            if (skyVal) {
+                if (skyVal.startsWith('#') || skyVal.startsWith('rgb')) {
+                    sky.setAttribute('color', skyVal);
+                    sky.removeAttribute('src');
+                } else {
+                    sky.setAttribute('src', skyVal);
+                    sky.removeAttribute('color');
+                }
+            }
             /** @type {any} */ (light).setAttribute('light', 'intensity', String(config.settings.env.exposure));
         }
 
@@ -265,10 +263,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 lastFsTap = now;
                 if (fsTaps >= 3) {
                     fsTaps = 0;
-                    // @ts-ignore
-                    if (AFRAME.utils.device.checkHeadsetConnected()) scene.enterVR();
-                    else if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-                    else document.exitFullscreen().catch(() => {});
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                    } else {
+                        document.exitFullscreen().catch(() => {});
+                    }
                 }
             });
         }

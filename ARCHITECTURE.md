@@ -202,8 +202,8 @@ Interface de gestão que permite a um curador gerenciar obras sem depender do pr
 | Manifest Manager | `js/manifest.js` | CRUD do manifesto de hashes |
 | Image Pipeline | `js/image-pipeline.js` | Conversão WebP (`_high` q85% + `_low` 512px q60%) |
 | Supabase Client | `js/supabase-client.js` | Upload via Edge Function `asset-manager` (service_role server-side); download/list com anon key |
-| Sync Engine | `js/sync-engine.js` | Orquestrador offline-first (leitura GitHub com bypass de cache; checagem de rede `no-cors`; escrita via Edge Function `github-sync`) |
-| PIN Overlay | `js/pin-overlay.js` | Overlay de PIN reutilizável (DRY entre adm.html e curadoria) |
+| Sync Engine | `js/sync-engine.js` | Orquestrador offline-first (leitura GitHub API; escrita direta via GitHub API com token criptografado) |
+| PIN Overlay | `js/pin-overlay.js` | Overlay de PIN reutilizável (DRY entre adm.html e curadoria) com suporte nativo a form submit |
 | Curadoria App | `js/curadoria-app.js` | UI de curadoria (CRUD obras + upload de assets) |
 
 ### 11.2. Segurança de Credenciais

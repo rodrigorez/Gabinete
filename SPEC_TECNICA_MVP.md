@@ -223,6 +223,7 @@ Para que o MVP funcione com performance no Android, os ativos fornecidos futuram
 9. **Fase 8 (Concluída):** Engine de Física Kiosk-Level (Gravidade, Pulo, Agachamento e Colisões Cilíndricas) e Animação de sub-partes GLTF (Abertura de portas).
 10. **Fase 9 (Concluída):** Estabilização de Interação Dinâmica e HMR. Refatoração do `interactive-object` (debounce multi-eventos), otimização da frequência do A-Frame `raycaster` para detecção de malhas injetadas em Runtime, e atualização do Service Worker (`sw.js`) para ignorar requisições em `localhost` durante o desenvolvimento e auto-atualizar clientes (`skipWaiting`/`clients.claim()`), garantindo hot-reload (HMR) contínuo.
 11. **Fase 10 (Concluída):** DevTools On-Device e Escalabilidade PWA. Ferramenta de edição via URL `?dev=true` operando em Runtime no dispositivo, persistindo configurações 3D (Translação XYZ e Escala de UI) atráves de Cache LocalStorage (`gabinete_kiosk_config`). Sistema blindado contra Memory Leaks via Component Disposal automático e suporte nativo à taxonomia isolada em diretórios por obra (`assets/01_obra/`, `assets/02_obra/`).
+12. **Fase 11 (Concluída):** Motor de Sincronização Estrito e Segurança Híbrida. Centralização total do gerenciamento de credenciais no `secrets.json` via AES-256-GCM. Deploy automatizado para GitHub Pages com *sync-engine* puro consumindo API do GitHub via bypass de cache, eliminando infraestruturas redundantes.
 
 ---
 

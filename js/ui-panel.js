@@ -1,6 +1,7 @@
 // @ts-check
 import { nav } from './navigation.js';
 import { i18n } from './i18n.js';
+import { appState } from './app-state.js';
 
 export class UIPanel {
     constructor() {
@@ -74,6 +75,13 @@ export class UIPanel {
         if (this.elements.title) {
             this.elements.title.innerText = i18n.t(objConfig.panel.title_key);
         }
+
+        const currentConfig = appState.getConfig();
+        const labels = currentConfig?.settings?.labels || {};
+        if (this.elements.btnGal1) this.elements.btnGal1.innerText = labels.galleryA || 'Galeria A';
+        if (this.elements.btnGal2) this.elements.btnGal2.innerText = labels.galleryB || 'Galeria B';
+        if (this.elements.btnVideo) this.elements.btnVideo.innerText = labels.video || 'Vídeos';
+        if (this.elements.btnText) this.elements.btnText.innerText = labels.text || 'Documentos';
 
         this.hideAllSections();
         this.reset();

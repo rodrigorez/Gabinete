@@ -78,7 +78,8 @@ AFRAME.registerComponent('kiosk-physics', {
       if (this.keys['e']) look.yawObject.rotation.y -= 1.5 * dt;
     }
 
-    // 3. PULAR (Control / Espaço) e AGACHAR (Alt / C)
+    // 3. PULAR (Control / Espaço) e AGACHAR (Alt / C) - COMENTADOS PARA O MVP
+    /*
     const wantsJump = this.keys['control'] || this.keys[' '];
     const wantsCrouch = this.keys['alt'] || this.keys['c'];
     const targetHeight = wantsCrouch ? this.crouchHeight : this.baseHeight;
@@ -99,6 +100,9 @@ AFRAME.registerComponent('kiosk-physics', {
     } else {
       pos.y += (targetHeight - pos.y) * 10 * dt;
     }
+    */
+    // Fixando a altura sempre na base (MVP)
+    pos.y += (this.baseHeight - pos.y) * 10 * dt;
 
     // --- COLISÕES OBB (Oriented Bounding Box) ---
     this._colliders.forEach(collider => {
