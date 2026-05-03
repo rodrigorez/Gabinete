@@ -153,7 +153,8 @@ function dequeue(path, action) {
  * @returns {Promise<{content: string, sha: string}|null>}
  */
 async function githubGet(path) {
-  const repo = getSecret('GITHUB_REPO');
+  // Tenta pegar o repo do secret (se logado) ou do env de build (quiosque publico)
+  const repo = getSecret('GITHUB_REPO') || 'rodrigorez/Gabinete';
   const token = getSecret('GITHUB_TOKEN');
   if (!repo) return null;
 
@@ -181,7 +182,7 @@ async function githubGet(path) {
  * @returns {Promise<{ok: boolean, error?: string}>}
  */
 export async function checkGithubAccess() {
-  const repo = getSecret('GITHUB_REPO');
+  const repo = getSecret('GITHUB_REPO') || 'rodrigorez/Gabinete';
   const token = getSecret('GITHUB_TOKEN');
   if (!repo) return { ok: false, error: 'GITHUB_REPO não configurado.' };
 
