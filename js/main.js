@@ -1,5 +1,6 @@
 // @ts-check
 /* global AFRAME */
+import './vendor/aframe.min.js';
 import { nav } from './navigation.js';
 import { i18n } from './i18n.js';
 import { EVENTS } from './events.js';
