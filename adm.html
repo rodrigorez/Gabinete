@@ -100,9 +100,14 @@
         const LOG_KEY = GABINETE_CONFIG.KIOSK.LOG_KEY;
 
         // ── Guard de sessão ─────────────────────────────────────────
-        // showPinOverlay verifica o cache, exibe o overlay se necessário,
-        // e só resolve quando o PIN está correto (rate-limited via GABINETE_CONFIG).
-        await showPinOverlay({ title: 'Painel Administrativo' });
+        (async () => {
+            // showPinOverlay verifica o cache, exibe o overlay se necessário,
+            // e só resolve quando o PIN está correto (rate-limited via GABINETE_CONFIG).
+            await showPinOverlay({ title: 'Painel Administrativo' });
+            
+            updateLogs();
+            renderBackups();
+        })();
 
         function updateLogs() {
             const logs = localStorage.getItem(LOG_KEY);
@@ -268,9 +273,6 @@
         window.changePin = changePin;
         window.exportLogsCSV = exportLogsCSV;
         window.renderBackups = renderBackups;
-
-        updateLogs();
-        renderBackups();
     </script>
 </body>
 </html>
