@@ -361,12 +361,10 @@ export class DevEditor {
                 }
                 
                 // Salva a alteração no LocalStorage e marca como mais recente para o Sync Engine perceber!
-                // @ts-ignore
-                if (typeof window.GABINETE_CONFIG !== 'undefined') {
-                    // @ts-ignore
-                    window.GABINETE_CONFIG._lastModified = new Date().toISOString();
-                    // @ts-ignore
-                    localStorage.setItem('gabinete_kiosk_config', JSON.stringify(window.GABINETE_CONFIG));
+                const cfg = appState.getConfig();
+                if (cfg) {
+                    cfg._lastModified = new Date().toISOString();
+                    localStorage.setItem('gabinete_kiosk_config', JSON.stringify(cfg));
                 }
             }
         };
@@ -475,12 +473,10 @@ export class DevEditor {
                 }
                 
                 // Salva a alteração no LocalStorage e marca como mais recente para o Sync Engine perceber!
-                // @ts-ignore
-                if (typeof window.GABINETE_CONFIG !== 'undefined') {
-                    // @ts-ignore
-                    window.GABINETE_CONFIG._lastModified = new Date().toISOString();
-                    // @ts-ignore
-                    localStorage.setItem('gabinete_kiosk_config', JSON.stringify(window.GABINETE_CONFIG));
+                const cfg = appState.getConfig();
+                if (cfg) {
+                    cfg._lastModified = new Date().toISOString();
+                    localStorage.setItem('gabinete_kiosk_config', JSON.stringify(cfg));
                 }
                 
                 // Rerenderiza os blocos azuis em tempo real!
