@@ -196,7 +196,8 @@ export async function loadSecrets(pin) {
           ...dec,
           SUPABASE_URL:      dec.SUPABASE_URL      || import.meta.env.VITE_SUPABASE_URL       || '',
           SUPABASE_ANON_KEY: dec.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY  || '',
-          GITHUB_REPO:       dec.GITHUB_REPO       || import.meta.env.VITE_GITHUB_CONFIG_REPO || '',
+          GITHUB_REPO:       dec.GITHUB_REPO       || import.meta.env.VITE_GITHUB_CONFIG_REPO || import.meta.env.VITE_GITHUB_REPO || '',
+          GITHUB_TOKEN:      dec.GITHUB_TOKEN      || import.meta.env.VITE_GITHUB_TOKEN       || '',
         };
         _loaded = true;
         resetClearTimer();
@@ -212,7 +213,8 @@ export async function loadSecrets(pin) {
         ...raw,
         SUPABASE_URL:      raw.SUPABASE_URL      || import.meta.env.VITE_SUPABASE_URL       || '',
         SUPABASE_ANON_KEY: raw.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY  || '',
-        GITHUB_REPO:       raw.GITHUB_REPO       || import.meta.env.VITE_GITHUB_CONFIG_REPO || '',
+        GITHUB_REPO:       raw.GITHUB_REPO       || import.meta.env.VITE_GITHUB_CONFIG_REPO || import.meta.env.VITE_GITHUB_REPO || '',
+        GITHUB_TOKEN:      raw.GITHUB_TOKEN      || import.meta.env.VITE_GITHUB_TOKEN       || '',
       };
       _loaded = true;
       resetClearTimer();
@@ -225,7 +227,8 @@ export async function loadSecrets(pin) {
     _cache = {
       SUPABASE_URL:      import.meta.env.VITE_SUPABASE_URL       || '',
       SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY  || '',
-      GITHUB_REPO:       import.meta.env.VITE_GITHUB_CONFIG_REPO || '',
+      GITHUB_REPO:       import.meta.env.VITE_GITHUB_CONFIG_REPO || import.meta.env.VITE_GITHUB_REPO || '',
+      GITHUB_TOKEN:      import.meta.env.VITE_GITHUB_TOKEN       || '',
     };
     _loaded = true;
     const mode = _cache.SUPABASE_URL ? 'produção (env vars)' : 'sem credenciais';
