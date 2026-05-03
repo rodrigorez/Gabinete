@@ -49,7 +49,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js', { type: 'module' }).then(reg => {
+                navigator.serviceWorker.register('./sw.js', { type: 'module' }).then(reg => {
                     console.log('✅ Service Worker Registrado com sucesso!', reg.scope);
                 }).catch(err => {
                     console.warn('⚠️ Falha ao registrar Service Worker:', err);
