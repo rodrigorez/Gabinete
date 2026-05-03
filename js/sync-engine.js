@@ -205,15 +205,44 @@ export async function checkGithubAccess() {
  * @returns {Promise<boolean>}
  */
 async function githubPut(path, content, message, existingSha) {
+  const repo  = getSecret('GITHUB_REPO');
+  const token = getSecret('GITHUB_TOKEN');
+
+  // 1. Arquitetura Serverless Direta (MVP): Usa o Token do GitHub do secrets.json (Criptografado)
+  if (repo && token) {
+    try {
+      const body = {
+        message: message,
+        content: btoa(unescape(encodeURIComponent(content))),
+        branch: 'main'
+      };
+      if (existingSha) body.sha = existingSha;
+
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      });
+      return res.ok;
+    } catch (err) {
+      console.error('Erro na API do GitHub:', err);
+      return false;
+    }
+  }
+
+  // 2. Fallback: Arquitetura Enterprise via Supabase Edge Functions
   const supabaseUrl = getSecret('SUPABASE_URL');
   const anonKey     = getSecret('SUPABASE_ANON_KEY');
   if (!supabaseUrl || !anonKey) {
-    console.warn('⚠️ github-sync Edge Function não disponível (Supabase não configurado).');
+    console.warn('⚠️ Sync impossível: GITHUB_TOKEN local não encontrado e Supabase não configurado.');
     return false;
   }
 
   try {
-    // Escrita via Edge Function — GITHUB_TOKEN fica server-side
     const res = await fetch(`${supabaseUrl}/functions/v1/github-sync`, {
       method: 'POST',
       headers: {
@@ -223,7 +252,6 @@ async function githubPut(path, content, message, existingSha) {
       },
       body: JSON.stringify({ path, content, message, sha: existingSha }),
     });
-
     return res.ok;
   } catch {
     return false;
