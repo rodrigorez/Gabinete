@@ -1,23 +1,46 @@
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync, statSync, readdirSync } from 'node:fs';
+import { resolve, join, dirname } from 'node:path';
 
 /**
- * Plugin Vite: Copia o aframe.min.js para a build final
+ * Plugin Vite: Copia arquivos estáticos vitais que o Vite ignora por não estarem na pasta public/
  */
-function copyAframePlugin() {
+function copyStaticFilesPlugin() {
   return {
-    name: 'copy-aframe',
+    name: 'copy-static-files',
     closeBundle() {
-      const src = resolve(process.cwd(), 'js/vendor/aframe.min.js');
-      const destDir = resolve(process.cwd(), 'dist/js/vendor');
-      const dest = resolve(process.cwd(), 'dist/js/vendor/aframe.min.js');
-      if (existsSync(src)) {
-        if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
-        copyFileSync(src, dest);
-        console.log('✅ A-Frame copiado manualmente para dist/js/vendor/');
+      function copyRecursiveSync(src, dest) {
+        if (!existsSync(src)) return;
+        const stats = statSync(src);
+        if (stats.isDirectory()) {
+          if (!existsSync(dest)) mkdirSync(dest, { recursive: true });
+          readdirSync(src).forEach(child => {
+            copyRecursiveSync(join(src, child), join(dest, child));
+          });
+        } else {
+          copyFileSync(src, dest);
+        }
       }
+
+      // 1. Copia o A-Frame
+      const aframeSrc = resolve(process.cwd(), 'js/vendor/aframe.min.js');
+      const aframeDest = resolve(process.cwd(), 'dist/js/vendor/aframe.min.js');
+      if (existsSync(aframeSrc)) {
+        if (!existsSync(dirname(aframeDest))) mkdirSync(dirname(aframeDest), { recursive: true });
+        copyFileSync(aframeSrc, aframeDest);
+      }
+
+      // 2. Copia pasta assets inteira (modelos 3d, imagens, config.json)
+      copyRecursiveSync(resolve(process.cwd(), 'assets'), resolve(process.cwd(), 'dist/assets'));
+
+      // 3. Copia secrets.json vazio/base
+      const secretsSrc = resolve(process.cwd(), 'secrets.json');
+      if (existsSync(secretsSrc)) {
+        copyFileSync(secretsSrc, resolve(process.cwd(), 'dist/secrets.json'));
+      }
+
+      console.log('✅ Arquivos estáticos (A-Frame, assets/, secrets.json) copiados manualmente para dist/');
     }
   };
 }
@@ -59,7 +82,7 @@ export default defineConfig({
   base: './',
 
   plugins: [
-    copyAframePlugin(),
+    copyStaticFilesPlugin(),
     secretsWriterPlugin(),
     VitePWA({
       // injectManifest: usa o sw.js customizado e injeta a lista de assets no build.
