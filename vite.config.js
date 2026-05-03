@@ -1,7 +1,26 @@
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
+/**
+ * Plugin Vite: Copia o aframe.min.js para a build final
+ */
+function copyAframePlugin() {
+  return {
+    name: 'copy-aframe',
+    closeBundle() {
+      const src = resolve(process.cwd(), 'js/vendor/aframe.min.js');
+      const destDir = resolve(process.cwd(), 'dist/js/vendor');
+      const dest = resolve(process.cwd(), 'dist/js/vendor/aframe.min.js');
+      if (existsSync(src)) {
+        if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
+        copyFileSync(src, dest);
+        console.log('✅ A-Frame copiado manualmente para dist/js/vendor/');
+      }
+    }
+  };
+}
 
 /**
  * Plugin Vite: endpoint local para salvar secrets.json em disco.
@@ -40,6 +59,7 @@ export default defineConfig({
   base: './',
 
   plugins: [
+    copyAframePlugin(),
     secretsWriterPlugin(),
     VitePWA({
       // injectManifest: usa o sw.js customizado e injeta a lista de assets no build.
