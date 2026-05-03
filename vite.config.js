@@ -94,6 +94,7 @@ export default defineConfig({
         injectionPoint: 'self.__WB_MANIFEST',
         globPatterns: ['**/*.{js,css,html,json,png,webp,jpg,jpeg,glb,mp4}'],
         globIgnores: ['assets/raw/**', '**/*.map'],
+        maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // Limite de 100MB para Kiosk Offline
       },
       registerType: 'autoUpdate',
       injectRegister: false,
