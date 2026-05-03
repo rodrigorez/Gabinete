@@ -7,8 +7,6 @@ __pycache__/
 .env
 .env.local
 .env.*.local
-secrets.json
-secrets.json.bak
 encrypt-secrets.mjs
 .env.*.local
 
