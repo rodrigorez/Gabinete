@@ -1,0 +1,190 @@
+// @ts-check
+/* global THREE */
+import { stateManager } from './state-manager.js';
+import { cameraRig } from './camera-rig.js';
+import { spatialTracker } from './spatial-tracker.js';
+import { uiPanel } from './ui-panel.js';
+import { appState } from './app-state.js';
+
+/**
+ * Controlador de transições de View (Cena 3D ↔ Painel UI).
+ * Extraído do main.js (God-Object) para seguir Regra Pétrea 2: Modularidade Total.
+ * Todas as dependências recebidas via import de módulo (sem globais).
+ */
+export class ViewController {
+
+    /**
+     * Ponto de entrada — chamado pelo listener 'view-changed' no main.js.
+     * @param {string} viewId
+     */
+    handle(viewId) {
+        if (stateManager.isTransitioning()) {
+            console.warn('🔒 FSM Bloqueio: Transição da Câmera em andamento.');
+            return;
+        }
+        stateManager.setTransitioning();
+
+        if (viewId === 'scene') {
+            this._handleClose();
+        } else {
+            this._handleOpen(viewId);
+        }
+    }
+
+    /** Fluxo de FECHAMENTO — volta para a cena 3D */
+    _handleClose() {
+        const config = stateManager.lastPanelConfig || {};
+        const timing = config._timing || { fadeDur: 400, waitClose: 400, doorDur: 1000 };
+
+        const savedState = stateManager.getCameraState();
+        if (savedState) {
+            cameraRig.animate(savedState.pos, savedState.rot, timing.doorDur, () => {
+                stateManager.setIdle();
+            });
+            stateManager.clearCameraState();
+        } else {
+            setTimeout(() => stateManager.setIdle(), timing.doorDur + 50);
+        }
+
+        const sceneEl = document.querySelector('a-scene');
+        if (stateManager.lastParentEl && sceneEl && sceneEl.camera) {
+            spatialTracker.track(uiPanel.elements.panel, stateManager.lastParentEl, sceneEl, timing.doorDur, true, config);
+        }
+
+        uiPanel.toggleVisibility(false);
+
+        const triggerDoorClose = () => {
+            this._animateDoors(stateManager.lastParentEl, timing);
+        };
+
+        if (timing.waitClose === 0) {
+            triggerDoorClose();
+        } else {
+            setTimeout(triggerDoorClose, timing.waitClose);
+        }
+
+        setTimeout(() => {
+            uiPanel.completeHide();
+            stateManager.saveInteractionState(null, null);
+        }, Math.max(timing.fadeDur, 600));
+    }
+
+    /**
+     * Fluxo de ABERTURA — exibe painel de objeto.
+     * @param {string} viewId
+     */
+    _handleOpen(viewId) {
+        const obj = appState.findObject(viewId);
+        if (!obj) {
+            stateManager.setIdle();
+            return;
+        }
+
+        /** @type {PanelTiming} */
+        const timing = obj.timing || { doorDur: 1000, fadeDur: 500, waitOpen: 0, waitClose: 0 };
+        if (obj.panel) obj.panel._timing = timing;
+
+        // Pre-loading de imagens das galerias
+        if (obj.panel && obj.panel.galleries) {
+            obj.panel.galleries.forEach(gal => {
+                if (gal.images) gal.images.forEach(imgSrc => { new Image().src = imgSrc; });
+            });
+        }
+
+        const parentEl = document.getElementById(viewId);
+        const cameraEl = document.querySelector('[camera]');
+
+        if (cameraEl && parentEl) {
+            if (!stateManager.getCameraState()) {
+                // @ts-ignore
+                const look = cameraEl.components['look-controls'];
+                stateManager.saveCameraState({
+                    pos: { x: cameraEl.object3D.position.x, y: cameraEl.object3D.position.y, z: cameraEl.object3D.position.z },
+                    rot: {
+                        x: look ? look.pitchObject.rotation.x : cameraEl.object3D.rotation.x,
+                        y: look ? look.yawObject.rotation.y : cameraEl.object3D.rotation.y,
+                        z: 0
+                    }
+                });
+            }
+
+            const targetPos = new THREE.Vector3(0, 1.6, 2.0);
+            targetPos.applyMatrix4(parentEl.object3D.matrixWorld);
+
+            const cabinetPos = new THREE.Vector3();
+            parentEl.object3D.getWorldPosition(cabinetPos);
+
+            const tempObj = new THREE.Object3D();
+            tempObj.position.copy(targetPos);
+            tempObj.lookAt(cabinetPos.x, targetPos.y, cabinetPos.z);
+
+            cameraRig.animate(
+                { x: targetPos.x, y: targetPos.y, z: targetPos.z },
+                { x: 0, y: tempObj.rotation.y, z: 0 },
+                timing.doorDur,
+                () => { stateManager.setIdle(); }
+            );
+        } else {
+            setTimeout(() => stateManager.setIdle(), timing.doorDur + 50);
+        }
+
+        this._animateDoors(parentEl, timing);
+
+        if (!obj.panel) return;
+        stateManager.saveInteractionState(parentEl, obj.panel);
+
+        if (parentEl && parentEl.object3D) {
+            const sceneEl = document.querySelector('a-scene');
+            if (sceneEl && sceneEl.camera) {
+                spatialTracker.track(uiPanel.elements.panel, parentEl, sceneEl, timing.doorDur, false, obj.panel);
+            }
+        }
+
+        uiPanel.loadContent(obj);
+        uiPanel.toggleVisibility(true);
+    }
+
+    /**
+     * Dispara toggle de animações (portas/gavetas) nos filhos do objeto.
+     * @param {HTMLElement|null} parentEl
+     * @param {any} timing
+     */
+    _animateDoors(parentEl, timing) {
+        if (!parentEl) return;
+        console.log(`🚪 _animateDoors chamado para:`, parentEl.id, timing);
+
+        // Pega o elemento pai e todos os seus descendentes na árvore DOM
+        const allTargets = [parentEl, ...Array.from(parentEl.querySelectorAll('*'))];
+        let animFound = false;
+
+        allTargets.forEach((targetNode) => {
+            /** @type {any} */
+            const child = targetNode;
+            if (!child.components) return;
+
+            const keys = Object.keys(child.components);
+            console.log(`🧩 Componentes em ${child.id || child.tagName}:`, keys.join(', '));
+
+            // Itera sobre todos os componentes atrelados à entidade
+            keys.forEach(compName => {
+                // Suporta componentes normais e com sufixo (ex: gltf-part-animation__0)
+                if (compName === 'animated-object' || compName.startsWith('gltf-part-animation')) {
+                    animFound = true;
+                    console.log(`🎬 Componente encontrado: ${compName} em <${child.tagName.toLowerCase()} id="${child.id}">`);
+                    const comp = child.components[compName];
+                    child.setAttribute(compName, 'dur', String(timing.doorDur));
+                    if (comp && typeof comp.toggle === 'function') {
+                        console.log(`▶️ Acionando toggle() em ${compName}`);
+                        comp.toggle();
+                    } else {
+                        console.log(`❌ Falha: comp.toggle não é função em ${compName}`);
+                    }
+                }
+            });
+        });
+
+        if (!animFound) console.log(`⚠️ Nenhuma animação (gltf-part-animation) achada na árvore de ${parentEl.id}`);
+    }
+}
+
+export const viewController = new ViewController();

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabinete Virtual - Admin</title>
+    <meta name="description" content="Painel de controle e configurações do Gabinete Virtual">
+    <meta property="og:title" content="Gabinete Virtual - Admin">
+    <meta property="og:description" content="Painel de controle de integridade e deploy do quiosque offline.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="assets/images/gabinete.png">
+    <link rel="apple-touch-icon" href="assets/images/gabinete.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #121212; color: #eee; padding: 40px; }
+        .card { background: #1e1e1e; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #333; }
+        h1 { color: #00D1FF; margin-top: 0; }
+        .btn { 
+            display: inline-block; padding: 12px 24px; border-radius: 8px; cursor: pointer; 
+            font-weight: bold; border: none; text-decoration: none; text-align: center;
+        }
+        .btn-primary { background: #00D1FF; color: #000; }
+        .btn-secondary { background: #333; color: #fff; margin-left: 10px; }
+        .btn-danger { background: #ff4444; color: #fff; margin-left: 10px; }
+        pre { background: #000; padding: 15px; border-radius: 6px; overflow-x: auto; max-height: 400px; color: #0f0; font-size: 13px; }
+        .badge-admin { background: #ff4444; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>🛠️ Gabinete Virtual: Painel Admin</h1>
+    
+    <div class="card">
+        <h3>Modos de Operação</h3>
+        <p>Utilize o botão abaixo para entrar no ambiente com todos os sistemas de segurança e auto-reset desativados.</p>
+        <a href="index.html?admin=true" class="btn btn-primary">Entrar em Modo Manutenção (Volátil)</a>
+        <a href="index.html" class="btn btn-secondary">Entrar em Modo Quiosque (Padrão)</a>
+    </div>
+
+    <div class="card">
+        <h3>🎨 Curadoria de Obras</h3>
+        <p>Gerencie o acervo: criar, editar, reordenar obras e fazer upload de assets (modelos, vídeos, imagens).</p>
+        <a href="curadoria.html" class="btn btn-primary">Abrir Interface de Curadoria</a>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>💾 Backups de Configuração</h3>
+            <button onclick="renderBackups()" class="btn btn-secondary">Atualizar Lista</button>
+        </div>
+        <p>O sistema mantém os últimos 5 backups da configuração do ambiente (obras, links, estrutura).</p>
+        <div id="backups-list" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+            <!-- Lista será renderizada aqui -->
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Logs de Interação (JSON)</h3>
+            <div>
+                <button onclick="updateLogs()" class="btn btn-secondary">Atualizar Logs</button>
+                <button onclick="exportLogsCSV()" class="btn btn-secondary">Exportar CSV</button>
+                <button onclick="clearLogs()" class="btn btn-danger">Limpar Tudo</button>
+            </div>
+        </div>
+        <p>Os logs contêm timestamps, sessões e interações detectadas.</p>
+        <pre id="log-view">No logs found.</pre>
+    </div>
+
+    <div class="card">
+        <h3>🔐 Segurança — Trocar PIN</h3>
+        <p>Ao alterar o PIN, o <code>secrets.json</code> é automaticamente re-criptografado com a nova senha.</p>
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-top:16px;">
+            <div>
+                <label style="display:block; font-size:12px; color:#aaa; margin-bottom:4px;">PIN Atual</label>
+                <input id="pin-current" type="password" placeholder="PIN atual"
+                    style="background:#111; border:1px solid #444; color:#fff; padding:10px 14px; border-radius:8px; width:160px;">
+            </div>
+            <div>
+                <label style="display:block; font-size:12px; color:#aaa; margin-bottom:4px;">Novo PIN</label>
+                <input id="pin-new" type="password" placeholder="Novo PIN"
+                    style="background:#111; border:1px solid #444; color:#fff; padding:10px 14px; border-radius:8px; width:160px;">
+            </div>
+            <div>
+                <label style="display:block; font-size:12px; color:#aaa; margin-bottom:4px;">Confirmar</label>
+                <input id="pin-confirm" type="password" placeholder="Confirmar PIN"
+                    style="background:#111; border:1px solid #444; color:#fff; padding:10px 14px; border-radius:8px; width:160px;">
+            </div>
+            <button onclick="changePin()" class="btn btn-primary">🔑 Alterar PIN</button>
+        </div>
+        <p id="pin-status" style="margin-top:12px; font-size:13px;"></p>
+    </div>
+
+    <script type="module">
+        import { GABINETE_CONFIG } from './js/config.js';
+        import { reEncryptSecrets, getSecret } from './js/secrets-loader.js';
+        import { showPinOverlay } from './js/pin-overlay.js';
+
+        const LOG_KEY = GABINETE_CONFIG.KIOSK.LOG_KEY;
+
+        // ── Guard de sessão ─────────────────────────────────────────
+        // showPinOverlay verifica o cache, exibe o overlay se necessário,
+        // e só resolve quando o PIN está correto (rate-limited via GABINETE_CONFIG).
+        await showPinOverlay({ title: 'Painel Administrativo' });
+
+        function updateLogs() {
+            const logs = localStorage.getItem(LOG_KEY);
+            const view = /** @type {HTMLElement|null} */ (document.getElementById('log-view'));
+            if (!view) return;
+            if (logs) {
+                const logsObj = JSON.parse(logs);
+                view.innerText = JSON.stringify(logsObj.reverse(), null, 2);
+            } else {
+                view.innerText = "Nenhuma atividade registrada no LocalStorage.";
+            }
+        }
+
+        function clearLogs() {
+            if (window.confirm('Tem certeza que deseja apagar todos os logs?')) {
+                localStorage.removeItem(LOG_KEY);
+                updateLogs();
+            }
+        }
+
+        /** Exporta os logs como CSV e dispara download. */
+        function exportLogsCSV() {
+            const raw = localStorage.getItem(LOG_KEY);
+            if (!raw) { alert('Nenhum log para exportar.'); return; }
+
+            /** @type {Array<{timestamp: string, sessionID: string, action: string, data: any}>} */
+            const logs = JSON.parse(raw);
+
+            const escape = (/** @type {string} */ v) => `"${String(v).replace(/"/g, '""')}"`;
+
+            const rows = [
+                ['timestamp', 'sessionID', 'action', 'data'].map(escape).join(','),
+                ...logs.map(e => [
+                    escape(e.timestamp),
+                    escape(e.sessionID || ''),
+                    escape(e.action),
+                    escape(JSON.stringify(e.data || {})),
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([rows], { type: 'text/csv;charset=utf-8;' });
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href     = url;
+            a.download = `gabinete-logs-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        /** Toast de aviso de armazenamento. */
+        function showStorageWarning(usageRatio) {
+            if (document.getElementById('storage-toast')) return; // já exibido
+            const toast = document.createElement('div');
+            toast.id = 'storage-toast';
+            toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#7c2d12;color:#fef3c7;padding:14px 20px;border-radius:10px;font-family:Inter,sans-serif;font-size:13px;z-index:9999;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+            toast.innerHTML = `
+                <strong>⚠️ LocalStorage em ${(usageRatio * 100).toFixed(0)}%</strong><br>
+                Exporte os logs antes que os mais antigos sejam apagados automaticamente.
+                <br><button onclick="exportLogsCSV();this.closest('#storage-toast').remove();"
+                    style="margin-top:8px;background:#fef3c7;color:#7c2d12;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-weight:600;">Exportar agora</button>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 20_000);
+        }
+
+        window.addEventListener('gabinete:storage-warning', (/** @type {any} */ e) => {
+            showStorageWarning(e.detail?.usageRatio || 0.8);
+        });
+
+        // ─── Restore de Backups ──────────────────────────────────────────
+        const BACKUP_KEY = 'gabinete_config_backups_v1';
+        const CONFIG_KEY = 'gabinete_kiosk_config';
+
+        function renderBackups() {
+            const list = document.getElementById('backups-list');
+            if (!list) return;
+            try {
+                const raw = localStorage.getItem(BACKUP_KEY);
+                const backups = raw ? JSON.parse(raw) : [];
+                if (backups.length === 0) {
+                    list.innerHTML = '<p style="color:#aaa;">Nenhum backup disponível ainda.</p>';
+                    return;
+                }
+                
+                list.innerHTML = backups.map((b, i) => {
+                    const date = new Date(b.timestamp).toLocaleString('pt-BR');
+                    return `
+                        <div style="background:#111; border:1px solid #333; border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <strong style="color:#00D1FF;">${date}</strong>
+                                <span style="font-size:12px; color:#aaa; margin-left:10px;">Origem: ${b.source}</span>
+                            </div>
+                            <button onclick="restoreBackup(${i})" class="btn btn-secondary" style="padding:8px 16px; font-size:13px;">Restaurar</button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                list.innerHTML = '<p style="color:#f44;">Erro ao ler backups.</p>';
+            }
+        }
+
+        window.restoreBackup = function(index) {
+            if (!window.confirm('Atenção: Isso restaurará a configuração local e agendará um envio para nuvem na próxima sincronização. Confirmar?')) return;
+            try {
+                const backups = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]');
+                const target = backups[index];
+                if (!target) return;
+                
+                // 1. Sobrescreve local
+                localStorage.setItem(CONFIG_KEY, target.data);
+                
+                // 2. Enfileira operação de PUSH para que o sync-engine suba pro GitHub
+                const queueRaw = localStorage.getItem('gabinete_sync_queue_v1');
+                const queue = queueRaw ? JSON.parse(queueRaw) : [];
+                queue.push({ action: 'push', path: 'assets/config.json', target: 'github', timestamp: Date.now(), retries: 0 });
+                localStorage.setItem('gabinete_sync_queue_v1', JSON.stringify(queue));
+
+                alert('✅ Backup restaurado! O ambiente será atualizado na próxima inicialização ou sync.');
+            } catch (e) {
+                alert('❌ Erro ao restaurar: ' + e.message);
+            }
+        };
+
+        async function changePin() {
+            const current    = /** @type {HTMLInputElement} */ (document.getElementById('pin-current')).value;
+            const newPin     = /** @type {HTMLInputElement} */ (document.getElementById('pin-new')).value;
+            const confirmPin = /** @type {HTMLInputElement} */ (document.getElementById('pin-confirm')).value;
+            const status     = document.getElementById('pin-status');
+
+            if (!current || !newPin || !confirmPin) {
+                status.textContent = '⚠️ Preencha todos os campos.'; status.style.color = '#f90'; return;
+            }
+            if (newPin !== confirmPin) {
+                status.textContent = '❌ Novo PIN e confirmação não coincidem.'; status.style.color = '#f44'; return;
+            }
+            const storedPin = getSecret('ADMIN_PIN');
+            if (storedPin && current !== storedPin) {
+                status.textContent = '❌ PIN atual incorreto.'; status.style.color = '#f44'; return;
+            }
+            if (newPin.length < 4) {
+                status.textContent = '⚠️ O PIN deve ter pelo menos 4 caracteres.'; status.style.color = '#f90'; return;
+            }
+
+            status.textContent = '🔄 Re-criptografando...'; status.style.color = '#aaa';
+            const result = await reEncryptSecrets(newPin);
+
+            if (result.success) {
+                status.textContent = '✅ PIN alterado e secrets.json re-criptografado com sucesso!';
+                status.style.color = '#0f0';
+                document.getElementById('pin-current').value = '';
+                document.getElementById('pin-new').value = '';
+                document.getElementById('pin-confirm').value = '';
+            } else {
+                status.textContent = `❌ Erro: ${result.error}`;
+                status.style.color = '#f44';
+            }
+        }
+
+        window.updateLogs = updateLogs;
+        window.clearLogs = clearLogs;
+        window.changePin = changePin;
+        window.exportLogsCSV = exportLogsCSV;
+        window.renderBackups = renderBackups;
+
+        updateLogs();
+        renderBackups();
+    </script>
+</body>
+</html>

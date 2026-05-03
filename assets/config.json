@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "settings": {
+    "kioskTimeoutMs": 300000,
+    "env": {
+      "sky": "assets/images/env_bg.png",
+      "exposure": 1
+    },
+    "labels": {
+      "text": "Texto",
+      "galleryA": "Galeria A",
+      "galleryB": "Galeria B",
+      "video": "Vídeo"
+    }
+  },
+  "objects": [
+    {
+      "id": "test_cabinet_v5",
+      "name_key": "Gabinete Virtual V5",
+      "type": "gltf-model",
+      "model": "assets/models/modeloTesteV5.glb",
+      "isInteractive": true,
+      "scale": "1 1 1",
+      "position": "0 0 -5",
+      "rotation": "0 0 0",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "Gabinete Premium V5",
+        "description_key": "Móvel modelado no SketchUp com portas funcionais e suporte multimídia completo: Galeria A (Fotos), Galeria B (Manual), Vídeos e Documentos técnicos.",
+        "start_scale": 0.2,
+        "anchor_y_offset": 1.2,
+        "blend_y_ratio": 0.5,
+        "easing_open": "cubic-bezier(0.85, 0, 1, 1)",
+        "easing_close": "cubic-bezier(0.1, 1, 0.2, 1)",
+        "video": { "src": "assets/videos/02_Around_v2.mp4" },
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/02_img_01_high.webp", 
+              "assets/images/02_img_02_high.webp", 
+              "assets/images/02_img_03_high.webp", 
+              "assets/images/02_img_04_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/02_manual_high.webp"
+            ]
+          }
+        ]
+      },
+      "children": [
+        {
+          "part_name": "portaE",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": 0,
+          "anim_end": -45
+        },
+        {
+          "part_name": "portaD2",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": 0,
+          "anim_end": 225
+        }
+      ]
+    }
+  ]
+}

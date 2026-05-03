@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "timestamp": "2026-04-29T22:31:45.140Z",
+  "device_id": "build-initial",
+  "files": {
+    "assets/config.json": {
+      "sha256": "9828560d4da397092ffba22552a3d9059c6bf597b3390ae953973b86377fa853",
+      "size": 1990,
+      "modified": "2026-04-29T04:19:47.412Z",
+      "storage": "local"
+    },
+    "assets/images/02_img_01.jpg": {
+      "sha256": "bfc68b220305ef9eac324ea8c6533165212bc4b545727961603b99aa77bfd6e5",
+      "size": 10499699,
+      "modified": "2026-04-26T20:29:41.639Z",
+      "storage": "supabase"
+    },
+    "assets/images/02_img_01_high.webp": {
+      "sha256": "ad9350fafcbcd0f7c7af73ed70d6416563258a20cde150a3354b6904a68c82ed",
+      "size": 115654,
+      "modified": "2026-04-26T20:34:27.990Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_img_01_low.webp"
+    },
+    "assets/images/02_img_01_low.webp": {
+      "sha256": "d4846877648fa31d757ba83c64235c9eaa46cb65d0f424b588e3546c36944869",
+      "size": 22160,
+      "modified": "2026-04-26T20:34:28.190Z",
+      "storage": "local",
+      "variant": "low",
+      "pair": "assets/images/02_img_01_high.webp"
+    },
+    "assets/images/02_img_02.jpg": {
+      "sha256": "2c713bced077d1a17c938e631f597e0289d19b5f90094d298801658e8fb0c608",
+      "size": 103245,
+      "modified": "2026-04-26T20:30:28.647Z",
+      "storage": "local"
+    },
+    "assets/images/02_img_02_high.webp": {
+      "sha256": "5e323d1e17ddc3267d6d214fd119935438b0b93ca2be01735c2e214bc7d7b52c",
+      "size": 48392,
+      "modified": "2026-04-26T20:34:28.285Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_img_02_low.webp"
+    },
+    "assets/images/02_img_02_low.webp": {
+      "sha256": "8f2f1107121deca2653f134f45540cb5a925fa27e1ed05f1067676e2a37760dd",
+      "size": 22918,
+      "modified": "2026-04-26T20:34:28.314Z",
+      "storage": "local",
+      "variant": "low",
+      "pair": "assets/images/02_img_02_high.webp"
+    },
+    "assets/images/02_img_03.jpg": {
+      "sha256": "8eab2b6f0ad26809c26311ef332aad08b76233aced6cce68ee2c45e64c098738",
+      "size": 68738,
+      "modified": "2026-04-26T20:30:44.633Z",
+      "storage": "local"
+    },
+    "assets/images/02_img_03_high.webp": {
+      "sha256": "bcccd3f870a739b2c7b02fb39144fa29a17e23ed9d3b72cc9a312a365ecf2384",
+      "size": 27222,
+      "modified": "2026-04-26T20:34:28.339Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_img_03_low.webp"
+    },
+    "assets/images/02_img_03_low.webp": {
+      "sha256": "cb9d81db1cecccf96e40f29c9f320716a2593bf35ba93d634db7ef512e0db75b",
+      "size": 12494,
+      "modified": "2026-04-26T20:34:28.363Z",
+      "storage": "local",
+      "variant": "low",
+      "pair": "assets/images/02_img_03_high.webp"
+    },
+    "assets/images/02_img_04.jpg": {
+      "sha256": "c7b9743253634425be59f79ed682b43fefb3a64a9ccf79cce8de4847a36e2899",
+      "size": 101931,
+      "modified": "2026-04-26T20:31:01.179Z",
+      "storage": "local"
+    },
+    "assets/images/02_img_04_high.webp": {
+      "sha256": "c35a85a7893d7ff5539f347b7f68d33ff81aff4dbc716c6cce768c0c7885a048",
+      "size": 79830,
+      "modified": "2026-04-26T20:34:28.385Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_img_04_low.webp"
+    },
+    "assets/images/02_img_04_low.webp": {
+      "sha256": "39b0ba6f5f9c872a7da50805733fa7cf47e364354573692ea2e6bd65157f80c3",
+      "size": 42900,
+      "modified": "2026-04-26T20:34:28.415Z",
+      "storage": "local",
+      "variant": "low",
+      "pair": "assets/images/02_img_04_high.webp"
+    },
+    "assets/images/02_manual.png": {
+      "sha256": "84fd43721390a62000353c1441324f8ffa61c2a9a8562fc213ea975568ba7692",
+      "size": 8148800,
+      "modified": "2026-04-21T21:43:14.000Z",
+      "storage": "supabase"
+    },
+    "assets/images/02_manual_high.webp": {
+      "sha256": "f5b4be63adc36fc065051addb688c8d9a2628fd38e2a74cf76cbea119058aea9",
+      "size": 58242,
+      "modified": "2026-04-26T20:34:28.441Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_manual_low.webp"
+    },
+    "assets/images/02_manual_low.webp": {
+      "sha256": "5a062385c5d812e2d55506793d720fb4b7706e7af892048ba1a94bdf5aa99ace",
+      "size": 15140,
+      "modified": "2026-04-26T20:34:28.574Z",
+      "storage": "local",
+      "variant": "low",
+      "pair": "assets/images/02_manual_high.webp"
+    },
+    "assets/images/imageTeste.jpg": {
+      "sha256": "588cd50576854f3751be95fa58982b455b5407a7295cfdd46b5055b90118434f",
+      "size": 24968,
+      "modified": "2026-04-26T18:36:17.523Z",
+      "storage": "local"
+    },
+    "assets/images/imageTeste.webp": {
+      "sha256": "7475a6e13b03e2ced60db2ab294c1cdf35a38ae071f865385428f437182017ae",
+      "size": 138686,
+      "modified": "2026-04-26T18:38:39.229Z",
+      "storage": "local"
+    },
+    "assets/images/interface.jpg": {
+      "sha256": "c8fe1a12627dd8c65e06ee35211dd7f17e810108cff5c9ca33826b1803f213c8",
+      "size": 27768,
+      "modified": "2026-04-26T19:40:53.488Z",
+      "storage": "local"
+    },
+    "assets/langs.json": {
+      "sha256": "de27e0addd9d2c5fb3241489f65e0fcef087485eaf0d4ed8846d545dd4a43223",
+      "size": 2734,
+      "modified": "2026-04-26T20:05:40.967Z",
+      "storage": "local"
+    },
+    "assets/models/modeloTesteV1.glb": {
+      "sha256": "e84c1991bec330a8195c585e67138860551c235a8d68aa15917f3028337cbc8e",
+      "size": 99284,
+      "modified": "2026-04-26T18:32:04.554Z",
+      "storage": "supabase"
+    },
+    "assets/models/modeloTesteV2.glb": {
+      "sha256": "7b15cf0e7c9c4a246d1f75baf088499802b0fa887d253cce9c3db1344082f25c",
+      "size": 40324,
+      "modified": "2026-04-26T23:44:57.819Z",
+      "storage": "supabase"
+    },
+    "assets/models/modeloTesteV3.glb": {
+      "sha256": "69c496875044a8a3f23ec4e0d8d5ffeb3f11beac69c0d2348e6ad4ce2d48b8c0",
+      "size": 59308,
+      "modified": "2026-04-27T00:12:26.689Z",
+      "storage": "supabase"
+    },
+    "assets/models/modeloTesteV3B.glb": {
+      "sha256": "aa1194009a806c3f8111a9211f5460e03aabc70ed22a841b9b3b48c63c1d7eb1",
+      "size": 59340,
+      "modified": "2026-04-27T00:27:05.882Z",
+      "storage": "supabase"
+    },
+    "assets/models/modeloTesteV4.glb": {
+      "sha256": "aa1194009a806c3f8111a9211f5460e03aabc70ed22a841b9b3b48c63c1d7eb1",
+      "size": 59340,
+      "modified": "2026-04-27T00:33:04.301Z",
+      "storage": "supabase"
+    },
+    "assets/models/modeloTesteV5.glb": {
+      "sha256": "708697eec33ab016ead7e5713d928e3d00d2020eeb932c69c610dfb038d1a5a5",
+      "size": 59344,
+      "modified": "2026-04-27T01:00:56.601Z",
+      "storage": "supabase"
+    },
+    "assets/videos/02_Around_v2.mp4": {
+      "sha256": "e3608e723a5095f1f477ccf4d26844b6af10ab20113ecfd04b9e8012581a5989",
+      "size": 2617812,
+      "modified": "2026-04-21T21:54:00.000Z",
+      "storage": "supabase"
+    }
+  }
+}

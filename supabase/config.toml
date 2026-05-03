@@ -1,0 +1,22 @@
+# Supabase — Configuração do Projeto Gabinete Virtual
+# Gerado para uso com Supabase CLI (local dev + deploy de Edge Functions)
+
+[api]
+port = 54321
+schemas = ["public", "storage"]
+
+[db]
+port = 54322
+
+[studio]
+port = 54323
+
+# ── Edge Functions ────────────────────────────────────────────────
+# Requerem JWT (anon key) para autenticação.
+# Variáveis de ambiente configuradas no painel: supabase.com → Project Settings → Edge Functions
+
+[functions.asset-manager]
+verify_jwt = true
+
+[functions.github-sync]
+verify_jwt = true
