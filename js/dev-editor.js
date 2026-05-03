@@ -158,17 +158,29 @@ export class DevEditor {
                 
                 if (proceed) {
                     const originalText = btnPublish.innerHTML;
-                    btnPublish.innerHTML = "⏳ Sincronizando...";
-                    btnPublish.style.background = "#f1c40f"; // yellow
                     
                     try {
+                        const { showPinOverlay } = await import('./pin-overlay.js');
+                        const auth = await showPinOverlay({ title: 'Destrancar Cofre' });
+                        if (!auth.success) return;
+
+                        btnPublish.innerHTML = "⏳ Sincronizando...";
+                        btnPublish.style.background = "#f1c40f"; // yellow
+
                         const { forceSync } = await import('./sync-engine.js');
-                        await forceSync();
-                        btnPublish.innerHTML = "✅ Publicado com Sucesso!";
-                        btnPublish.style.background = "#2ecc71"; // green
+                        const result = await forceSync();
+                        
+                        if (result.success) {
+                            btnPublish.innerHTML = "✅ Publicado com Sucesso!";
+                            btnPublish.style.background = "#2ecc71"; // green
+                        } else {
+                            console.error("Erros de Sync:", result.errorDetails);
+                            btnPublish.innerHTML = "❌ Erro (Veja o F12)";
+                            btnPublish.style.background = "#e74c3c"; // red
+                        }
                     } catch (e) {
                         console.error(e);
-                        btnPublish.innerHTML = "❌ Erro ao Publicar";
+                        btnPublish.innerHTML = "❌ Falha Crítica";
                         btnPublish.style.background = "#e74c3c"; // red
                     }
                     

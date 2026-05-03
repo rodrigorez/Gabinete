@@ -37,7 +37,7 @@ jobs:
           # Variáveis públicas — apenas leitura (sem tokens de escrita)
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_GITHUB_CONFIG_REPO: rodrigorez/gabinete-config
+          VITE_GITHUB_REPO: rodrigorez/Gabinete
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
