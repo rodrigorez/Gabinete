@@ -739,6 +739,12 @@ export function startSync() {
   }, SYNC_INTERVAL_MS);
 
   console.log('🔄 Sync Engine iniciado (intervalo: 5min)');
+
+  // Roda a primeira verificação imediatamente após o boot (fura o cache CDN do GitHub)
+  if (navigator.onLine) {
+    // delay curto para garantir que a renderização inicial não seja bloqueada
+    setTimeout(() => sync(), 1000);
+  }
 }
 
 /**
