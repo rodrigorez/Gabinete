@@ -13,7 +13,6 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 ├── adm.html            # Painel Admin (via pin-overlay.js, logs CSV, troca de PIN, toast de storage)
 ├── curadoria.html      # Interface de curadoria de obras
 ├── secrets.json        # Credenciais criptografadas AES-256-GCM (gitignored)
-├── encrypt-secrets.mjs # Script one-time de criptografia do secrets.json (gitignored)
 ├── sw.js               # Service Worker (injectManifest via vite-plugin-pwa, Workbox local ESM)
 ├── css/
 │   └── styles.css      # Estilos premium para overlays, painéis e fontes
@@ -25,21 +24,22 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 │   ├── secrets-loader.js# Fallback híbrido (decrypt AES-256 + import.meta.env), auto-clear
 │   ├── pin-overlay.js  # Overlay de PIN reutilizável (DRY entre adm.html e curadoria)
 │   ├── supabase-client.js# Upload via Edge Function asset-manager; download/list anon
-│   ├── sync-engine.js  # GitHub sync bidirecional (leitura direta; escrita via Edge Function github-sync)
+│   ├── sync-engine.js  # GitHub sync bidirecional (leitura e escrita direta via GitHub API com token criptografado do secrets.json)
 │   ├── curadoria-app.js# CRUD obras, upload de assets, detecção de órfãos
 │   ├── image-pipeline.js# Conversão WebP in-memory (OffscreenCanvas)
 │   ├── hash-engine.js  # SHA-256 Web Crypto + fallback FNV-1a
 │   ├── manifest.js     # CRUD do manifesto de hashes de assets
 │   ├── app-state.js    # Store privado de configuração (substitui window global)
-│   ├── state-manager.js# FSM de estados de transição (idle/transitioning)
+│   ├── state-manager.js# Gerenciador de estado simples (idle/transitioning) — guarda contexto de câmera e painel ativo
 │   ├── components.js   # Custom A-Frame components (hardware-profiler, interactive-object, etc)
 │   ├── navigation.js   # Pilha de navegação (History Stack)
 │   ├── view-controller.js # Controlador de transições 3D↔2D
 │   ├── camera-rig.js   # Animação suave de câmera via AFRAME.ANIME
 │   ├── spatial-tracker.js # Motor de projeção 3D→2D (posicionamento do painel HTML)
 │   ├── ui-panel.js     # Gerenciamento do painel multimídia
-│   ├── physics.js      # Motor OBB 3D (Cylinder Controller, Anti-NaN, Gravidade)
+│   ├── physics.js      # Motor OBB 3D (Cylinder Controller, Anti-NaN, Gravidade — Pulo/Agachamento reservados para uso futuro)
 │   ├── kiosk-mode.js   # Gesto 3x → adm.html, timeout, logs, STORAGE_WARNING
+│   ├── joystick.js     # Joystick virtual mobile (touch → KeyW/A/S/D → wasd-controls do A-Frame)
 │   ├── i18n.js         # Handler de internacionalização
 │   ├── dev-editor.js   # DevTools on-device (Filtro de Meshes, Bounding Box X-Ray)
 │   └── types.d.ts      # Declarações TypeScript para JSDoc type-checking
@@ -79,10 +79,11 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 | `curadoria.html` | `js/pin-overlay.js` | PIN overlay de acesso (reutiliza lógica do adm) |
 | `js/main.js` | `nav, i18n, events, uiPanel, appState, viewController` | Orquestração central |
 | `js/main.js` | `physics, components, kiosk-mode` | Side-effect imports (registram componentes A-Frame) |
+| `js/main.js` | `js/joystick.js` | Joystick virtual para navegação mobile (ativado apenas em touch devices) |
 | `js/kiosk-mode.js` | `config, events, secrets-loader` | Constantes, eventos e `loadSecrets` para PIN |
 | `js/secrets-loader.js` | `js/config.js` | Faz o merge do JSON decriptado com fallback `import.meta.env` |
 | `js/supabase-client.js` | `js/secrets-loader.js` | `getSecret` para `SUPABASE_URL` e `SUPABASE_ANON_KEY` |
-| `js/sync-engine.js` | `js/secrets-loader.js` | `getSecret` para acesso a APIs; bypassa CORS com `no-cors` e cache |
+| `js/sync-engine.js` | `js/secrets-loader.js` | `getSecret('GITHUB_TOKEN')` para autenticação na GitHub API (leitura e escrita direta) |
 | `js/main.js` | `js/events.js` | `EVENTS.ASSET_ERROR` — captura model-error de GLB e persiste em localStorage |
 | `js/curadoria-app.js` | `supabase-client, sync-engine, image-pipeline` | Pipeline completo de upload |
 | `js/view-controller.js` | `stateManager, cameraRig, spatialTracker, uiPanel, appState` | Transições |

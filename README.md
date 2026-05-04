@@ -11,10 +11,9 @@ npm install
 npm run dev       # Servidor local em http://localhost:3000
 ```
 
-> Para encriptar o `secrets.json` pela primeira vez:
-> ```bash
-> node encrypt-secrets.mjs
-> ```
+> Para criar o `secrets.json` criptografado pela primeira vez, acesse `adm.html` localmente,
+> insira as credenciais e clique em **Trocar PIN**. O endpoint `/api/save-secrets` do Vite
+> grava o arquivo criptografado com AES-256-GCM em disco automaticamente.
 
 ---
 
@@ -88,7 +87,7 @@ Fluxo Admin: Kiosk (3x canto) → adm.html (overlay PIN) → AES decrypt → Adm
 
 ## 🛠️ Tecnologias
 
-- **A-Frame 1.4.2** (WebVR/3D Framework)
+- **A-Frame 1.4.2** *(versão de referência — bundle local em `js/vendor/aframe.min.js`)* (WebVR/3D Framework)
 - **Vanilla JavaScript (ES Modules)**
 - **WebCrypto API** (AES-256-GCM, PBKDF2, SHA-256)
 - **Supabase Storage** (CDN de assets)
@@ -105,9 +104,11 @@ Fluxo Admin: Kiosk (3x canto) → adm.html (overlay PIN) → AES decrypt → Adm
 git push origin main   # CI/CD dispara automaticamente
 ```
 
-**Variáveis necessárias no repositório GitHub:**
-- `vars.VITE_GITHUB_REPO` — Nome do repositório (ex: `usuario/repo`)
+**Variáveis de ambiente necessárias no repositório GitHub:**
 - `vars.VITE_SUPABASE_URL` — URL do projeto Supabase
 - `secrets.VITE_SUPABASE_ANON_KEY` — Chave anon (leitura pública)
+
+> **Nota:** `VITE_GITHUB_REPO` está **hardcoded** no `deploy.yml` como `rodrigorez/Gabinete`.
+> Para mudar o repositório alvo, edite diretamente o arquivo `.github/workflows/deploy.yml`.
 
 > `secrets.json` e a `service_role` key **nunca sobem para o repositório**.

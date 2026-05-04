@@ -75,24 +75,22 @@ Registraremos os seguintes componentes customizados em `js/components.js`:
   ```
 
 ### `kiosk-mode` (Segurança e Reset)
-- **Pseudo-código (Gesto & PIN):**
+- **Implementação real (Gesto → adm.html):**
   ```javascript
   // Layer DOM transparente (0,0) dim: 15vw x 15vh
   let taps = 0, lastTap = 0;
-  domOverlay.on('pointerdown', (e) => {
-    let now = Date.now();
+  domOverlay.addEventListener('pointerdown', () => {
+    const now = Date.now();
     if (now - lastTap < 500) taps++; else taps = 1;
     lastTap = now;
-    if (taps >= 3) showPinModal(); // Modal de PIN de 6 dígitos
+    // Após 3 toques, redireciona para adm.html via location.replace()
+    // (sem entrada no histórico — impede uso do botão Voltar para bypass)
+    if (taps >= 3) location.replace('adm.html');
   });
 
-  // PIN de 6 dígitos com lockout de 30s após 3 tentativas
-  function showPinModal() {
-    // Renderiza modal inline com teclado numérico
-    // Valida contra GABINETE_CONFIG.KIOSK.ADMIN_PIN
-    // Sucesso: window.location.href = 'adm.html'
-    // Falha (3x): lockout 30s com contador visual
-  }
+  // PIN, rate-limiting (3 tentativas → lockout 30s) e
+  // validação de credenciais ficam inteiramente em adm.html
+  // via js/pin-overlay.js + js/secrets-loader.js
 
   // Timeout por inatividade
   window.onInteraction = () => {
@@ -105,7 +103,7 @@ Registraremos os seguintes componentes customizados em `js/components.js`:
   ```
 
 ### `hardware-profiler`
-- **Ação:** Se detectado Renderer Software (sem GPU), ativa flag `renderer="precision: lowp; antialias: false; foveationLevel: 3"`.
+- **Ação:** Se detectado Renderer Software (sem GPU), ativa flags de renderização low-end: `renderer="precision: lowp; antialias: false; alpha: false"` e aplica `imageRendering: pixelated` no canvas.
 
 ---
 
@@ -132,9 +130,9 @@ Os logs são salvos no `LocalStorage` sob a chave `gabinete_interacoes_v1` como 
 *O sistema grava cada evento individualmente. O `KIOSK_RESET` por inatividade encerra a sessão e executa `location.reload()`.*
 
 **Lógica de Purge (Manutenção):**
-- **Trigger:** Ao salvar logs, se a ocupação do LocalStorage ultrapassar 4MB (limite seguro de 5MB).
-- **Ação:** Remove registros mais antigos um a um até que a ocupação caia para < 50%.
-- **Alerta:** Emite `EVENTS.STORAGE_WARNING` quando a ocupação ultrapassa 80%.
+- **Trigger:** Ao salvar logs, se o tamanho serializado ultrapassar 4MB (`MAX_BYTES = 4 * 1024 * 1024`).
+- **Ação:** Remove os registros mais antigos um a um (`logs.shift()`) até que o tamanho serializado fique **abaixo de 4MB**, mantendo sempre ao menos 1 registro.
+- **Alerta:** Emite `EVENTS.STORAGE_WARNING` quando o LocalStorage total ultrapassa 80% de 5MB (~4MB estimado).
 
 ---
 
@@ -223,7 +221,7 @@ Para que o MVP funcione com performance no Android, os ativos fornecidos futuram
 9. **Fase 8 (Concluída):** Engine de Física Kiosk-Level (Gravidade, Pulo, Agachamento e Colisões Cilíndricas) e Animação de sub-partes GLTF (Abertura de portas).
 10. **Fase 9 (Concluída):** Estabilização de Interação Dinâmica e HMR. Refatoração do `interactive-object` (debounce multi-eventos), otimização da frequência do A-Frame `raycaster` para detecção de malhas injetadas em Runtime, e atualização do Service Worker (`sw.js`) para ignorar requisições em `localhost` durante o desenvolvimento e auto-atualizar clientes (`skipWaiting`/`clients.claim()`), garantindo hot-reload (HMR) contínuo.
 11. **Fase 10 (Concluída):** DevTools On-Device e Escalabilidade PWA. Ferramenta de edição via URL `?dev=true` operando em Runtime no dispositivo, persistindo configurações 3D (Translação XYZ e Escala de UI) atráves de Cache LocalStorage (`gabinete_kiosk_config`). Sistema blindado contra Memory Leaks via Component Disposal automático e suporte nativo à taxonomia isolada em diretórios por obra (`assets/01_obra/`, `assets/02_obra/`).
-12. **Fase 11 (Concluída):** Motor de Sincronização Estrito e Segurança Híbrida. Centralização total do gerenciamento de credenciais no `secrets.json` via AES-256-GCM. Deploy automatizado para GitHub Pages com *sync-engine* puro consumindo API do GitHub via bypass de cache, eliminando infraestruturas redundantes.
+12. **Fase 11 (Concluída):** Motor de Sincronização Estrito e Segurança Híbrida. Centralização total do gerenciamento de credenciais no `secrets.json` via AES-256-GCM. Deploy automatizado para GitHub Pages com `sync-engine.js` consumindo a **GitHub API diretamente** (leitura e escrita via `GITHUB_TOKEN`). A Edge Function `github-sync` em `supabase/functions/github-sync/` é **infraestrutura legada** — criada em fase anterior e **não está em uso** no código atual.
 
 ---
 

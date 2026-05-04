@@ -23,17 +23,24 @@ Responsável por:
 - Emitir `EVENTS.VIEW_CHANGED` ao alterar o topo da pilha, delegando a transição visual ao `view-controller.js`.
 - Integrar com `kiosk-mode.js` para log de interações.
 
+### 2. Joystick Mobile (`js/joystick.js`)
+Joystick virtual ativado **apenas em dispositivos touch**. Detecta a presença de toque via `'ontouchstart' in window` e, ao encontrar os elementos `#mobile-joystick-zone` e `#mobile-joystick-knob` no DOM:
+- Traduz arrastar do polegar em direções normalizadas (-1 a 1).
+- Emite eventos sintéticos `KeyboardEvent` (`KeyW`/`KeyA`/`KeyS`/`KeyD`) para o `wasd-controls` do A-Frame, sem acoplamento direto ao motor de física.
+- Possui zona morta central (threshold: 0.3) para evitar deriva acidental.
+
 ### 3. Interaction System (Híbrido)
 Configurado para funcionar em dispositivos Android (Touch) e Desktop:
 - **Raycast on Demand:** Raycaster não-contínuo. Para economizar CPU, o raycaster calcula interseções *apenas* em `click` ou `touchend`.
 - **Silent Mode (Modo Silencioso):** Objetos interativos que *não* possuem conteúdo multimídia (ex: portas, gavetas decorativas) não afetam a Pilha de Navegação (Navigation Stack). Ao clicar, disparam animações locais puras sem travar a interface do usuário ou causar bugs de "clique em vazio".
-- **Hidden Admin Gesture:** Layer DOM (`z-index: 10000`) ativado apenas na região sensível para não bloquear a cena 3D.
-- **X-Ray Visual Debugger (`?debug=1`):** Ativa um depurador de colisão nativo e de altíssima performance. Usando injeção direta no HexCode do WebGL (ignorando o DOM do A-Frame para garantir 60fps constantes), as caixas reagem visualmente a Hover (Verde), Clique (Ciano) e Colisão Física de Avatar (Amarelo).
+- **Hidden Admin Gesture:** Layer DOM transparente (`z-index: 10000`) ativado apenas na região sensível (canto inferior esquerdo, 15vw × 15vh) para não bloquear a cena 3D. Após **3 toques rápidos** (intervalo < 500ms), o sistema executa `location.replace('adm.html')` — sem entrada no histórico do navegador, impedindo bypass via botão Voltar. A validação de PIN, rate-limiting e lockout ficam inteiramente em `adm.html` via `js/pin-overlay.js`.
+- **X-Ray Visual Debugger (`?debug=1`):** Ativa um depurador de colisão de alta performance via `window.GABINETE_DEBUG`. As caixas de colisão reagem visualmente via acesso direto ao `mesh.material.color.setHex()` do Three.js: Hover (Verde `#00ff00`), Clique (Ciano `#00ffff`) e Colisão Física de Avatar (Amarelo `#ffff00`).
 
 ### 4. Motor de Física (Character Controller 3D)
 O sistema não depende de engines físicas pesadas (como Cannon/Ammo). O `physics.js` é um módulo ES6 ultraleve focado exclusivamente em caminhada e barreira de contenção:
 - **OBB (Oriented Bounding Box):** Diferente de colisões esféricas comuns que consideram apenas o raio máximo, o Gabinete usa conversão matemática de matrizes (`worldToLocal`) para calcular interseções precisas em OBB, respeitando perfeitamente a Escala (X/Z) e Rotação de paredes extremamente finas.
 - **Cilindro 3D com Respeito Vertical (Y-Axis Lock):** O avatar do jogador atua como um cilindro de 1.7 metros (Pés: -1.5m, Cabeça: +0.2m da câmera). Caixas de colisão planas (como tapetes) ou lustres de teto são fisicamente ignoradas para o "empurrão lateral", impedindo arremessos falsos. Proteção Anti-NaN ("Buraco Negro") protege o loop em caso de singularidade (nascimento em 0,0 exato).
+- **Pulo e Agachamento (Reservado para uso futuro):** A lógica de pulo (`jumpForce: 4.5`, `gravity: -12.0`) e agachamento (crouchHeight = baseHeight/2) está implementada no `physics.js` porém **comentada no MVP**. O bloco pode ser reativado removendo o comentário em `physics.js` e habilitando os controles de teclado (`Control/Espaço` para pulo, `Alt/C` para agachamento).
 
 ### 5. Painéis de Detalhe (Overlays HTML)
 - **Implementação Atual:** Overlay HTML/CSS 2D projetado sobre a cena 3D via `spatial-tracker.js`. Fundo escuro. Glassmorphism reservado como *Progressive Enhancement*.
@@ -128,9 +135,9 @@ Para garantir a Regra Pétrea 6 da Spec Técnica:
 Para garantir que o aplicativo funcione 100% sem internet (em ambientes isolados ou museus, por exemplo), adotaremos a seguinte estratégia:
 
 ### 8.1. Localização de Dependências
-- **A-Frame:** Carregado localmente em `js/vendor/aframe.min.js` (offline-first).
+- **A-Frame:** Carregado localmente em `js/vendor/aframe.min.js` (offline-first). Versão de referência da instalação: **1.4.2** — para confirmar a versão exata do bundle em uso, inspecione o arquivo localmente ou verifique o `package.json` do projeto A-Frame gerador.
 - **Fontes:** Atualmente carregadas via Google Fonts CDN (`@import url(...)` no CSS). A localização para arquivos `.json` e `.png` (SDF fonts) é recomendada para deploy final offline absoluto.
-- **Service Worker (`sw.js`):** Gerencia o cache de rede e permite que o app seja instalado no Android/Desktop via PWA.
+- **Service Worker (`sw.js`):** Gerencia o cache de rede e permite que o app seja instalado no Android/Desktop via PWA. Estratégia atual: `CacheFirst` para assets estáticos e assets do Supabase Storage.
 
 ### 8.2. Distribuição e Uso Offline
 Existem duas formas principais de levar o app para o ambiente sem internet:
@@ -145,8 +152,20 @@ Existem duas formas principais de levar o app para o ambiente sem internet:
    - No **Desktop**, basta abrir o `index.html`.
    - No **Android**, devido a restrições de segurança do navegador (`CORS`), abrir o arquivo direto da pasta (`file://`) pode bloquear as texturas. Para isso, recomendamos o uso de um "Web Server" simples para Android (como o app *Tiny Web Server*) para servir a pasta localmente.
 
+### 8.3. Implementações Futuras do PWA
+
+> [!NOTE]
+> As seguintes otimizações de Service Worker estão mapeadas para fases pós-MVP e **não estão implementadas** atualmente:
+
+| Funcionalidade | Descrição | Motivo do Adiamento |
+|---------------|-----------|--------------------|
+| **PWA Resource Sharding** | SW detecta ausência de GPU via `UserAgent` e prioriza carga de assets `_low` (512px) sobre `_high` (1024px) | Requer padronização do pipeline de assets `_low`/`_high` primeiro |
+| **Fontes SDF Locais** | Mover fontes Inter/Outfit do Google Fonts CDN para arquivos `.json`+`.png` locais | Depende de geração dos arquivos SDF com `msdf-bmfont-xml` |
+| **Cache Parcial por Rota** | Estratégia `NetworkFirst` para `config.json` e `StaleWhileRevalidate` para assets de galeria | Baixo impacto no MVP atual com sync via GitHub API |
+| **Background Sync API** | Enfileirar operações de upload offline e enviar quando reconectar, usando a Background Sync API nativa do browser | Requer investigação de suporte em Android WebView do Fully Kiosk |
+
 ### 8.4. Portabilidade Total
-O código será escrito de forma **100% Relativa**. Isso significa que não utilizaremos barras iniciais (`js/...`) ou caminhos absolutos. Todo o projeto poderá ser movido de pasta ou domínio sem quebrar, o que facilita o "download" e a cópia para dispositivos offline.
+O código é escrito de forma **100% Relativa** (base: `./` no `vite.config.js`). Não utilizamos barras iniciais (`/js/...`) ou caminhos absolutos. Todo o projeto pode ser movido de pasta ou domínio sem quebrar, facilitando o deploy offline e a cópia para dispositivos via USB.
 
 ---
 
@@ -160,8 +179,14 @@ Para atender às necessidades de uma exposição permanente, o sistema contará 
 
 ### 9.2. Registro de Interações (Zero-Admin)
 Como o ambiente não terá administração constante:
-- **Persistência a cada Minuto:** O sistema gravará o estado das interações no **`LocalStorage`** automaticamente a cada 60 segundos (ou a cada clique). Diferente de uma sessão temporária, esses dados sobrevivem ao desligamento forçado do tablet.
-- **Segurança de Dados:** Ao ligar o tablet no dia seguinte, os dados do dia anterior continuam salvos internamente no navegador, acumulando estatísticas até que um responsável realize a exportação manual.
+- **Persistência por Evento:** O sistema grava cada interação do usuário no **`LocalStorage`** imediatamente ao ocorrer (a cada clique, navegação ou reset de sessão) via `kiosk.logEvent()`. Diferente de uma sessão temporária, esses dados sobrevivem ao desligamento forçado do tablet.
+- **Segurança de Dados:** Ao ligar o tablet no dia seguinte, os dados do dia anterior continuam salvos internamente no navegador, acumulando estatísticas até que um responsável realize a exportação manual via `adm.html`.
+
+### 9.3. Interface de Gestão de Logs (`adm.html`)
+O painel administrativo (`adm.html`) possui uma seção dedicada **"Logs de Interação"** com as seguintes ações:
+- **Visualizador JSON:** Botão **Atualizar Logs** (`updateLogs()`) renderiza o conteúdo de `LocalStorage[LOG_KEY]` em um `<pre>` formatado com `JSON.stringify`, em ordem cronológica reversa.
+- **Exportação CSV:** Botão **Exportar CSV** (`exportLogsCSV()`) serializa os logs em formato CSV e dispara download automático no navegador.
+- **Limpeza:** Botão **Limpar Tudo** (`clearLogs()`) remove a chave `LOG_KEY` do `LocalStorage` após confirmação via `window.confirm`.
 
 ### 9.4. Inicialização Automática (Auto-Start)
 Para garantir que o app abra assim que o dispositivo for ligado:
@@ -183,9 +208,10 @@ Apesar de o core do MVP rodar com Vanilla JS/HTML/CSS (sem compilação de frame
 Aplicaremos a anotação padrão `// @ts-check` nativa no topo dos arquivos centrais (`navigation.js`, `kiosk-mode.js` e ao realizar o parse do `config.json`). O editor alertará imediatamente em vermelho qualquer desvio de contrato funcional antes da execução. As declarações de tipo estão centralizadas em `js/types.d.ts`.
 
 ### 10.3. Pipeline de Assets Node (Acelerador de Cronograma)
-Como a arquitetura demanda versões leves de textura (ex: `512px` de backup), a criação visual disso não será manual. Utilizaremos um `Asset Pipeline` local:
-- O designer fornece texturas cruas e JPGs/PNGs pesados.
-- Rodando `npm run optimize-assets`, um script baseado na lib genérica **sharp** processa todos, reduz seu peso para o padrão WebP estrito, cria as vias _low e _high e envia prontas para `assets/images`.
+Como a arquitetura demanda versões leves de textura, a criação visual disso não será manual. Utilizaremos um `Asset Pipeline` local via `npm run optimize-assets`:
+- **Entrada/Saída:** Ambas em `assets/images/` — o script processa arquivos com prefixo `02_` (PNG/JPG) e gera as versões WebP no mesmo diretório.
+- **Variante `_high`:** 1024×1024px máximo (`fit: inside`), qualidade WebP 80%, sufixo `_high.webp`.
+- **Variante `_low`:** 512×512px máximo, qualidade WebP 60%, sufixo `_low.webp` — usada pelo Hardware Profiler em dispositivos sem GPU.
 
 ---
 
@@ -202,7 +228,7 @@ Interface de gestão que permite a um curador gerenciar obras sem depender do pr
 | Manifest Manager | `js/manifest.js` | CRUD do manifesto de hashes |
 | Image Pipeline | `js/image-pipeline.js` | Conversão WebP (`_high` q85% + `_low` 512px q60%) |
 | Supabase Client | `js/supabase-client.js` | Upload via Edge Function `asset-manager` (service_role server-side); download/list com anon key |
-| Sync Engine | `js/sync-engine.js` | Orquestrador offline-first (leitura GitHub API; escrita direta via GitHub API com token criptografado) |
+| Sync Engine | `js/sync-engine.js` | Orquestrador offline-first — leitura **e escrita direta** na GitHub API usando `GITHUB_TOKEN` criptografado no `secrets.json`. Não utiliza Edge Function intermediária. |
 | PIN Overlay | `js/pin-overlay.js` | Overlay de PIN reutilizável (DRY entre adm.html e curadoria) com suporte nativo a form submit |
 | Curadoria App | `js/curadoria-app.js` | UI de curadoria (CRUD obras + upload de assets) |
 
@@ -230,7 +256,7 @@ Usuário → 3x canto kiosk → adm.html
 
 ### 11.3. Supabase Storage
 
-- **Bucket:** `gabinete-assets` (público, RLS desativado para leitura)
+- **Bucket:** `gabinete-assets` (público — leitura livre sem autenticação via URL pública; RLS bypassed para SELECT em buckets públicos do Supabase)
 - **Escrita:** Via Edge Function `asset-manager` — `service_role` key permanece server-side no Supabase, nunca exposta ao browser
 - **Leitura/Lista:** `anon` key (segura para GitHub Pages)
 - **Delete:** Via Edge Function `asset-manager` (DELETE method)
