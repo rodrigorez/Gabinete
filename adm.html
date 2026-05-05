@@ -62,9 +62,10 @@
         </div>
         <div id="diag-container" style="margin-top:12px;">
             <div class="diag-row"><span>🌐 Conectividade de Rede</span><span id="diag-net">—</span></div>
-            <div class="diag-row"><span>🐙 Acesso ao GitHub API</span><span id="diag-gh">—</span></div>
+            <div class="diag-row"><span>💙 Acesso ao GitHub API</span><span id="diag-gh">—</span></div>
             <div class="diag-row"><span>📦 Fila de Sync Pendente</span><span id="diag-queue">—</span></div>
             <div class="diag-row"><span>💾 LocalStorage em uso</span><span id="diag-ls">—</span></div>
+            <div class="diag-row"><span>🔒 Dev Lock (Push Suspenso)</span><span id="diag-devlock">—</span></div>
         </div>
         <button onclick="forceSyncNow()" class="btn btn-primary" style="margin-top:16px;">🔄 Forçar Sync Manual</button>
         <p id="diag-sync-result" style="margin-top:10px; font-size:13px; color:#aaa;"></p>
@@ -130,7 +131,7 @@
         import { showPinOverlay } from './js/pin-overlay.js';
         import {
             onStatusChange, getStatus, getSyncStats,
-            checkConnectivity, checkGithubAccess, forceSync, loadQueue
+            checkConnectivity, checkGithubAccess, forceSync, loadQueue, isDevLocked
         } from './js/sync-engine.js';
 
         const LOG_KEY = GABINETE_CONFIG.KIOSK.LOG_KEY;
@@ -363,9 +364,31 @@
                 const gh = await checkGithubAccess();
                 elGh.textContent = gh.ok ? '✅ Acessível' : `❌ ${gh.error}`;
                 elGh.style.color = gh.ok ? '#0f0' : '#f44';
+
+                // Dev Lock
+                const elDevLock = document.getElementById('diag-devlock');
+                const locked = await isDevLocked();
+                if (elDevLock) {
+                    elDevLock.textContent = locked ? '🔒 Ativo — push pausado' : '🔓 Inativo';
+                    elDevLock.style.color  = locked ? '#f90' : '#0f0';
+                }
+
+                // Badge de aviso global no topo quando dev lock está ativo
+                const existingBanner = document.getElementById('dev-lock-banner');
+                if (locked && !existingBanner) {
+                    const banner = document.createElement('div');
+                    banner.id = 'dev-lock-banner';
+                    banner.style.cssText = 'background:#7c4d00;color:#ffd580;padding:10px 20px;border-radius:8px;font-size:13px;margin-bottom:16px;font-weight:600;';
+                    banner.innerHTML = '🔒 <strong>Dev Lock ativo</strong> — Este toten está com o push de sync suspenso enquanto o desenvolvedor trabalha. Execute <code>npm run dev:unlock</code> para retomar.';
+                    document.querySelector('h1')?.insertAdjacentElement('afterend', banner);
+                } else if (!locked && existingBanner) {
+                    existingBanner.remove();
+                }
             } else {
                 elGh.textContent = '— (offline)';
                 elGh.style.color = '#555';
+                const elDevLock = document.getElementById('diag-devlock');
+                if (elDevLock) { elDevLock.textContent = '— (offline)'; elDevLock.style.color = '#555'; }
             }
 
             // Fila de Sync

@@ -200,12 +200,13 @@ describe('resolveConfigAtBoot', () => {
       .mockResolvedValueOnce({ ok: true }) // checkGithubAccess
       .mockResolvedValueOnce({ ok: false, status: 404 }) // githubGet config.json (not found)
       .mockResolvedValueOnce({ ok: false, status: 404 }) // githubGet config.json (check before put)
+      .mockResolvedValueOnce({ ok: false, status: 404 }) // checkDevLock (__dev-lock__ ref = unlocked)
       .mockResolvedValueOnce({ ok: true }); // githubPut
       
     const config = await resolveConfigAtBoot();
     expect(config).toEqual({ local: true });
-    // fetch foi chamado várias vezes (1. connect, 2. access, 3. get, 4. get existing, 5. put)
-    expect(globalThis.fetch).toHaveBeenCalledTimes(5);
+    // fetch: 1.connect, 2.access, 3.get, 4.get existing, 5.devLockCheck, 6.put
+    expect(globalThis.fetch).toHaveBeenCalledTimes(6);
   });
 
   it('faz pull se apenas config remota existir', async () => {

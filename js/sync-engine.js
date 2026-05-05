@@ -146,7 +146,62 @@ function dequeue(path, action) {
   saveQueue(queue);
 }
 
-// ─── GitHub API ───────────────────────────────────────────────
+// ─── Dev Lock ────────────────────────────────────────────────
+// O ref git `refs/heads/__dev-lock__` sinaliza que o desenvolvedor
+// está trabalhando. O kiosk verifica antes de qualquer githubPut.
+
+/** @type {{locked: boolean, checkedAt: number} | null} */
+let _devLockCache = null;
+
+/** Tempo de cache do estado de lock (evita requests excessivos à API). */
+const DEV_LOCK_CACHE_MS = 60_000; // 1 minuto
+
+/**
+ * Verifica se o Dev Lock está ativo (ref __dev-lock__ existe no GitHub).
+ * Em caso de falha de rede, retorna false para não bloquear o kiosk.
+ * @returns {Promise<boolean>}
+ */
+async function checkDevLock() {
+  if (_devLockCache && Date.now() - _devLockCache.checkedAt < DEV_LOCK_CACHE_MS) {
+    return _devLockCache.locked;
+  }
+
+  const repo  = getSecret('GITHUB_REPO') || 'rodrigorez/Gabinete';
+  const token = getSecret('GITHUB_TOKEN');
+  if (!repo) return false;
+
+  try {
+    /** @type {Record<string, string>} */
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const res = await fetch(
+      `https://api.github.com/repos/${repo}/git/ref/heads/__dev-lock__`,
+      { headers }
+    );
+
+    const locked = res.status === 200;
+    _devLockCache = { locked, checkedAt: Date.now() };
+
+    if (locked) {
+      console.warn('🔒 [DevLock] Developer está trabalhando no repo. Push de config suspenso.');
+    }
+    return locked;
+  } catch {
+    return false; // Falha de rede: não bloquear o kiosk
+  }
+}
+
+/**
+ * Retorna o estado atual do Dev Lock (usando cache).
+ * Exportado para uso em diagnósticos do painel admin.
+ * @returns {Promise<boolean>}
+ */
+export async function isDevLocked() {
+  return checkDevLock();
+}
+
+// ─── GitHub API ─────────────────────────────────────────────────
 
 /**
  * Lê um arquivo do GitHub via API (Contents endpoint).
@@ -217,6 +272,12 @@ export async function checkGithubAccess() {
  * @returns {Promise<boolean>}
  */
 async function githubPut(path, content, message, existingSha) {
+  // 🔒 Dev Lock: se o desenvolvedor está trabalhando, pausar push
+  if (await checkDevLock()) {
+    console.warn(`⏸️ [DevLock] Push de "${path}" suspenso — Dev Lock ativo.`);
+    return false;
+  }
+
   const repo  = getSecret('GITHUB_REPO');
   const token = getSecret('GITHUB_TOKEN');
 

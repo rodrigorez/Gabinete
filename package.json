@@ -14,6 +14,8 @@
     "optimize-assets": "node scripts/optimize-assets.js",
     "generate-manifest": "node scripts/generate-manifest.js",
     "download-fonts": "node scripts/download-fonts.js",
+    "dev:lock": "node scripts/dev-lock.js lock",
+    "dev:unlock": "node scripts/dev-lock.js unlock",
     "lint": "eslint js/"
   },
   "devDependencies": {
