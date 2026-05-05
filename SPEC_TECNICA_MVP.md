@@ -235,7 +235,9 @@ Durante a análise contínua da especificação, os seguintes pontos foram ender
 4.  **Física e Animações de Malha (Endereçado):** Motor customizado ES Module (`physics.js`) para gravidade e colisões cilíndricas. Componente customizado `gltf-part-animation` resolveu animações de portas desacopladas.
 5.  **Robustez de Logs (Concluída):** Evento `EVENTS.STORAGE_WARNING` definido no dicionário e lógica de purge por bytes implementada em `kiosk-mode.js`. Alerta visual/DOM implementado via Toast Notification e Badge Persistente no `adm.html` quando o LocalStorage atinge 80%.
 6.  **Áudio e Feedback Sensorial (Futuro):** Adicionar sound design ao rastreamento espacial da câmera e micro-interações dos botões HTML.
-7.  **Gerenciamento LOD/Culling (Futuro):** Implementar Lazy Loading e Low-Poly impostors caso o número de GLBs no `config.json` exceda a VRAM do dispositivo.
+7.  **Gerenciamento LOD/Culling (Futuro):** Implementar sistema Híbrido de Impostors para controle de VRAM. O componente `lod-manager` injetará modelos dinamicamente.
+    *   **Arquitetura:** Exigirá 2 arquivos separados por obra (`_low.glb` e `_high.glb`).
+    *   **Regras 3D:** Ambos arquivos DEVEM compartilhar a mesma Origem (0,0,0) e Escala Base no software 3D (ex: SketchUp). O arquivo `low` usará cores sólidas ou texturas ínfimas (256x256), focando em manter a malha abaixo de 100KB. O arquivo `high` (ex: 20MB com texturas 4K) só é baixado e injetado quando a câmera quebrar a distância de tolerância (ex: `lod_distance: 5.0`).
 8.  **UI/UX Responsiva Multitela (Endereçado):** Design System da interface multimídia refatorado. Utiliza Media Queries exclusivas para o modo portrait (Mobile/Totens), assumindo 100% da viewport (100vw/100vh) e implementando Wrap flexível (`flex-wrap: wrap; flex: 1 1 calc(50% - 10px)`) para organizar botões e menus de navegação em múltiplas colunas sem scroll ou cortes.
 9.  **Escalabilidade Produtiva (Endereçado):** Padrão estrito de nomeação e isolamento por diretório validado e Editor On-Device permitindo atualizações de parâmetros espaciais (`anchor_offset`) sem requerer rebuild ou manipulação física de arquivos no servidor do museu.
 
