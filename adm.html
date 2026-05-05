@@ -32,6 +32,10 @@
     }
     .diag-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #2a2a2a; font-size:14px; }
     .diag-row:last-child { border-bottom: none; }
+    @keyframes blink {
+        0% { opacity: 1; }
+        100% { opacity: 0.5; }
+    }
 </style>
 </head>
 <!-- F1.A: body permanece normal — cobertura via div dedicada (z-index:99998), abaixo do PIN overlay (z-index:99999) -->
@@ -85,7 +89,7 @@
 
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3>Logs de Interação (JSON)</h3>
+            <h3>Logs de Interação (JSON) <span id="storage-inline-badge" style="display:none; font-size:12px; background:#f44; color:#fff; padding:2px 8px; border-radius:12px; margin-left:10px;"></span></h3>
             <div>
                 <button onclick="updateLogs()" class="btn btn-secondary">Atualizar Logs</button>
                 <button onclick="exportLogsCSV()" class="btn btn-secondary">Exportar CSV</button>
@@ -378,6 +382,35 @@
             const lsRatio = lsSize / (5 * 1024 * 1024);
             elLs.textContent = `${lsKb} KB (${(lsRatio * 100).toFixed(1)}% de 5MB)`;
             elLs.style.color = lsRatio > 0.8 ? '#f44' : lsRatio > 0.5 ? '#f90' : '#0f0';
+
+            const inlineBadge = document.getElementById('storage-inline-badge');
+            if (inlineBadge) {
+                inlineBadge.style.display = 'inline-flex';
+                inlineBadge.style.alignItems = 'center';
+                const percent = (lsRatio * 100).toFixed(1);
+                
+                if (lsRatio >= 0.8) {
+                    inlineBadge.style.background = '#8b0000'; // Vermelho escuro
+                    inlineBadge.style.color = '#fff';
+                    inlineBadge.style.animation = 'blink 1s infinite alternate';
+                    inlineBadge.textContent = `🚨 Crítico: ${percent}%`;
+                } else if (lsRatio > 0.533) {
+                    inlineBadge.style.background = '#f44'; // Vermelho claro / Laranja forte
+                    inlineBadge.style.color = '#fff';
+                    inlineBadge.style.animation = 'none';
+                    inlineBadge.textContent = `⚠️ Atenção: ${percent}%`;
+                } else if (lsRatio > 0.266) {
+                    inlineBadge.style.background = '#f90'; // Amarelo
+                    inlineBadge.style.color = '#000';
+                    inlineBadge.style.animation = 'none';
+                    inlineBadge.textContent = `🟡 Moderado: ${percent}%`;
+                } else {
+                    inlineBadge.style.background = '#0f0'; // Verde
+                    inlineBadge.style.color = '#000';
+                    inlineBadge.style.animation = 'none';
+                    inlineBadge.textContent = `🟢 Saudável: ${percent}%`;
+                }
+            }
         }
 
         async function forceSyncNow() {
