@@ -65,7 +65,8 @@ describe('NavigationManager', () => {
     nav.push('panel2');
     nav.reset();
     expect(nav.stack).toEqual(['scene']);
-    expect(kiosk.logEvent).toHaveBeenCalledWith('navigation_reset', {});
+    // W5: reset() agora registra as views fechadas para rastreabilidade
+    expect(kiosk.logEvent).toHaveBeenCalledWith('navigation_reset', { closed: ['panel1', 'panel2'] });
   });
 
   it('updateVisibility deve emitir evento VIEW_CHANGED com elemento do topo', () => {

@@ -22,5 +22,6 @@ export default defineConfig({
     'import.meta.env.VITE_SUPABASE_URL':       '""',
     'import.meta.env.VITE_SUPABASE_ANON_KEY':  '""',
     'import.meta.env.VITE_GITHUB_CONFIG_REPO': '""',
+    'import.meta.env.VITE_GITHUB_TOKEN':       '""', // W7: evita ReferenceError em testes futuros
   },
 });

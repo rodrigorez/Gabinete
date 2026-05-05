@@ -124,43 +124,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 0. i18n
         await i18n.init();
 
-        // ─── 1. CARGA DE CONFIGURAÇÃO (INSTANTÂNEA / OFFLINE-FIRST) ───────────
-        // Prioriza a velocidade do PWA: lê o que está no cache local imediatamente.
-        // O sync com o GitHub rodará silenciosamente em background.
+        // ─── 1+2. CARGA DE CONFIGURAÇÃO — W4: resolveConfigAtBoot() unifica todas as fontes ───
+        // Une: localStorage → assets/config.json → GitHub (timestamp wins)
+        // Ref: SPEC_TECNICA_MVP.md §12, sync-engine.js#resolveConfigAtBoot
         progress.style.width = '20%';
 
         /** @type {GabineteConfig|null} */
         let config = null;
 
-        try {
-            const localRaw = localStorage.getItem('gabinete_kiosk_config');
-            if (localRaw) {
-                config = JSON.parse(localRaw);
-                console.log(`📂 Config carregada do cache local: ${config?.objects?.length ?? 0} objeto(s).`);
-            } else {
+        const { startSync, onConfigUpdated, resolveConfigAtBoot } = await import('./sync-engine.js');
+        config = await resolveConfigAtBoot();
+
+        // Fallback final: assets/config.json embutido no build (offline absoluto sem localStorage)
+        if (!config) {
+            try {
                 const res = await fetch('assets/config.json');
                 config = await res.json();
-                console.log(`📂 Config base carregada (assets): ${config?.objects?.length ?? 0} objeto(s).`);
+                console.log(`📂 Config base carregada (fallback): ${config?.objects?.length ?? 0} objeto(s).`);
+            } catch (err) {
+                console.error('❌ Falha crítica ao ler config base:', err);
             }
-        } catch (err) {
-            console.error('❌ Falha crítica ao ler config base:', err);
         }
 
-        // Inicia o Sync Engine em background (não bloqueia a renderização da tela atual)
-        import('./sync-engine.js').then(({ startSync, onConfigUpdated }) => {
-            startSync();
-            onConfigUpdated((newConfig) => {
-                appState.setConfig(newConfig);
-                const container = document.getElementById('scene-container');
-                if (!container) return;
-                
-                // Recria as entidades caso ocorra atualização (hot-reload da cena)
-                container.innerHTML = '';
-                newConfig.objects.forEach(obj => createEntity(obj, container));
-                console.log('✅ Cena atualizada pelo sync em background.');
-            });
-        }).catch(syncErr => {
-            console.warn('⚠️ Sync Engine não pôde ser iniciado em background.', syncErr);
+        // Sync periódico em background (5 min) — atualiza cena se remoto mudar
+        startSync();
+        onConfigUpdated((newConfig) => {
+            // W1: não recriar a cena enquanto o usuário está interagindo com um painel aberto
+            if (nav.stack.length > 1) return;
+            appState.setConfig(newConfig);
+            const container = document.getElementById('scene-container');
+            if (!container) return;
+            container.innerHTML = '';
+            newConfig.objects.forEach(obj => createEntity(obj, container));
+            console.log('✅ Cena atualizada pelo sync em background.');
         });
 
         // ─── 2. Valida schema ────────────────────────────────────────────────

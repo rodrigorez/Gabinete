@@ -82,9 +82,11 @@ class NavigationManager {
    */
   reset() {
     console.log(`🏠 Navigation: Reset para Scene`);
+    // W5: Registra as views fechadas para rastreabilidade nos logs do museu
+    const closed = this.stack.filter(v => v !== 'scene');
     this.stack = ['scene'];
     this.updateVisibility();
-    kiosk.logEvent("navigation_reset", {});
+    kiosk.logEvent('navigation_reset', { closed });
   }
 
   updateVisibility() {

@@ -8,7 +8,7 @@
 
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst } from 'workbox-strategies';
+import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
 
 // Precache todos os assets estáticos (JS, CSS, HTML, JSON, imagens)
 precacheAndRoute(self.__WB_MANIFEST || []);
@@ -18,6 +18,14 @@ self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
 
 // ── Runtime caching ───────────────────────────────────────────
+
+// W6: config.json — StaleWhileRevalidate: serve do cache imediatamente
+// e atualiza em background. Garante que mudanças do curador apareçam
+// no próximo carregamento sem limpar o cache manualmente.
+registerRoute(
+  ({ url }) => url.pathname.endsWith('/assets/config.json'),
+  new StaleWhileRevalidate({ cacheName: 'gabinete-config-v1' })
+);
 
 // Assets do Supabase Storage: modelos, vídeos e imagens (raramente mudam)
 registerRoute(

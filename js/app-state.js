@@ -39,4 +39,21 @@ export const appState = {
         };
         return search(_config.objects);
     },
+
+    /**
+     * Verifica se um objeto possui conteúdo de painel para exibir (W2: DRY).
+     * Substitui a lógica `hasPanelContent` duplicada em components.js.
+     * @param {string} id
+     * @returns {boolean}
+     */
+    hasContent: (id) => {
+        const obj = appState.findObject(id);
+        if (!obj?.panel) return false;
+        const p = obj.panel;
+        return (
+            (!!p.description_key && p.description_key.trim().length > 0) ||
+            (Array.isArray(p.galleries) && p.galleries.some(g => Array.isArray(g.images) && g.images.length > 0)) ||
+            (!!p.video?.src && p.video.src.trim().length > 0)
+        );
+    },
 };

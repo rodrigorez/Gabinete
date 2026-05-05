@@ -151,9 +151,8 @@ export class ViewController {
      */
     _animateDoors(parentEl, timing) {
         if (!parentEl) return;
-        console.log(`🚪 _animateDoors chamado para:`, parentEl.id, timing);
+        if (window.GABINETE_DEBUG) console.log(`🚪 _animateDoors chamado para:`, parentEl.id, timing);
 
-        // Pega o elemento pai e todos os seus descendentes na árvore DOM
         const allTargets = [parentEl, ...Array.from(parentEl.querySelectorAll('*'))];
         let animFound = false;
 
@@ -163,27 +162,25 @@ export class ViewController {
             if (!child.components) return;
 
             const keys = Object.keys(child.components);
-            console.log(`🧩 Componentes em ${child.id || child.tagName}:`, keys.join(', '));
+            if (window.GABINETE_DEBUG) console.log(`🧩 Componentes em ${child.id || child.tagName}:`, keys.join(', '));
 
-            // Itera sobre todos os componentes atrelados à entidade
             keys.forEach(compName => {
-                // Suporta componentes normais e com sufixo (ex: gltf-part-animation__0)
                 if (compName === 'animated-object' || compName.startsWith('gltf-part-animation')) {
                     animFound = true;
-                    console.log(`🎬 Componente encontrado: ${compName} em <${child.tagName.toLowerCase()} id="${child.id}">`);
+                    if (window.GABINETE_DEBUG) console.log(`🎬 Componente encontrado: ${compName} em <${child.tagName.toLowerCase()} id="${child.id}">`);
                     const comp = child.components[compName];
                     child.setAttribute(compName, 'dur', String(timing.doorDur));
                     if (comp && typeof comp.toggle === 'function') {
-                        console.log(`▶️ Acionando toggle() em ${compName}`);
+                        if (window.GABINETE_DEBUG) console.log(`▶️ Acionando toggle() em ${compName}`);
                         comp.toggle();
                     } else {
-                        console.log(`❌ Falha: comp.toggle não é função em ${compName}`);
+                        if (window.GABINETE_DEBUG) console.log(`❌ Falha: comp.toggle não é função em ${compName}`);
                     }
                 }
             });
         });
 
-        if (!animFound) console.log(`⚠️ Nenhuma animação (gltf-part-animation) achada na árvore de ${parentEl.id}`);
+        if (!animFound && window.GABINETE_DEBUG) console.log(`⚠️ Nenhuma animação (gltf-part-animation) achada na árvore de ${parentEl.id}`);
     }
 }
 

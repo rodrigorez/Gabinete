@@ -1,6 +1,7 @@
 {
   "name": "gabinete-virtual-mvp",
   "version": "1.0.0",
+  "type": "module",
   "description": "Gabinete Virtual A-Frame Offline First PWA",
   "main": "index.html",
   "scripts": {
@@ -12,6 +13,7 @@
     "test:coverage": "vitest run --coverage",
     "optimize-assets": "node scripts/optimize-assets.js",
     "generate-manifest": "node scripts/generate-manifest.js",
+    "download-fonts": "node scripts/download-fonts.js",
     "lint": "eslint js/"
   },
   "devDependencies": {

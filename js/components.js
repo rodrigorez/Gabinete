@@ -166,14 +166,8 @@ AFRAME.registerComponent('interactive-object', {
     }
 
     if (this.data.id) {
-      const configObj = appState.findObject(this.data.id);
-      const hasPanelContent = configObj && configObj.panel && (
-        (configObj.panel.description_key && configObj.panel.description_key.trim().length > 0) ||
-        (configObj.panel.galleries && configObj.panel.galleries.some(g => g.images && g.images.length > 0)) ||
-        (configObj.panel.video && configObj.panel.video.src && configObj.panel.video.src.trim().length > 0)
-      );
-
-      if (!hasPanelContent) {
+      // W2: appState.hasContent() — DRY, substituiu hasPanelContent duplicado
+      if (!appState.hasContent(this.data.id)) {
         // Silent Mode: Anima as portas/gavetas diretamente sem sujar o Navigation Stack da UI
         const parentEl = document.getElementById(this.data.id);
         if (parentEl) {
@@ -211,16 +205,9 @@ AFRAME.registerComponent('interactive-object', {
       }
     }
 
-    // P2: appState.findObject() substitui window.__GABINETE_SECURE_CONFIG
+    // W2: appState.hasContent() substitui hasPanelContent local duplicado
+    if (!appState.hasContent(this.data.id)) return;
     const configObj = appState.findObject(this.data.id);
-    
-    // Verifica se possui conteúdo de UI (Painel). Se não tiver, ignora o highlight de hover (Regra UX)
-    const hasPanelContent = configObj && configObj.panel && (
-      (configObj.panel.description_key && configObj.panel.description_key.trim().length > 0) ||
-      (configObj.panel.galleries && configObj.panel.galleries.some(g => g.images && g.images.length > 0)) ||
-      (configObj.panel.video && configObj.panel.video.src && configObj.panel.video.src.trim().length > 0)
-    );
-    if (!hasPanelContent) return;
 
     let baseS = { x: 1, y: 1, z: 1 };
 
@@ -247,16 +234,9 @@ AFRAME.registerComponent('interactive-object', {
       this.lastHoveredDebugBox = null;
     }
 
-    // P2: appState.findObject() substitui window.__GABINETE_SECURE_CONFIG
+    // W2: appState.hasContent() substitui hasPanelContent local duplicado
+    if (!appState.hasContent(this.data.id)) return;
     const configObj = appState.findObject(this.data.id);
-    
-    // Mesma regra do hover
-    const hasPanelContent = configObj && configObj.panel && (
-      (configObj.panel.description_key && configObj.panel.description_key.trim().length > 0) ||
-      (configObj.panel.galleries && configObj.panel.galleries.some(g => g.images && g.images.length > 0)) ||
-      (configObj.panel.video && configObj.panel.video.src && configObj.panel.video.src.trim().length > 0)
-    );
-    if (!hasPanelContent) return;
 
     let baseS = { x: 1, y: 1, z: 1 };
 
