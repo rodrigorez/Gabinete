@@ -78,10 +78,26 @@ export class UIPanel {
 
         const currentConfig = appState.getConfig();
         const labels = currentConfig?.settings?.labels || {};
-        if (this.elements.btnGal1) this.elements.btnGal1.innerText = labels.galleryA || 'Galeria A';
-        if (this.elements.btnGal2) this.elements.btnGal2.innerText = labels.galleryB || 'Galeria B';
-        if (this.elements.btnVideo) this.elements.btnVideo.innerText = labels.video || 'Vídeos';
-        if (this.elements.btnText) this.elements.btnText.innerText = labels.text || 'Documentos';
+        
+        // Helper para garantir decodificação de UTF-8 duplo (mesma lógica usada em textos longos)
+        const safeDecode = (str) => {
+            if (!str) return str;
+            try {
+                // Tenta decodificar caso tenha sido salvo com encode duplo
+                let decoded = str;
+                while(decoded.includes('Ã')) {
+                    decoded = decodeURIComponent(escape(decoded));
+                }
+                return decoded;
+            } catch(e) {
+                return str;
+            }
+        };
+
+        if (this.elements.btnGal1) this.elements.btnGal1.innerText = safeDecode(labels.galleryA) || 'Galeria A';
+        if (this.elements.btnGal2) this.elements.btnGal2.innerText = safeDecode(labels.galleryB) || 'Galeria B';
+        if (this.elements.btnVideo) this.elements.btnVideo.innerText = safeDecode(labels.video) || 'Vídeos';
+        if (this.elements.btnText) this.elements.btnText.innerText = safeDecode(labels.text) || 'Documentos';
 
         this.hideAllSections();
         this.reset();
@@ -158,7 +174,13 @@ export class UIPanel {
                 this.hideAllSections();
                 if(this.elements.dynamicContent) {
                     this.elements.dynamicContent.style.display = 'flex';
-                    this.elements.dynamicContent.innerHTML = `<div class="panel-text-content">${i18n.t(objConfig.panel.description_key)}</div>`;
+                    this.elements.dynamicContent.innerHTML = '<div class="panel-text-content"></div>';
+                    // Usar textContent impede que caracteres como < ou > sejam interpretados como HTML, 
+                    // e combinado com white-space: pre-wrap no CSS, mantém as quebras de linha perfeitamente.
+                    const textContainer = this.elements.dynamicContent.querySelector('.panel-text-content');
+                    if (textContainer) {
+                        textContainer.textContent = i18n.t(objConfig.panel.description_key);
+                    }
                 }
             };
         }
@@ -179,8 +201,11 @@ export class UIPanel {
      */
     toggleVisibility(show, onTransitionComplete = null) {
         if (!this.elements.panel) return;
+        
+        const fsBtn = document.getElementById('custom-fs-btn');
 
         if (show) {
+            if (fsBtn) fsBtn.style.display = 'none'; // Oculta botão do kiosk para não conflitar com botão fechar
             this.elements.panel.style.display = 'block';
             setTimeout(() => {
                 if (this.elements.panel) this.elements.panel.classList.add('active');
@@ -190,6 +215,7 @@ export class UIPanel {
             if (onTransitionComplete) setTimeout(onTransitionComplete, 50); 
         } else {
             this.elements.panel.classList.remove('active');
+            if (fsBtn) fsBtn.style.display = 'block'; // Restaura o botão
         }
     }
 
@@ -197,6 +223,8 @@ export class UIPanel {
         if (this.elements.panel) {
             this.elements.panel.style.display = 'none';
         }
+        const fsBtn = document.getElementById('custom-fs-btn');
+        if (fsBtn) fsBtn.style.display = 'block'; // Restaura o botão
         this.reset();
     }
 }

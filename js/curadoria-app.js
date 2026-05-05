@@ -609,14 +609,26 @@ function bindEvents() {
   document.getElementById('btn-global-labels')?.addEventListener('click', () => {
     if (!config) return;
     const l = config.settings.labels || { text: 'Texto', galleryA: 'Galeria A', galleryB: 'Galeria B', video: 'Vídeo' };
+    
+    const safeDecode = (str) => {
+      if (!str) return str;
+      try {
+        let decoded = str;
+        while(decoded.includes('Ã')) {
+            decoded = decodeURIComponent(escape(decoded));
+        }
+        return decoded;
+      } catch(e) { return str; }
+    };
+
     const setVal = (/** @type {string} */ id, /** @type {string} */ val) => {
       const el = /** @type {HTMLInputElement|null} */ (document.getElementById(id));
       if (el) el.value = val;
     };
-    setVal('label-text', l.text);
-    setVal('label-gal-a', l.galleryA);
-    setVal('label-gal-b', l.galleryB);
-    setVal('label-video', l.video);
+    setVal('label-text', safeDecode(l.text));
+    setVal('label-gal-a', safeDecode(l.galleryA));
+    setVal('label-gal-b', safeDecode(l.galleryB));
+    setVal('label-video', safeDecode(l.video));
     const modal = document.getElementById('modal-labels');
     if (modal) modal.style.display = 'flex';
   });

@@ -25,17 +25,45 @@
         .btn-secondary { background: #333; color: #fff; margin-left: 10px; }
         .btn-danger { background: #ff4444; color: #fff; margin-left: 10px; }
         pre { background: #000; padding: 15px; border-radius: 6px; overflow-x: auto; max-height: 400px; color: #0f0; font-size: 13px; }
-        .badge-admin { background: #ff4444; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
-    </style>
+        .sync-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+        border: 1px solid currentColor; transition: color 0.3s;
+    }
+    .diag-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #2a2a2a; font-size:14px; }
+    .diag-row:last-child { border-bottom: none; }
+</style>
 </head>
+<!-- F1.A: body permanece normal — cobertura via div dedicada (z-index:99998), abaixo do PIN overlay (z-index:99999) -->
 <body>
+<!-- Cobertura que esconde o conteúdo admin enquanto o PIN não é validado -->
+<div id="adm-cover" style="position:fixed;inset:0;background:#121212;z-index:99998;"></div>
     <h1>🛠️ Gabinete Virtual: Painel Admin</h1>
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px; flex-wrap: wrap;">
+        <span id="sync-badge" class="sync-badge" style="color:#888">⏳ Verificando sync...</span>
+        <span style="font-size:12px; color:#555;">Última verificação: <span id="sync-last-check">—</span></span>
+    </div>
     
     <div class="card">
         <h3>Modos de Operação</h3>
         <p>Utilize o botão abaixo para entrar no ambiente com todos os sistemas de segurança e auto-reset desativados.</p>
         <a href="index.html?admin=true" class="btn btn-primary">Entrar em Modo Manutenção (Volátil)</a>
         <a href="index.html" class="btn btn-secondary">Entrar em Modo Quiosque (Padrão)</a>
+    </div>
+
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>📡 Diagnóstico de Conectividade</h3>
+            <button onclick="runDiagnostic()" class="btn btn-secondary">Verificar Agora</button>
+        </div>
+        <div id="diag-container" style="margin-top:12px;">
+            <div class="diag-row"><span>🌐 Conectividade de Rede</span><span id="diag-net">—</span></div>
+            <div class="diag-row"><span>🐙 Acesso ao GitHub API</span><span id="diag-gh">—</span></div>
+            <div class="diag-row"><span>📦 Fila de Sync Pendente</span><span id="diag-queue">—</span></div>
+            <div class="diag-row"><span>💾 LocalStorage em uso</span><span id="diag-ls">—</span></div>
+        </div>
+        <button onclick="forceSyncNow()" class="btn btn-primary" style="margin-top:16px;">🔄 Forçar Sync Manual</button>
+        <p id="diag-sync-result" style="margin-top:10px; font-size:13px; color:#aaa;"></p>
     </div>
 
     <div class="card">
@@ -96,17 +124,31 @@
         import { GABINETE_CONFIG } from './js/config.js';
         import { reEncryptSecrets, getSecret } from './js/secrets-loader.js';
         import { showPinOverlay } from './js/pin-overlay.js';
+        import {
+            onStatusChange, getStatus, getSyncStats,
+            checkConnectivity, checkGithubAccess, forceSync, loadQueue
+        } from './js/sync-engine.js';
 
         const LOG_KEY = GABINETE_CONFIG.KIOSK.LOG_KEY;
 
-        // ── Guard de sessão ─────────────────────────────────────────
+        // ── F1.A: Guard de sessão — body oculto até PIN validado ────────────
         (async () => {
             // showPinOverlay verifica o cache, exibe o overlay se necessário,
             // e só resolve quando o PIN está correto (rate-limited via GABINETE_CONFIG).
             await showPinOverlay({ title: 'Painel Administrativo' });
-            
+
+            // PIN validado — remove a cobertura com fade-out suave
+            const cover = document.getElementById('adm-cover');
+            if (cover) {
+                cover.style.transition = 'opacity 0.25s ease';
+                cover.style.opacity = '0';
+                setTimeout(() => cover.remove(), 260);
+            }
+
             updateLogs();
             renderBackups();
+            initSyncBadge();
+            runDiagnostic();
         })();
 
         function updateLogs() {
@@ -268,6 +310,95 @@
             }
         }
 
+        // ── F1.B: Badge de Status do Sync ───────────────────────────────────
+        function initSyncBadge() {
+            const badge = document.getElementById('sync-badge');
+            const lastCheck = document.getElementById('sync-last-check');
+
+            const statusMap = {
+                synced:  { text: '✅ Sincronizado',    color: '#00D1FF' },
+                pending: { text: '⏳ Sync Pendente',   color: '#f90' },
+                offline: { text: '📡 Offline',         color: '#888' },
+                syncing: { text: '🔄 Sincronizando...', color: '#7df' },
+                error:   { text: '🚨 ERRO DE SYNC',    color: '#f44' },
+            };
+
+            function updateBadge(status) {
+                const s = statusMap[status] ?? statusMap.offline;
+                badge.textContent = s.text;
+                badge.style.color = s.color;
+                lastCheck.textContent = new Date().toLocaleTimeString('pt-BR');
+                if (status === 'error') {
+                    console.error('[SyncEngine] Erro persistente. Verifique GITHUB_TOKEN e conectividade.');
+                }
+            }
+
+            updateBadge(getStatus());
+            onStatusChange(updateBadge);
+        }
+
+        // ── F1.B: Diagnóstico de Conectividade ──────────────────────────────
+        async function runDiagnostic() {
+            const elNet   = document.getElementById('diag-net');
+            const elGh    = document.getElementById('diag-gh');
+            const elQueue = document.getElementById('diag-queue');
+            const elLs    = document.getElementById('diag-ls');
+
+            elNet.textContent   = '🔄 verificando...';
+            elGh.textContent    = '🔄 verificando...';
+            elQueue.textContent = '🔄 calculando...';
+            elLs.textContent    = '🔄 calculando...';
+
+            // Rede
+            const online = await checkConnectivity();
+            elNet.textContent = online ? '✅ Online' : '❌ Sem conexão';
+            elNet.style.color = online ? '#0f0' : '#f44';
+
+            // GitHub
+            if (online) {
+                const gh = await checkGithubAccess();
+                elGh.textContent = gh.ok ? '✅ Acessível' : `❌ ${gh.error}`;
+                elGh.style.color = gh.ok ? '#0f0' : '#f44';
+            } else {
+                elGh.textContent = '— (offline)';
+                elGh.style.color = '#555';
+            }
+
+            // Fila de Sync
+            const queue = loadQueue();
+            elQueue.textContent = queue.length === 0 ? '✅ Vazia' : `⚠️ ${queue.length} operação(ões) pendente(s)`;
+            elQueue.style.color = queue.length === 0 ? '#0f0' : '#f90';
+
+            // LocalStorage em uso (estimativa)
+            let lsSize = 0;
+            for (const key of Object.keys(localStorage)) {
+                lsSize += (localStorage.getItem(key) || '').length;
+            }
+            const lsKb = (lsSize / 1024).toFixed(1);
+            const lsRatio = lsSize / (5 * 1024 * 1024);
+            elLs.textContent = `${lsKb} KB (${(lsRatio * 100).toFixed(1)}% de 5MB)`;
+            elLs.style.color = lsRatio > 0.8 ? '#f44' : lsRatio > 0.5 ? '#f90' : '#0f0';
+        }
+
+        async function forceSyncNow() {
+            const el = document.getElementById('diag-sync-result');
+            el.textContent = '🔄 Iniciando sync manual...';
+            el.style.color = '#aaa';
+            try {
+                const result = await forceSync();
+                el.textContent = result.success
+                    ? `✅ Sync concluído — ${result.pushed} enviados, ${result.pulled} recebidos, ${result.errors} erros.`
+                    : `❌ Sync falhou — ${result.errorDetails.join(', ')}`;
+                el.style.color = result.success ? '#0f0' : '#f44';
+            } catch(e) {
+                el.textContent = `❌ Erro inesperado: ${e.message}`;
+                el.style.color = '#f44';
+            }
+            runDiagnostic();
+        }
+
+        window.runDiagnostic = runDiagnostic;
+        window.forceSyncNow  = forceSyncNow;
         window.updateLogs = updateLogs;
         window.clearLogs = clearLogs;
         window.changePin = changePin;
