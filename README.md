@@ -94,7 +94,7 @@ Fluxo Admin: Kiosk (3x canto) → adm.html (overlay PIN) → AES decrypt → Adm
 - **GitHub API** (sync de config.json)
 - **Vite 6** (Dev server + build)
 - **PWA / Service Worker** (offline-first)
-- **Google Fonts (Inter / Outfit)**
+- **Inter / Outfit** (fontes locais em `assets/fonts/` — offline-first, sem CDN)
 
 ---
 
@@ -112,3 +112,66 @@ git push origin main   # CI/CD dispara automaticamente
 > Para mudar o repositório alvo, edite diretamente o arquivo `.github/workflows/deploy.yml`.
 
 > `secrets.json` e a `service_role` key **nunca sobem para o repositório**.
+
+---
+
+## 🔑 Setup do GitHub Token (Fine-Grained) — F3.2
+
+O `GITHUB_TOKEN` armazenado no `secrets.json` do tablet permite que o kiosk/curador escreva
+no repositório. Para minimizar o risco de exposição:
+
+1. Acesse [github.com/settings/tokens](https://github.com/settings/tokens) → **Fine-grained tokens**
+2. Clique em **Generate new token**
+3. Configure:
+   - **Repository access:** Apenas `rodrigorez/Gabinete`
+   - **Permissions → Contents:** `Read and write`
+   - **Permissions → Metadata:** `Read-only` (obrigatório)
+   - **Expiration:** 1 ano (anote a data de renovação)
+4. Copie o token e adicione ao `secrets.json` via `adm.html → Trocar PIN`
+5. **Renove anualmente** — crie um lembrete no calendário
+
+> ⚠️ **Risco aceito documentado:** O token reside em dispositivo físico de museu.
+> Mitigação: token com escopo mínimo + criptografia AES-256-GCM + PIN com rate-limiting.
+
+---
+
+## ⚠️ Limitações Conhecidas — F3.3
+
+### 1. GitHub API Rate Limiting
+- **Limite:** 5.000 req/hora com token, 60 req/hora sem token
+- **Situação de risco:** Múltiplos dispositivos sincronizando a cada 5min em rede instável
+  (reconexões frequentes = muitos ciclos de sync)
+- **Comportamento atual:** Se a API retornar 429, o sync falha graciosamente e registra
+  aviso no console. **Não há retry automático nesta versão.**
+- **Mitigação:** O kiosk continua funcionando com a config local cacheada
+
+### 2. GITHUB_TOKEN em Dispositivo Físico
+- O token com permissão de escrita fica no `secrets.json` criptografado no tablet
+- Um atacante com acesso físico + força bruta do PIN (4-6 dígitos) pode comprometer o repo
+- **Mitigação implementada:** AES-256-GCM + PBKDF2 200k iterações + rate-limiting de PIN
+- **Mitigação recomendada:** Usar token Fine-Grained com escopo mínimo (ver seção acima)
+
+### 3. Rollback Manual (fallback sem UI)
+- A UI de rollback em `adm.html` cobre os 5 backups automáticos
+- Se a UI não estiver disponível, usar o console do navegador:
+```js
+// Listar backups disponíveis
+JSON.parse(localStorage.getItem('gabinete_config_backups_v1')).forEach((b,i) =>
+  console.log(i, b.timestamp, b.source))
+
+// Restaurar backup de índice 0
+const backups = JSON.parse(localStorage.getItem('gabinete_config_backups_v1'));
+localStorage.setItem('gabinete_kiosk_config', backups[0].data);
+```
+
+### 4. Fontes Locais — Atualização
+- As fontes Inter e Outfit estão em `assets/fonts/` (offline-first)
+- Para atualizar: `npm run download-fonts`
+- Commitar `assets/fonts/` e `css/fonts.css` após a atualização
+
+### 5. config.json e Service Worker
+- O SW usa `StaleWhileRevalidate` para `assets/config.json`
+- Isso significa: serve do cache imediatamente + atualiza em background
+- **Implicação:** Após o curador publicar uma nova config, os visitantes veem
+  a versão anterior até o próximo carregamento da página
+

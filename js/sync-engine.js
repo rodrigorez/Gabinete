@@ -168,10 +168,15 @@ async function githubGet(path) {
       cache: 'no-store'
     });
 
+    // F1.2: Rate limit do GitHub — não falhar silenciosamente
+    if (res.status === 429) {
+      const retryAfter = res.headers.get('Retry-After') || '60';
+      console.warn(`⏳ GitHub rate limit em GET ${path}. Retry após ${retryAfter}s.`);
+      return null;
+    }
     if (!res.ok) return null;
     const data = await res.json();
     // data.content vem em base64 com quebras de linha
-    // Necessário usar decodeURIComponent e escape para converter UTF-8 corretamente
     const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
     return { content, sha: data.sha };
   } catch {
@@ -234,6 +239,12 @@ async function githubPut(path, content, message, existingSha) {
         },
         body: JSON.stringify(body)
       });
+      // F1.2: Rate limit do GitHub
+      if (res.status === 429) {
+        const retryAfter = res.headers.get('Retry-After') || '60';
+        console.warn(`⏳ GitHub rate limit em PUT ${path}. Retry após ${retryAfter}s.`);
+        return false;
+      }
       return res.ok;
     } catch (err) {
       console.error('Erro na API do GitHub:', err);
@@ -381,20 +392,26 @@ export async function resolveConfigAtBoot() {
 
     const localTime  = /** @type {any} */ (localObj)._lastModified  ? new Date(/** @type {any} */ (localObj)._lastModified).getTime()  : 0;
     const remoteTime = /** @type {any} */ (remoteObj)._lastModified ? new Date(/** @type {any} */ (remoteObj)._lastModified).getTime() : 0;
-    const localCount  = Array.isArray(localObj.objects)  ? localObj.objects.length  : 0;
-    const remoteCount = Array.isArray(remoteObj.objects) ? remoteObj.objects.length : 0;
 
-    const remoteMaisNovo    = remoteTime > localTime;
-    const remoteMaisObjetos = remoteCount > localCount;
-
-    if (remoteMaisNovo || remoteMaisObjetos) {
+    // F1.1: Critério único: timestamp wins.
+    // Removido `remoteMaisObjetos` — remoção intencional de obras aumenta o timestamp
+    // mas reduz a contagem, causando sobrescrita do trabalho do curador.
+    if (remoteTime > localTime) {
       // GitHub vence → pull
-      console.log(`📥 GitHub mais atual (${remoteCount} obj / ${new Date(remoteTime).toLocaleTimeString()}) → usando remoto.`);
+      console.log(`📥 GitHub mais recente (${new Date(remoteTime).toLocaleString()}) → usando remoto.`);
       localStorage.setItem('gabinete_kiosk_config', remoteData.content);
       return remoteObj;
     } else {
-      // Local vence → push para manter GitHub em sync
-      console.log(`📤 Local mais atual (${localCount} obj / ${new Date(localTime).toLocaleTimeString()}) → enviando para GitHub.`);
+      // Local vence (ou igual) → push para manter GitHub em sync
+      console.log(`📤 Local mais recente (${new Date(localTime).toLocaleString()}) → enviando para GitHub.`);
+      // F1.3: Garante _lastModified antes do push (proteção se curadoria não injetou)
+      if (!/** @type {any} */ (localObj)._lastModified) {
+        /** @type {any} */ (localObj)._lastModified = new Date().toISOString();
+        const updatedRaw = JSON.stringify(localObj);
+        localStorage.setItem('gabinete_kiosk_config', updatedRaw);
+        await githubPut('assets/config.json', updatedRaw, 'boot: push config local mais recente', remoteData.sha);
+        return localObj;
+      }
       await githubPut('assets/config.json', localRaw, 'boot: push config local mais recente', remoteData.sha);
       return localObj;
     }
@@ -606,24 +623,30 @@ async function syncConfigViaGitHub(_localManifest) {
       try { localObj = JSON.parse(localConfigRaw); } catch { return false; }
       try { remoteObj = JSON.parse(remoteConfig.content); } catch { return false; }
 
-      const localTime = localObj._lastModified ? new Date(localObj._lastModified).getTime() : 0;
+      const localTime  = localObj._lastModified  ? new Date(localObj._lastModified).getTime()  : 0;
       const remoteTime = remoteObj._lastModified ? new Date(remoteObj._lastModified).getTime() : 0;
-      const localCount = Array.isArray(localObj.objects) ? localObj.objects.length : 0;
-      const remoteCount = Array.isArray(remoteObj.objects) ? remoteObj.objects.length : 0;
 
-      // Remoto tem mais objetos, ou timestamp remoto mais novo → pull
-      const remoteMaisNovo = remoteTime > localTime;
-      const remoteMaisObjetos = remoteCount > localCount;
-
-      if (remoteMaisNovo || remoteMaisObjetos) {
-        console.log(`📥 Config remoto mais atual (${remoteCount} obj vs ${localCount} local) — pull`);
+      // F1.1: Critério único: timestamp wins.
+      // Removido `remoteMaisObjetos` — remoção intencional de obras reduz a contagem
+      // mas não deve ceder para uma versão mais antiga do GitHub.
+      if (remoteTime > localTime) {
+        console.log(`📥 Config remoto mais recente (${new Date(remoteTime).toLocaleString()}) — pull`);
         backupConfig(localConfigRaw, 'local');
         localStorage.setItem('gabinete_kiosk_config', remoteConfig.content);
         try { notifyConfigUpdated(remoteObj); } catch { /* ignore */ }
         return true;
       } else {
         // Local mais recente ou igual → push para garantir sync
-        console.log(`📤 Config local mais atual (${localCount} obj) — push`);
+        // F1.3: Injeta _lastModified se ausente antes do push
+        if (!localObj._lastModified) {
+          localObj._lastModified = new Date().toISOString();
+          const updatedRaw = JSON.stringify(localObj);
+          localStorage.setItem('gabinete_kiosk_config', updatedRaw);
+          backupConfig(remoteConfig.content, 'remote');
+          const ok = await githubPut('assets/config.json', updatedRaw, 'sync: config local (timestamp injetado)', remoteConfig.sha);
+          return ok;
+        }
+        console.log(`📤 Config local mais recente (${new Date(localTime).toLocaleString()}) — push`);
         backupConfig(remoteConfig.content, 'remote');
         const ok = await githubPut('assets/config.json', localConfigRaw, 'sync: config local mais recente', remoteConfig.sha);
         return ok;

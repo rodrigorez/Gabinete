@@ -9,10 +9,10 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['js/**/*.js'],
-      exclude: ['js/main.js', 'js/curadoria-app.js', 'js/dev-editor.js', 'js/vendor/**', 'js/components.js', 'js/physics.js', 'js/camera-rig.js', 'js/spatial-tracker.js'], // entry points, 3d controllers e devtools
+      exclude: ['js/main.js', 'js/dev-editor.js', 'js/vendor/**', 'js/components.js', 'js/physics.js', 'js/camera-rig.js', 'js/spatial-tracker.js'], // entry points, 3d controllers e devtools
       thresholds: {
-        lines: 60,
-        functions: 60,
+        lines:     70, // F4.3: aumentado de 60% (F2 adiciona testes de curadoria)
+        functions: 70,
       },
       reporter: ['text', 'html'],
     },
