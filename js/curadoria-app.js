@@ -23,6 +23,7 @@ import { processImage, generateVariantNames, isWebPSupported } from './image-pip
 import { loadManifest, saveManifestLocal, setEntry, createEntryFromBlob } from './manifest.js';
 import { startSync, forceSync, onStatusChange, enqueue } from './sync-engine.js';
 import { initSupabase, uploadAsset, isSupabaseReady } from './supabase-client.js';
+import { stampConfig } from './config.js';
 
 // ─── State ───────────────────────────────────────────────────
 
@@ -119,7 +120,7 @@ function loadConfig() {
 function saveConfig() {
   if (!config) return;
   // @ts-ignore
-  config._lastModified = new Date().toISOString();
+  stampConfig(config);
   localStorage.setItem('gabinete_kiosk_config', JSON.stringify(config));
   enqueue({ action: 'push', path: 'assets/config.json', target: 'github', timestamp: Date.now(), retries: 0 });
 }

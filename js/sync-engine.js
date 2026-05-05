@@ -18,6 +18,7 @@
 
 import { getSecret } from './secrets-loader.js';
 import { uploadAsset, downloadAsset, isSupabaseReady } from './supabase-client.js';
+import { stampConfig } from './config.js';
 import {
   loadManifest, saveManifestLocal, diffManifests,
   resolveConflicts, setEntry, exportManifest, createEmptyManifest
@@ -406,7 +407,7 @@ export async function resolveConfigAtBoot() {
       console.log(`📤 Local mais recente (${new Date(localTime).toLocaleString()}) → enviando para GitHub.`);
       // F1.3: Garante _lastModified antes do push (proteção se curadoria não injetou)
       if (!/** @type {any} */ (localObj)._lastModified) {
-        /** @type {any} */ (localObj)._lastModified = new Date().toISOString();
+        stampConfig(/** @type {any} */ (localObj));
         const updatedRaw = JSON.stringify(localObj);
         localStorage.setItem('gabinete_kiosk_config', updatedRaw);
         await githubPut('assets/config.json', updatedRaw, 'boot: push config local mais recente', remoteData.sha);
@@ -639,7 +640,7 @@ async function syncConfigViaGitHub(_localManifest) {
         // Local mais recente ou igual → push para garantir sync
         // F1.3: Injeta _lastModified se ausente antes do push
         if (!localObj._lastModified) {
-          localObj._lastModified = new Date().toISOString();
+          stampConfig(localObj);
           const updatedRaw = JSON.stringify(localObj);
           localStorage.setItem('gabinete_kiosk_config', updatedRaw);
           backupConfig(remoteConfig.content, 'remote');

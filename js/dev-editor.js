@@ -2,6 +2,7 @@
 /* global AFRAME, THREE */
 import { EVENTS } from './events.js';
 import { appState } from './app-state.js';
+import { stampConfig } from './config.js';
 
 export class DevEditor {
     constructor() {
@@ -393,7 +394,7 @@ export class DevEditor {
                 // Salva a alteração no LocalStorage e marca como mais recente para o Sync Engine perceber!
                 const cfg = appState.getConfig();
                 if (cfg) {
-                    cfg._lastModified = new Date().toISOString();
+                    stampConfig(cfg);
                     localStorage.setItem('gabinete_kiosk_config', JSON.stringify(cfg));
                 }
             }
@@ -505,7 +506,7 @@ export class DevEditor {
                 // Salva a alteração no LocalStorage e marca como mais recente para o Sync Engine perceber!
                 const cfg = appState.getConfig();
                 if (cfg) {
-                    cfg._lastModified = new Date().toISOString();
+                    stampConfig(cfg);
                     localStorage.setItem('gabinete_kiosk_config', JSON.stringify(cfg));
                 }
                 

@@ -34,3 +34,17 @@ export const GABINETE_CONFIG = {
     DEFAULT_LANG: 'pt-br'
   }
 };
+
+/**
+ * Injeta `_lastModified` no config com o timestamp atual.
+ * Centraliza todos os pontos de escrita — evita duplicação entre
+ * curadoria-app.js, dev-editor.js e sync-engine.js.
+ *
+ * @template {object} T
+ * @param {T} cfg - O objeto de configuração a ser marcado.
+ * @returns {T} O mesmo objeto (mutado), com _lastModified atualizado.
+ */
+export function stampConfig(cfg) {
+  /** @type {any} */ (cfg)._lastModified = new Date().toISOString();
+  return cfg;
+}
