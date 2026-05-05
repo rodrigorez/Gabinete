@@ -20,11 +20,11 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 │   ├── vendor/         # Bibliotecas locais (aframe.min.js)
 │   ├── main.js         # Entrypoint ES Module — orquestra inicialização
 │   ├── events.js       # Dicionário Imutável de Eventos (Object.freeze)
-│   ├── config.js       # Constantes centralizadas (KIOSK, HARDWARE, UI, SECRETS_TIMEOUT_MS)
+│   ├── config.js       # Constantes centralizadas (KIOSK, HARDWARE, UI, SECRETS_TIMEOUT_MS) + stampConfig()
 │   ├── secrets-loader.js# Fallback híbrido (decrypt AES-256 + import.meta.env), auto-clear
 │   ├── pin-overlay.js  # Overlay de PIN reutilizável (DRY entre adm.html e curadoria)
 │   ├── supabase-client.js# Upload via Edge Function asset-manager; download/list anon
-│   ├── sync-engine.js  # GitHub sync bidirecional (leitura e escrita direta via GitHub API com token criptografado do secrets.json)
+│   ├── sync-engine.js  # GitHub sync bidirecional (leitura e escrita direta via GitHub API); Dev Lock (isDevLocked, checkDevLock)
 │   ├── curadoria-app.js# CRUD obras, upload de assets, detecção de órfãos
 │   ├── image-pipeline.js# Conversão WebP in-memory (OffscreenCanvas)
 │   ├── hash-engine.js  # SHA-256 Web Crypto + fallback FNV-1a
@@ -43,8 +43,14 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 │   ├── i18n.js         # Handler de internacionalização
 │   ├── dev-editor.js   # DevTools on-device (Filtro de Meshes, Bounding Box X-Ray)
 │   └── types.d.ts      # Declarações TypeScript para JSDoc type-checking
+├── scripts/
+│   ├── dev-lock.js     # CLI: ativa/desativa Dev Lock no GitHub (npm run dev:lock / dev:unlock)
+│   ├── optimize-assets.js    # Gera variântes WebP _high/_low a partir de PNG/JPG (sharp)
+│   ├── generate-manifest.js  # Gera manifest.json de hashes dos assets
+│   └── download-fonts.js     # Baixa fontes Inter/Outfit para assets/fonts/ (offline-first)
 ├── assets/
 │   ├── images/         # Texturas WebP + gabinete.png (favicon)
+│   ├── fonts/          # Fontes locais Inter + Outfit (offline-first, sem CDN) — 8 arquivos
 │   ├── models/         # Modelos GLB/GLTF locais
 │   ├── videos/         # Vídeos dos painéis multimídia
 │   ├── config.json     # Obras e URLs de assets (Supabase CDN)
@@ -53,6 +59,7 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 │   └── deploy.yml      # CI/CD: push main → build Vite → GitHub Pages
 ├── ARCHITECTURE.md     # Definições técnicas de alto nível
 ├── CODEBASE.md         # Este arquivo
+├── DEV-WORKFLOW.md     # Guia operacional: Dev Lock, fluxo de trabalho e resolução de conflitos
 ├── SPEC_TECNICA_MVP.md # Especificação Técnica detalhada
 └── README.md           # Visão geral e instruções de execução
 ```
@@ -75,6 +82,7 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 | `adm.html` | `js/pin-overlay.js` | PIN overlay reutilizável (rate-limiting via GABINETE_CONFIG) |
 | `adm.html` | `js/secrets-loader.js` | `loadSecrets`, `reEncryptSecrets`, `getSecret` |
 | `adm.html` | `js/config.js` | `GABINETE_CONFIG` (PIN, lockout, timeout) |
+| `adm.html` | `js/sync-engine.js` | `onStatusChange`, `checkConnectivity`, `checkGithubAccess`, `forceSync`, `loadQueue`, `isDevLocked` |
 | `curadoria.html` | `js/curadoria-app.js` | CRUD obras, filtro de busca instantâneo + upload |
 | `curadoria.html` | `js/pin-overlay.js` | PIN overlay de acesso (reutiliza lógica do adm) |
 | `js/main.js` | `nav, i18n, events, uiPanel, appState, viewController` | Orquestração central |
@@ -85,7 +93,7 @@ Este documento serve para rastrear a estrutura de arquivos e as dependências cr
 | `js/supabase-client.js` | `js/secrets-loader.js` | `getSecret` para `SUPABASE_URL` e `SUPABASE_ANON_KEY` |
 | `js/sync-engine.js` | `js/secrets-loader.js` | `getSecret('GITHUB_TOKEN')` para autenticação na GitHub API (leitura e escrita direta) |
 | `js/main.js` | `js/events.js` | `EVENTS.ASSET_ERROR` — captura model-error de GLB e persiste em localStorage |
-| `js/curadoria-app.js` | `supabase-client, sync-engine, image-pipeline` | Pipeline completo de upload |
+| `js/curadoria-app.js` | `supabase-client, sync-engine, image-pipeline, manifest, config` | Pipeline completo de upload; `stampConfig()` para timestamp |
 | `js/view-controller.js` | `stateManager, cameraRig, spatialTracker, uiPanel, appState` | Transições |
 | `js/components.js` | `events, config, kiosk-mode, nav, appState` | Componentes A-Frame |
 | `css/styles.css` | `index.html` | Design Tokens (CSS Variables) |

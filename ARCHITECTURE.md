@@ -82,7 +82,7 @@ Aplicaremos estas configurações via `hardware-profiler` ao detectar falta de G
 
 ## 🎨 Design System (Aesthetics)
 
-### 6.1. Design Tokens (CSS Variables)
+### 7. Design Tokens (CSS Variables)
 ```css
 :root {
   --primary: #00D1FF;       /* Ciano Premium */
@@ -276,6 +276,16 @@ Usuário → 3x canto kiosk → adm.html
 
 **Resolução de conflitos:** Timestamp wins — versão mais recente vence no boot.
 **Prevenção de Falsos Offline:** Checagem de conectividade usa `mode: 'no-cors'` para validar roteamento sem ser bloqueado por restrições CORS.
+
+**Dev Lock (Prevenção de Conflito Desenvolvedor × Totem):**
+Quando o desenvolvedor está trabalhando, o push do totem é pausado via ref git especial:
+```bash
+npm run dev:lock    # cria refs/heads/__dev-lock__ no GitHub → totem para de fazer push
+npm run dev:unlock  # remove o ref → sync retoma normalmente
+```
+O `sync-engine.js` verifica o ref via GitHub API (`checkDevLock`) antes de cada `githubPut`.
+O `isDevLocked()` está disponível para o painel admin em `adm.html`.
+Ver `DEV-WORKFLOW.md` para o fluxo operacional completo.
 
 **Deploy CI/CD:** GitHub Actions (`.github/workflows/deploy.yml`)
 - Push em `main` → build Vite → GitHub Pages

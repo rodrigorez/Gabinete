@@ -73,15 +73,16 @@ Fluxo Admin: Kiosk (3x canto) → adm.html (overlay PIN) → AES decrypt → Adm
 | `js/` | Módulos ES JavaScript |
 | `js/secrets-loader.js` | Criptografia AES-256-GCM, sessão, timeout |
 | `js/supabase-client.js` | Upload/download de assets (Storage) |
-| `js/sync-engine.js` | Sync bidirecional com GitHub |
+| `js/sync-engine.js` | Sync bidirecional com GitHub + Dev Lock (`isDevLocked`) |
 | `js/kiosk-mode.js` | Timer, gesto admin, logs |
 | `js/curadoria-app.js` | Lógica completa de curadoria |
-| `js/config.js` | Constantes globais (zero magic numbers) |
+| `js/config.js` | Constantes globais (zero magic numbers) + `stampConfig()` |
 | `assets/config.json` | Obras e URLs de assets |
 | `secrets.json` | Credenciais criptografadas (gitignored) |
 | `.github/workflows/deploy.yml` | CI/CD → GitHub Pages |
 | `ARCHITECTURE.md` | Arquitetura técnica detalhada |
 | `CODEBASE.md` | Mapa de módulos e dependências |
+| `DEV-WORKFLOW.md` | Guia operacional: Dev Lock, conflitos de sync, fluxo do curador |
 
 ---
 
@@ -94,7 +95,7 @@ Fluxo Admin: Kiosk (3x canto) → adm.html (overlay PIN) → AES decrypt → Adm
 - **GitHub API** (sync de config.json)
 - **Vite 6** (Dev server + build)
 - **PWA / Service Worker** (offline-first)
-- **Inter / Outfit** (fontes locais em `assets/fonts/` — offline-first, sem CDN)
+- **Inter / Outfit** (fontes locais em `assets/fonts/` para `index.html` e `curadoria.html` — offline-first, sem CDN; `adm.html` usa Google Fonts CDN pois requer internet)
 
 ---
 
