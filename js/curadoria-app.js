@@ -705,3 +705,16 @@ function showToast(/** @type {string} */ msg, /** @type {'success'|'error'} */ t
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
+
+// ─── Test Internals ───────────────────────────────────────────
+// Expõe estado interno e funções para testes unitários.
+// NÃO usar em código de produção.
+export const _test = {
+  setConfig:         (c) => { config = c; },
+  getConfig:         ()  => config,
+  setSelectedIndex:  (i) => { selectedIndex = i; },
+  saveConfig,
+  createNewObra,
+  deleteObra,
+  removeImage,
+};
