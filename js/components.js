@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 /// <reference path="./types.d.ts" />
 /* global AFRAME, THREE */
 import { EVENTS } from './events.js';

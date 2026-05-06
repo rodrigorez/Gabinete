@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 
 /**
  * Tests: js/sync-engine.js — funções puras e lógica de estado

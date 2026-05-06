@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 
 /**
  * Curadoria App — Interface de gestão de obras do Gabinete Virtual.

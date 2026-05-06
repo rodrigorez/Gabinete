@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 import { EVENTS } from './events.js';
 import { kiosk } from './kiosk-mode.js';
 

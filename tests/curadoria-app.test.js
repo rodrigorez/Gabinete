@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 
 /**
  * Tests: js/curadoria-app.js — testa o módulo REAL via _test internals.

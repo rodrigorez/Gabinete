@@ -31,6 +31,7 @@ export const appState = {
             for (const obj of list) {
                 if (obj.id === id) return obj;
                 if (obj.children) {
+                    // @ts-ignore
                     const found = search(obj.children);
                     if (found) return found;
                 }

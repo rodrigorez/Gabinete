@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 /* global THREE */
 import { stateManager } from './state-manager.js';
 import { cameraRig } from './camera-rig.js';

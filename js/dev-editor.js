@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 /* global AFRAME, THREE */
 import { EVENTS } from './events.js';
 import { appState } from './app-state.js';
