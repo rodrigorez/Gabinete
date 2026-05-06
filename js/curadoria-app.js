@@ -121,8 +121,16 @@ function saveConfig() {
   if (!config) return;
   // @ts-ignore
   stampConfig(config);
-  localStorage.setItem('gabinete_kiosk_config', JSON.stringify(config));
+  const configJson = JSON.stringify(config);
+  localStorage.setItem('gabinete_kiosk_config', configJson);
   enqueue({ action: 'push', path: 'assets/config.json', target: 'github', timestamp: Date.now(), retries: 0 });
+
+  // Tenta salvar fisicamente no disco no ambiente dev para evitar dessincronização
+  fetch('/api/save-config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: configJson
+  }).catch(() => { /* Ignora se não estiver em ambiente de dev */ });
 }
 
 // ─── Render Grid ─────────────────────────────────────────────

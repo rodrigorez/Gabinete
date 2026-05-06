@@ -79,6 +79,40 @@ function secretsWriterPlugin() {
 }
 
 /**
+ * Plugin Vite: endpoint local para salvar config.json fisicamente no disco em dev.
+ * Evita dessincronização entre LocalStorage e arquivo físico.
+ * POST /api/save-config → { ok: true }
+ */
+function configWriterPlugin() {
+  return {
+    name: 'config-writer',
+    configureServer(server) {
+      server.middlewares.use('/api/save-config', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          return res.end(JSON.stringify({ error: 'Method not allowed' }));
+        }
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          try {
+            const data = JSON.parse(body);
+            const filePath = resolve(process.cwd(), 'assets/config.json');
+            writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true }));
+          } catch (e) {
+            console.error('Erro ao escrever config.json:', e);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: String(e) }));
+          }
+        });
+      });
+    }
+  };
+}
+
+/**
  * Plugin Vite: endpoint local para salvar assets (Imagens, Modelos) fisicamente no disco.
  * POST /api/save-asset?path=assets/images/foo.webp
  */
@@ -144,6 +178,7 @@ export default defineConfig({
   plugins: [
     copyStaticFilesPlugin(),
     secretsWriterPlugin(),
+    configWriterPlugin(),
     assetWriterPlugin(),
     VitePWA({
       // injectManifest: usa o sw.js customizado e injeta a lista de assets no build.

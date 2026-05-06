@@ -8,7 +8,7 @@
 
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheFirst, StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies';
 
 // Precache todos os assets estáticos (JS, CSS, HTML, JSON, imagens)
 precacheAndRoute(self.__WB_MANIFEST || []);
@@ -27,14 +27,14 @@ registerRoute(
   new StaleWhileRevalidate({ cacheName: 'gabinete-config-v1' })
 );
 
-// Assets do Supabase Storage: modelos, vídeos e imagens (raramente mudam)
+// Assets do Supabase Storage: modelos, vídeos e imagens
 registerRoute(
   ({ url }) => url.hostname.includes('.supabase.co') && url.pathname.includes('/storage/'),
-  new CacheFirst({ cacheName: 'gabinete-supabase-v1' })
+  new StaleWhileRevalidate({ cacheName: 'gabinete-supabase-v1' })
 );
 
-// Media local: GLB, MP4, WebP, imagens (cache-first — assets imutáveis)
+// Media local: GLB, MP4, WebP, imagens (StaleWhileRevalidate para evitar fantasmas de cache em dev, mantendo offline ativo)
 registerRoute(
   ({ request }) => /\.(glb|gltf|mp4|webm|webp|jpg|jpeg|png|mp3|ogg)$/i.test(request.url),
-  new CacheFirst({ cacheName: 'gabinete-media-v1' })
+  new StaleWhileRevalidate({ cacheName: 'gabinete-media-v1' })
 );

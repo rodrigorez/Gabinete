@@ -1,1 +1,629 @@
-{"version":"1.0.0","settings":{"kioskTimeoutMs":300000,"env":{"sky":"#111111","exposure":1},"labels":{"text":"Historia","galleryA":"Manual","galleryB":"Projeto","video":"Vídeo"}},"objects":[{"id":"test_cabinet_v5","name_key":"Gabinete Virtual V5","type":"gltf-model","model":"assets/models/modeloTesteV5.glb","scale":"1.05 1.05 1.05","position":"0.00 0.00 -5.00","rotation":"0.0 0.0 0.0","timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0},"panel":{"title_key":"Gabinete Virtual V5","description_key":"í\nì\nç\n~\n^\n;\n:\n.\n>\n,\n<\n\\\n|\n[\n{\n]\n}","start_scale":0.4,"anchor_y_offset":1.2,"blend_y_ratio":0.5,"easing_open":"cubic-bezier(0.85, 0, 1, 1)","easing_close":"cubic-bezier(0.1, 1, 0.2, 1)","video":{"src":"assets/videos/02_Around_v2.mp4"},"galleries":[{"id":"gal_a","images":["assets/images/02_img_01_high.webp","assets/images/02_img_02_high.webp","assets/images/02_img_03_high.webp","assets/images/02_img_04_high.webp"]},{"id":"gal_b","images":["assets/images/02_manual_high.webp"]}],"_timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0},"anchor_offset":"0.5 0.6 -0.3"},"children":[{"id":"porta_esquerda_v5","type":"entity","action":"gltf-part","part_name":"portaE","anim_target":"rotation","anim_to":"0 0 -45","role":"animation","anim_axis":"z","anim_start":0,"anim_end":-90},{"id":"porta_direita_v5","type":"entity","action":"gltf-part","part_name":"portaD2","anim_target":"rotation","anim_to":"0 0 225","role":"animation","anim_axis":"z","anim_start":180,"anim_end":270},{"part_name":"Active_View","role":"collider","scale":"1 1 1","position":"0.5  0.4"}],"isInteractive":true},{"id":"obra_mooe2j9p","name_key":"lustre","type":"gltf-model","model":"https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/candelabroV1.glb","position":"0 3 -4.90","rotation":"0.0 0.0 0.0","scale":"1.00 1.00 1.00","timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0},"panel":{"title_key":"lustre","description_key":"","galleries":[{"id":"gal_a","images":[]}],"anchor_offset":"0.00 0.00 0.00","start_scale":0.01},"children":[{"part_name":"Assembly-743","role":"collider","scale":"0.6 0.7 0.7","position":"0.3 0.2 -0.3"}],"isInteractive":false},{"id":"obra_mooj42g5","name_key":"piano","type":"gltf-model","model":"https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/V1_pianoBox.glb","position":"-2.8 0.00 -5.00","rotation":"0.0 0.0 0.0","scale":"1.00 1.00 1.00","timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0},"panel":{"title_key":"piano","description_key":"","galleries":[{"id":"gal_a","images":[]}],"anchor_offset":"0.00 1.20 0.00","start_scale":1,"_timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0}},"children":[{"part_name":"Assembly-348","role":"collider","scale":"1.4 1.3 0.8","position":"1.8 0.7 -0.1"},{"part_name":"tampaTecla","role":"animation","anim_axis":"x","anim_start":0,"anim_end":90}],"isInteractive":true},{"id":"obra_moouryog","name_key":"eixoC","type":"gltf-model","model":"https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/moduloBaseC46.glb","position":"0.00 0.00 -5","rotation":"0.0 0.0 0.0","scale":"1.00 0.10 1.00","timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0},"panel":{"title_key":"eixoC","description_key":"","galleries":[{"id":"gal_a","images":[]}],"anchor_offset":"0.00 0.00 0.00","start_scale":1},"children":[],"isInteractive":true},{"id":"obra_moovfmuo","name_key":"paredeA","type":"gltf-model","model":"https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/moduloBaseC46.glb","position":"4.00 2.00 -7.00","rotation":"90.0 0.0 0.0","scale":"1.00 1.00 1.00","timing":{"doorDur":1250,"fadeDur":1000,"waitOpen":0,"waitClose":0},"panel":{"title_key":"paredeA","description_key":"","galleries":[{"id":"gal_a","images":[]}],"anchor_offset":"0.00 1.20 0.00","start_scale":1},"children":[{"part_name":"Active_View","role":"collider","scale":"4 0.1 4","position":"0 0 0"}],"isInteractive":true}],"_lastModified":"2026-05-05T15:55:21.623Z"}
+{
+  "version": "1.0.0",
+  "settings": {
+    "kioskTimeoutMs": 300000,
+    "env": {
+      "sky": "#111111",
+      "exposure": 1
+    },
+    "labels": {
+      "text": "Historia",
+      "galleryA": "Manual",
+      "galleryB": "Projeto",
+      "video": "Vídeo"
+    }
+  },
+  "objects": [
+    {
+      "id": "obra_motfh6my",
+      "name_key": "O Olho de Aten",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/2portaV.glb",
+      "position": "0.00 1.50 -5.00",
+      "rotation": "0.0 0.0 0.0",
+      "scale": "1.05 1.05 1.05",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "O Olho de Aten",
+        "description_key": "O Olho de Aten \n(Microscópio Solar a Laser de Amarna)\nA Revelação da Luz Única\nNo ano de 1343 a.C., na cidade de Akhetaten (Amarna), o faraó \"herético\" Akhenaton ordenou a construção de um dispositivo que pudesse provar que a vida residia nos raios do disco solar, o Aten. O Olho de Aten não era visto como uma ferramenta secular, mas como um prolongamento dos \"braços\" do sol que terminam em mãos humanas.\nDiferente de qualquer tecnologia da Idade do Bronze, este microscópio utilizava a intensa radiação do deserto egípcio para gerar um feixe de luz coerente — um laser de estado sólido primitivo - capaz de projetar a estrutura celular de tecidos e microrganismos em paredes de calcário branco, revelando o que o faraó chamava de \"a ordem invisível da criação\".\n\nAspectos Técnicos e Engenharia Ancestral\nO equipamento é uma estrutura vertical de 3 metros, esculpida em quartzito rosa e adornada com incrustações de eletro (uma liga natural de ouro e prata) e lápis-lazúli.\n1. O Concentrador Heliostático (A Fonte de Poder)\nLocalizado no topo de um pedestal sob o céu aberto, um grande disco de ouro polido capta a luz de Aten.\nO Alinhamento Térmico: O disco é montado sobre um eixo de bronze banhado em óleo de rícino, permitindo que os sacerdotes-astrônomos sigam o sol com precisão absoluta.\nCâmara de Compressão de Luz: A luz refletida é afunilada em um tubo de obsidiana negra polida internamente, reduzindo o diâmetro do feixe de luz branca enquanto aumenta drasticamente sua densidade energética.\n\n2. O Cristal de \"Sangue de Rá\" (O Gerador de Laser)\nO coração do dispositivo é um cristal de berilo vermelho (esmeralda escarlate) raríssimo, lapidado em uma geometria sagrada de 12 faces.\nO Fenômeno do Laser: Quando a luz solar concentrada atinge o cristal, os elétrons do berilo são excitados. Devido ao polimento das faces internas com pó de diamante, a luz sofre reflexões internas múltiplas até ser emitida por uma fenda microscópica como um feixe de luz vermelha monocromática e colimada.\nResfriamento por Evaporação: Para evitar que o cristal derreta, um sistema de canais de terracota goteja água do Nilo continuamente sobre a base de cobre do cristal, criando uma névoa constante ao redor do aparelho.\n\n3. Ótica de Cristal e Projeção\nO feixe de laser vermelho atravessa o objeto de estudo (como uma gota de água ou uma asa de inseto) posicionado em uma lâmina de mica transparente.\nLentes de Cristal de Rocha: Uma série de lentes feitas de quartzo hialino, polidas com areia fina do deserto, amplia a imagem.\nA Tela de Projeção: A imagem resultante é projetada em um obelisco de calcário liso dentro de uma câmara escura, permitindo ampliações que desafiam a lógica da época.\n\n\nEspecificações Técnicas (Era de Amarna)\nComponente\nMaterial / Recurso\nFunção\nMeio Ativo\nBerilo Vermelho (dopado com Ferro)\nGeração do feixe laser (emissão estimulada)\nResolução\n500 nanômetros\nObservação de bactérias e células sanguíneas\nEnergia\nIrradiação Solar Direta (Aten)\nBombeamento óptico térmico\nEstrutura\nQuartzito e Eletro\nEstabilidade e condutividade térmica\nInterface\nSacerdotes Kher-heb\nOperação e interpretação teológica\n\n\n\nO Significado Sagrado\nPara Akhenaton, o ponto vermelho brilhante do laser era a manifestação física do Maat (a verdade/ordem). Ver os microrganismos movendo-se na parede era a prova final de que o Sol não apenas dava calor, mas \"insuflava vida nas menores coisas, tornando o invisível, visível\".\n\"Aten é o mestre da luz que quebra o mistério da carne. Sob o seu raio escarlate, a semente revela sua alma e a água revela seus habitantes ocultos.\"\n Inscrição fragmentada encontrada nas ruínas de Amarna.",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_01_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_02_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_03_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_04_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_05_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_06_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_porta_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_01_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_02_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_03_high.webp",
+              "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_04_high.webp"
+            ]
+          }
+        ],
+        "video": {
+          "src": "assets/videos/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_Video.mp4"
+        },
+        "anchor_offset": "0.00 0.4 -0.2",
+        "start_scale": 0.4,
+        "_timing": {
+          "doorDur": 1250,
+          "fadeDur": 1000,
+          "waitOpen": 0,
+          "waitClose": 0
+        }
+      },
+      "children": [
+        {
+          "part_name": "portaCima",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": 0,
+          "anim_end": -135
+        }
+      ],
+      "isInteractive": true
+    },
+    {
+      "id": "obra_motjy70x",
+      "name_key": "Licht-Punkt Mikroskop (Modelo LPM-25)",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/comoda2P.glb",
+      "position": "2.20 1.00 -6.00",
+      "rotation": "0.0 0.0 0.0",
+      "scale": "1.40 1.40 1.40",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "Licht-Punkt Mikroskop (Modelo LPM-25)",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_manual_01_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_manual_02_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_porta_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto01_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto02_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto03_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto04_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto05_high.webp",
+              "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto06_high.webp"
+            ]
+          }
+        ],
+        "video": {
+          "src": "assets/videos/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_Video.mp4"
+        },
+        "anchor_offset": "0.00 -0.1 0.00",
+        "start_scale": 0.7,
+        "_timing": {
+          "doorDur": 1250,
+          "fadeDur": 1000,
+          "waitOpen": 0,
+          "waitClose": 0
+        }
+      },
+      "children": [
+        {
+          "part_name": "portaE",
+          "role": "animation",
+          "scale": "1 1 1",
+          "position": "0 0 0",
+          "anim_axis": "y",
+          "anim_start": 0,
+          "anim_end": 90
+        },
+        {
+          "part_name": "portaA",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": -90,
+          "anim_end": -180
+        },
+        {
+          "part_name": "portaB",
+          "role": "animation",
+          "anim_axis": "y",
+          "anim_start": 0,
+          "anim_end": 90
+        }
+      ],
+      "isInteractive": true
+    },
+    {
+      "id": "obra_motk2peg",
+      "name_key": "Microscópio Solar a Laser (MSL-45)",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/2portaV.glb",
+      "position": "-1.70 1.00 -7",
+      "rotation": "0.0 0.0 0.0",
+      "scale": "1.10 1.10 1.10",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "Microscópio Solar a Laser (MSL-45)",
+        "description_key": "A Fronteira do Invisível no Vácuo\nEm 2045, a humanidade busca entender como a vida se adapta à radiação cósmica e à microgravidade prolongada. O MSL-45 foi projetado para eliminar a necessidade de fontes de energia internas massivas, utilizando a radiação solar pura e filtrada do espaço profundo para gerar feixes de laser de altíssima coerência. Instalado no Laboratório de Exobiologia da Estação Aurora, ele permite a observação de processos subcelulares em tempo real, capturando a dinâmica molecular de organismos vivos sem a interferência da gravidade terrestre ou das flutuações atmosféricas.\n\nArquitetura e Aspectos Técnicos\nDiferente dos modelos terrestres, o MSL-45 é uma estrutura modular que atravessa a blindagem da estação, conectando o exterior (captação) ao interior (análise).\n1. Coletor Solar Externo e Bombeamento de Laser\nEm vez de converter luz solar em eletricidade para alimentar um laser, o MSL-45 utiliza o Bombeamento Solar Direto (Direct Solar Pumping).\nConcentradores de Fresnel: Uma matriz de lentes de grafeno ultrafinas do lado de fora da estação concentra a luz solar em um cristal de neodímio-itrio-alumínio (Nd:YAG) dopado.\nConversão Fotônica: Este cristal converte o espectro solar amplo em um feixe laser infravermelho e visível perfeitamente estável e coerente, eliminando o ruído eletrônico dos lasers convencionais.\n\n2. Ótica Quântica de Super-Resolução\nO coração do microscópio opera com uma técnica chamada Microscopia de Varredura por Interferência de Fótons Estáticos.\nResolução Atométrica: Ao operar no vácuo parcial da câmara de amostra, o laser atinge uma resolução na escala de attômetros ($10^{-18}$ metros), permitindo visualizar a vibração de ligações químicas individuais.\nPinças Ópticas Solares: O feixe laser não serve apenas para iluminar; ele é usado para manipular partículas em microgravidade, mantendo-as suspensas e imóveis no centro da lente sem contato físico.\n\n3. Processamento de Dados via IA e Reconstrução Holográfica\nO volume de dados gerado por segundo é impossível de ser processado por computadores tradicionais.\nNúcleo Fotônico: O sinal de retorno do laser é processado por um processador fotônico integrado que reconstrói a imagem em 4D (espaço e tempo) instantaneamente.\nInterface de Realidade Neural: Os cientistas na estação não olham por uma ocular; os dados são transmitidos via link neural ou projetados em um campo holográfico de imersão total dentro do laboratório.\n\n\nEspecificações de Engenharia (Classe Orbital)\nComponente\nEspecificação Técnica\nFonte de Energia\nIrradiância Solar Direta (1361 $W/m^2$ em órbita)\nComprimento de Onda\nAjustável de 200nm (UV) a 1200nm (IR Próximo)\nEstabilização\nAmortecedores de inércia eletromagnética (cancelamento de vibração da estação)\nResfriamento\nRadiadores térmicos de nanotubos de carbono voltados para o espaço profundo\nCapacidade de Varredura\n1 bilhão de quadros por segundo (fps) em resolução molecular\n\n\n\nO Diferencial de 2045\nO MSL-45 usa o diferencial térmico entre o lado iluminado pelo sol e a sombra da estação para gerar um micro-fluxo de hélio líquido, mantendo os sensores quânticos em temperaturas próximas ao zero absoluto ($0.15$ K). É a fusão perfeita entre a energia bruta de uma estrela e a delicadeza da física quântica.",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_01_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_02_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_02a_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_03_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_04a_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_04b_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_porta_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_01_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_02_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_03_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_03b_high.webp",
+              "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_04_high.webp"
+            ]
+          }
+        ],
+        "video": {
+          "src": "assets/videos/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_Video.mp4"
+        },
+        "anchor_offset": "0.00 0.3 -0.3",
+        "start_scale": 0.3,
+        "_timing": {
+          "doorDur": 1250,
+          "fadeDur": 1000,
+          "waitOpen": 0,
+          "waitClose": 0
+        }
+      },
+      "children": [
+        {
+          "part_name": "portaCima",
+          "role": "animation",
+          "anim_axis": "x",
+          "anim_start": 0,
+          "anim_end": 180
+        }
+      ],
+      "isInteractive": true
+    },
+    {
+      "id": "obra_motk9jg0",
+      "name_key": "O Microscópio Solar de Luz Concentrada (Inti-Qhawana)",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/comoda2P.glb",
+      "position": "-2.2 0.60 -5.00",
+      "rotation": "0.0 0.0 0.0",
+      "scale": "1.10 1.10 1.10",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "O Microscópio Solar de Luz Concentrada (Inti-Qhawana)",
+        "description_key": "O Olhar de Ouro sobre o Invisível\nSituado no coração do Coricancha (o Templo do Sol) em Cuzco, o Inti-Qhawana não era apenas um instrumento científico, mas um objeto sagrado. Os Amautas (sábios incas) utilizavam a luz puríssima de Inti (o Deus Sol) para \"perfurar a alma da matéria\".\nDiferente das versões europeias ou modernas, este dispositivo não buscava apenas ampliar imagens, mas transmutar a luz solar em um feixe coerente — um \"laser\" primitivo de estado sólido — capaz de iluminar as estruturas celulares de sementes de quinoa, fibras de lã de alpaca e a pureza das ligas de ouro, garantindo a perfeição técnica exigida pelo Sapa Inca.\n\n\nArquitetura e Aspectos Técnicos\nO equipamento é uma fusão monumental de geometria sagrada e óptica avançada, construído com o mesmo encaixe perfeito das pedras de Sacsayhuamán.\n1. O Captador de Fótons \"Sudor de Sol\"\nO sistema começa no topo de uma torre de observação revestida internamente com lâminas de ouro polido.\nEspelhos Parabólicos de Ouro: Discos de ouro maciço, polidos com areia vulcânica até atingirem uma refletividade de 98%, captam a luz solar. Sua curvatura é calculada para convergir todos os raios em um único ponto focal de 1 milímetro.\nO Cristal de Lítio dos Andes: No ponto focal, encontra-se um cristal de quartzo hialino dopado naturalmente com impurezas de lítio e cobre, extraído das profundezas das minas de Potosí. Sob a pressão da luz concentrada, este cristal exibe emissão estimulada, gerando um feixe de luz verde esmeralda altamente colimado — o \"Laser Inca\".\n\n2. A Câmara de Observação Lítica\nO feixe de laser atravessa uma fenda microscópica em uma parede de andesito negro, entrando em uma sala selada e escura.\nLentes de Obsidiana: O feixe passa por uma série de lentes biconvexas feitas de obsidiana translúcida, polidas com precisão micrométrica. Essas lentes ampliam a sombra projetada pelo objeto colocado no caminho do laser.\nProjeção em Água: A imagem resultante não é vista por uma ocular, mas projetada sobre uma superfície de água estagnada em um vaso de prata negra. A vibração da luz no fluido permitia aos sábios observar o movimento de microrganismos como se fossem gigantescas feras flutuantes.\n\n3. Registro via Quipu Digital-Analógico\nOs dados observados — como o número de estruturas em uma célula — eram registrados imediatamente por especialistas em Quipus. As cores das cordas e a posição dos nós serviam como um banco de dados binário para armazenar as descobertas botânicas e metalúrgicas do Império.\n\nEspecificações Técnicas (Tecnologia Ancestral)\nComponente\nMaterial / Método\nFunção\nFonte de Excitação\nLuz Solar Direta (Cuzco, 3.400m de altitude)\nBombeamento óptico natural\nMeio Ativo (Laser)\nCristal de Quartzo e Esmeralda Bruta\nGeração de feixe coerente\nResolução\n1/100 de um grão de milho\nObservação de tecidos vegetais\nResfriamento\nFluxo de água dos canais de irrigação\nEvita o derretimento das lentes de ouro\nEstabilidade\nBase de granito de 5 toneladas\nIsolamento de vibrações sísmicas\n\n\n\nA Ciência Sagrada\nPara os Incas, o laser não era apenas radiação; era a extensão do dedo de Inti tocando a terra. O microscópio operava com máxima eficiência apenas durante o Inti Raymi (Solstício de Inverno), quando a posição do sol permitia que o feixe atingisse sua coerência quântica máxima ($\\lambda \\approx 532$ nm, na cor verde das selvas do Antisuyo).\n\"Não vemos o pequeno; vemos a luz que o atravessa, revelando que o mundo invisível é tão vasto quanto o próprio Império.\"\nAtribuído a um Amauta do Coricancha, c. 1450.\n",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_porta_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_01_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_02_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_03_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_04_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_01_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_02_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_03_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_04_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_05_high.webp",
+              "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_06_high.webp"
+            ]
+          }
+        ],
+        "video": {
+          "src": "assets/videos/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Video.mp4"
+        },
+        "_timing": {
+          "doorDur": 1250,
+          "fadeDur": 1000,
+          "waitOpen": 0,
+          "waitClose": 0
+        },
+        "anchor_offset": "0.00 0 0.00",
+        "start_scale": 0.7
+      },
+      "children": [
+        {
+          "part_name": "portaA",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": -90,
+          "anim_end": -225
+        },
+        {
+          "part_name": "portaB",
+          "role": "animation",
+          "anim_axis": "y",
+          "anim_start": 0,
+          "anim_end": 135
+        }
+      ],
+      "isInteractive": true
+    },
+    {
+      "id": "obra_motkccmw",
+      "name_key": "O Microscópio Solar a Vapor (Modelo 1880)",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/2portaH.glb",
+      "position": "5.4 1.20 -5.00",
+      "rotation": "0.0 0.0 0.0",
+      "scale": "1.10 1.10 1.10",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "O Microscópio Solar a Vapor (Modelo 1880)",
+        "description_key": "A tecnologia da Revolução Industrial\nDesenvolvido em 1880 pelo excêntrico polímata Sir Alistair Watson, o Microscópio Solar a Vapor foi saudado pela Royal Society como \"a união definitiva entre a luz celestial e o vigor mecânico\". Numa época em que a microbiologia ainda era uma fronteira vasta e misteriosa, Watson acreditava que a luz das lâmpadas a óleo era \"pobre e indigna\" para revelar os segredos da criação.\nEste instrumento não apenas ampliava o invisível, mas o projetava com uma clareza incandescente, permitindo que auditórios inteiros de cavalheiros e damas observassem a vida em uma gota d'água, pulsando nas paredes de gesso como se fossem monstros antediluvianos.\n\nAspectos Técnicos e Engenharia\nO equipamento é uma estrutura imponente de 2,5 metros de altura, construída predominantemente em latão naval, mogno envernizado e engrenagens de aço temperado. Ele se divide em três sistemas principais:\n1. O Heliostato de Precisão (Captação de Luz)\nPara alimentar a ótica, o microscópio utiliza um heliostato mecânico externo, posicionado em uma janela voltada para o sul.\nFuncionamento: Um espelho parabólico de prata segue a trajetória do sol através de um mecanismo de relojoaria de corda.\nO Feixe Solar: A luz é concentrada em um feixe colimado que atravessa uma série de prismas de vidro Schott, entrando no corpo do microscópio com intensidade suficiente para queimar madeira — se não fosse pelo sistema de resfriamento.\n\n2. O Motor de Micro-Vapor (Automação)\nAtrás da torre principal, encontra-se uma pequena caldeira de cobre alimentada por uma lamparina a álcool de chama azul.\nPropulsão: O vapor aciona pistões minúsculos (do tamanho de agulhas de costura) que controlam o Carrossel de Espécimes.\nFoco Automático: Através de um regulador de Watts em miniatura, o microscópio ajusta a distância da lente objetiva para compensar a dilatação térmica dos materiais, mantendo a imagem nítida sem intervenção humana constante.\n\n3. A Câmara de Projeção e Resfriamento\nO maior desafio técnico de 1880 era impedir que o sol cozinhasse o espécime vivo.\nO Filtro de Alúmen: O feixe de luz passa por uma célula de vidro cheia de uma solução saturada de alúmen, que absorve o calor infravermelho enquanto permite a passagem da luz visível.\nExaustão de Vapor: O excesso de vapor da caldeira é assobiado através de tubos decorativos, criando uma névoa ambiente que ajuda a projetar feixes de luz dramáticos na sala escurecida.\n\n\nEspecificações de Desempenho\nComponente\nDetalhe Técnico\nPoder de Ampliação\nAté 2.000x (via projeção em tela de seda)\nCombustível\nÁlcool metílico ou carvão antracito refinado\nLentes\nObjetivas de quartzo lapidadas à mão na Baviera\nPressão de Operação\n15 psi (Libras por polegada quadrada)\nEstética\nGravuras em estilo Art Nouveau e manômetros de porcelana\n\n\n\"Observar a circulação de uma pulga através deste engenho não é apenas ciência; é testemunhar a pulsação do universo através da lente da indústria humana.\"\nExtraído do Diário de Sir Alistair Watson, 1880.\n",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_01_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_02_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_03_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_04_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_porta_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_01_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_02_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_03_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_04_high.webp",
+              "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_05_high.webp"
+            ]
+          }
+        ],
+        "video": {
+          "src": "assets/videos/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_Video.mp4"
+        },
+        "_timing": {
+          "doorDur": 1250,
+          "fadeDur": 1000,
+          "waitOpen": 0,
+          "waitClose": 0
+        },
+        "anchor_offset": "0.00 0.60 0.30",
+        "start_scale": 0.5
+      },
+      "children": [
+        {
+          "part_name": "portaE",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": 0,
+          "anim_end": -135
+        },
+        {
+          "part_name": "portaD",
+          "role": "animation",
+          "anim_axis": "z",
+          "anim_start": 90,
+          "anim_end": -180
+        }
+      ],
+      "isInteractive": true
+    },
+    {
+      "id": "obra_motkepq7",
+      "name_key": "O Microscópio Solar de Memphis (Modelo \"Commuter-Scope\"",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/2portaV.glb",
+      "position": "3.90 1.1 -5.00",
+      "rotation": "0.0 0.0 0.0",
+      "scale": "1.10 1.10 1.10",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "O Microscópio Solar de Memphis (Modelo \"Commuter-Scope\"",
+        "description_key": "O Microscópio Solar de Memphis (Modelo \"Commuter-Scope\" 1960)\nCiência para o Cidadão da Era Atômica\nEstamos agora em 1960, na vibrante Memphis, Tennessee. O rock 'n' roll ecoa pelas ruas, a era espacial está apenas começando e a arquitetura Googie (estética atômica) domina o design.\nInstalado no saguão principal da Central Station de Memphis, este dispositivo foi uma iniciativa governamental para democratizar o conhecimento científico. Enquanto os passageiros esperavam pelo trem City of New Orleans, podiam se aproximar deste console futurista para observar os \"micromistérios\" do algodão do Mississippi ou dos minerais locais.\nO equipamento não era apenas um microscópio, mas um sistema de projeção pública que utilizava o generoso sol do Tennessee para iluminar lâminas preparadas, transformando a espera pelo trem em uma experiência educativa de alta fidelidade, típica do sonho americano dos anos 60.\n\nAspectos Técnicos e Design Industrial\nO design do aparelho reflete a estética da época: acabamento em laminado Formica azul-bebê, detalhes em cromo polido e curvas que lembram as barbatanas de um Cadillac.\n1. O Captador de Teto \"Heliostato-Transistorizado\"\nNo telhado da estação, uma cúpula de acrílico (Plexiglas) abriga um espelho parabólico motorizado.\nRastreamento Solar: Diferente dos modelos mecânicos antigos, este usa fotorresistores de cádmio para detectar a posição do sol. Um pequeno circuito transistorizado move servos elétricos que mantêm o sol focado em um feixe de luz fria.\nTransmissão por Fibra Óptica Primitiva: A luz é conduzida do telhado até o saguão através de um \"tubo de luz\" de alumínio polido com espelhos internos de precisão, mantendo a intensidade luminosa sem o calor excessivo.\n\n2. O Console \"Micro-Vista\"\nO usuário interage com uma cabine ergonômica que parece o painel de uma aeronave.\nTorre de Lentes: Utiliza óticas da Kodak, renomadas na época, com um sistema de troca rápida por botões giratórios (estilo seletor de TV).\nFiltros de Cor Dinâmicos: Para melhorar o contraste das amostras biológicas, o usuário pode girar um disco de filtros de acetato coloridos (Technicolor), permitindo ver detalhes em tons de ciano, magenta ou amarelo.\n\n3. A Tela de Projeção Traseira\nEm vez de uma ocular para uma única pessoa, o microscópio utiliza uma tela de projeção traseira de 24 polegadas feita de vidro despolido (Ground Glass).\nVisualização Coletiva: A imagem do microscópio é projetada na tela de dentro para fora, permitindo que até cinco pessoas observem a mesma amostra simultaneamente.\nResfriamento por Ventoinha: Um motor elétrico silencioso da General Electric sopra ar constantemente sobre a lâmina de vidro para evitar que o calor do feixe solar concentrado derreta o material orgânico.\n\n\n\n\nEspecificações Técnicas (Era Atômica)\nComponente\nEspecificação\nPoder de Ampliação\n100x a 1.200x (Projeção Óptica Direta)\nMaterial do Gabinete\nAço estampado, Fórmica e Acabamento Cromado\nControle de Foco\nVolante de baquelite com ajuste micrométrico\nFonte de Luz\nLuz Solar Primária (com lâmpada de reserva de tungstênio para dias nublados)\nInovação\nCircuito de rastreamento automático com 4 transistores\n\n\n\nA Experiência do Passageiro\nO manual original de 1960 descrevia o aparelho como: \"Uma janela para o mundo de amanhã, trazida a você pelo brilho de hoje\". Era comum ver crianças e soldados voltando da base militar local maravilhados com a clareza de uma asa de mosca projetada na tela, brilhando sob o sol capturado do lado de fora da estação.\n\"Em Memphis, o sol não apenas faz o algodão crescer; ele agora revela os segredos que o olho humano jamais ousou imaginar.\"\n Anúncio no Memphis Press-Scimitar, Outubro de 1960.",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": [
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_01_high.webp",
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_02_high.webp",
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_03_high.webp",
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_04_high.webp",
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_porta_high.webp"
+            ]
+          },
+          {
+            "id": "gal_b",
+            "images": [
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_01_high.webp",
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_02_high.webp",
+              "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_03_high.webp"
+            ]
+          }
+        ],
+        "video": {
+          "src": "assets/videos/06_O_Microscópio_Solar_de_Memphis_Video.mp4"
+        },
+        "_timing": {
+          "doorDur": 1250,
+          "fadeDur": 1000,
+          "waitOpen": 0,
+          "waitClose": 0
+        },
+        "anchor_offset": "0.00 0.5 0.00",
+        "start_scale": 0.3
+      },
+      "children": [
+        {
+          "part_name": "portaCima",
+          "role": "animation",
+          "anim_axis": "x",
+          "anim_start": 0,
+          "anim_end": 90
+        }
+      ],
+      "isInteractive": true
+    },
+    {
+      "id": "obra_motn8sf2",
+      "name_key": "paredeA",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/parede.glb",
+      "position": "0 4 -4",
+      "rotation": "90 0.0 0.0",
+      "scale": "2 2 2",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "paredeA",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": []
+          }
+        ],
+        "anchor_offset": "0.00 0 0.00",
+        "start_scale": 0
+      },
+      "children": [
+        {
+          "part_name": "Active_View",
+          "role": "collider",
+          "scale": "4 0.1 4",
+          "position": "0 0 0"
+        }
+      ],
+      "isInteractive": false
+    },
+    {
+      "id": "obra_motnaw3a",
+      "name_key": "paredeB",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/parede.glb",
+      "position": "4.00 4 0.00",
+      "rotation": "0.0 0.0 90.0",
+      "scale": "2 2 2",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "paredeB",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": []
+          }
+        ],
+        "anchor_offset": "0.00 0.00 0.00",
+        "start_scale": 0
+      },
+      "children": [
+        {
+          "part_name": "Active_View",
+          "role": "collider",
+          "scale": "4 0.1 4",
+          "position": "0 0 0"
+        }
+      ],
+      "isInteractive": false
+    },
+    {
+      "id": "obra_motnbra6",
+      "name_key": "paredeC",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/parede.glb",
+      "position": "-4.00 4 0.00",
+      "rotation": "0.0 0.0 -90.0",
+      "scale": "2 2 2",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "paredeC",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": []
+          }
+        ],
+        "anchor_offset": "0.00 0.00 0.00",
+        "start_scale": 0
+      },
+      "children": [
+        {
+          "part_name": "Active_View",
+          "role": "collider",
+          "scale": "4 0.1 4",
+          "position": "0 0 0"
+        }
+      ],
+      "isInteractive": false
+    },
+    {
+      "id": "obra_motncw4m",
+      "name_key": "paredeD",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/parede.glb",
+      "position": "0.00 4 4",
+      "rotation": "-90 0.0 0.0",
+      "scale": "2 2 2",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "paredeD",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": []
+          }
+        ],
+        "anchor_offset": "0.00 0 0",
+        "start_scale": 0
+      },
+      "children": [
+        {
+          "part_name": "Active_View",
+          "role": "collider",
+          "scale": "4 0.1 4",
+          "position": "0 0 0"
+        }
+      ],
+      "isInteractive": false
+    },
+    {
+      "id": "obra_motnsdta",
+      "name_key": "teto",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/teto.glb",
+      "position": "0.00 8 0.00",
+      "rotation": "180 0.0 0.0",
+      "scale": "2 2 2",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "teto",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": []
+          }
+        ],
+        "anchor_offset": "0.00 0 0.00",
+        "start_scale": 0
+      },
+      "children": [
+        {
+          "part_name": "Active_View",
+          "role": "collider",
+          "scale": "4 0.1 4",
+          "position": "0 0 0"
+        }
+      ],
+      "isInteractive": false
+    },
+    {
+      "id": "obra_motnwhdx",
+      "name_key": "piso",
+      "type": "gltf-model",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/piso.glb",
+      "position": "0 0 0",
+      "rotation": "0 0 0",
+      "scale": "1 1 1",
+      "timing": {
+        "doorDur": 1250,
+        "fadeDur": 1000,
+        "waitOpen": 0,
+        "waitClose": 0
+      },
+      "panel": {
+        "title_key": "piso",
+        "description_key": "",
+        "galleries": [
+          {
+            "id": "gal_a",
+            "images": []
+          }
+        ]
+      },
+      "children": [],
+      "isInteractive": false
+    }
+  ],
+  "_lastModified": "2026-05-06T06:14:27.404Z"
+}

@@ -26,6 +26,8 @@ import {
 
 // ─── Constantes ───────────────────────────────────────────────
 
+export const DISABLE_ALL_SYNC_FOR_TESTING = false; // 🔄 Bloqueio removido para produção
+
 const SYNC_QUEUE_KEY = 'gabinete_sync_queue_v1';
 const CONFIG_BACKUP_KEY = 'gabinete_config_backups_v1';
 const SYNC_INTERVAL_MS = 5 * 60 * 1000; // 5 minutos
@@ -126,6 +128,10 @@ function saveQueue(queue) {
  * @param {SyncOperation} op
  */
 export function enqueue(op) {
+  if (DISABLE_ALL_SYNC_FOR_TESTING) {
+    console.warn('⚠️ Sync Engine: Enqueue ignorado (DISABLE_ALL_SYNC_FOR_TESTING=true)');
+    return;
+  }
   const queue = loadQueue();
   // Evita duplicatas do mesmo path+action
   const exists = queue.some(q => q.path === op.path && q.action === op.action);
@@ -411,6 +417,11 @@ function notifyConfigUpdated(config) {
  * @returns {Promise<GabineteConfig|null>} Config resolvida, ou null se nenhuma encontrada.
  */
 export async function resolveConfigAtBoot() {
+  if (DISABLE_ALL_SYNC_FOR_TESTING) {
+    console.warn('⚠️ Sync Engine: Boot Sync ignorado (DISABLE_ALL_SYNC_FOR_TESTING=true)');
+    return localStorage.getItem('gabinete_kiosk_config') ? JSON.parse(localStorage.getItem('gabinete_kiosk_config')) : null;
+  }
+
   const localRaw = localStorage.getItem('gabinete_kiosk_config');
 
   // ── Offline: usa o que tiver localmente ──────────────────────
@@ -456,9 +467,10 @@ export async function resolveConfigAtBoot() {
     const remoteTime = /** @type {any} */ (remoteObj)._lastModified ? new Date(/** @type {any} */ (remoteObj)._lastModified).getTime() : 0;
 
     // F1.1: Critério único: timestamp wins.
-    // Removido `remoteMaisObjetos` — remoção intencional de obras aumenta o timestamp
-    // mas reduz a contagem, causando sobrescrita do trabalho do curador.
-    if (remoteTime > localTime) {
+    // 🛡️ MODO DEV LOCAL: Se estiver rodando no localhost, evita que o GitHub sobrescreva a config local para não perder o trabalho
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    if (remoteTime > localTime && !isLocalhost) {
       // GitHub vence → pull
       console.log(`📥 GitHub mais recente (${new Date(remoteTime).toLocaleString()}) → usando remoto.`);
       localStorage.setItem('gabinete_kiosk_config', remoteData.content);
@@ -511,6 +523,12 @@ function updateStatusUI(status) {
  * @returns {Promise<SyncResult>}
  */
 export async function sync() {
+  if (DISABLE_ALL_SYNC_FOR_TESTING) {
+    console.warn('⚠️ Sync Engine: Ciclo de Sync ignorado (DISABLE_ALL_SYNC_FOR_TESTING=true)');
+    setStatus('synced');
+    return { success: true, pushed: 0, pulled: 0, conflicts: 0, errors: 0, errorDetails: [] };
+  }
+
   /** @type {SyncResult} */
   const result = { success: false, pushed: 0, pulled: 0, conflicts: 0, errors: 0, errorDetails: [] };
 
@@ -689,9 +707,10 @@ async function syncConfigViaGitHub(_localManifest) {
       const remoteTime = remoteObj._lastModified ? new Date(remoteObj._lastModified).getTime() : 0;
 
       // F1.1: Critério único: timestamp wins.
-      // Removido `remoteMaisObjetos` — remoção intencional de obras reduz a contagem
-      // mas não deve ceder para uma versão mais antiga do GitHub.
-      if (remoteTime > localTime) {
+      // 🛡️ MODO DEV LOCAL: Bloqueia pull automático do GitHub para não perder as imagens que você acabou de adicionar.
+      const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+      if (remoteTime > localTime && !isLocalhost) {
         console.log(`📥 Config remoto mais recente (${new Date(remoteTime).toLocaleString()}) — pull`);
         backupConfig(localConfigRaw, 'local');
         localStorage.setItem('gabinete_kiosk_config', remoteConfig.content);
