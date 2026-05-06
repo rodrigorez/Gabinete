@@ -1,6 +1,6 @@
 {
-  "version": 72,
-  "timestamp": "2026-05-06T02:41:36.997Z",
+  "version": 128,
+  "timestamp": "2026-05-06T04:38:15.521Z",
   "device_id": "build-initial",
   "files": {
     "assets/config.json": {
@@ -496,6 +496,406 @@
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_porta_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto01_high.webp": {
+      "sha256": "4fbe6a4fd5ad4da485d357265bae9546ee151f845b445baa0a55ab79b4b77312",
+      "size": 78922,
+      "modified": "2026-05-06T04:25:32.141Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto01_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto02_high.webp": {
+      "sha256": "50732bd0e2667278a43723f376479d25e3ecef62bc1b74fd51b206430dac6338",
+      "size": 76582,
+      "modified": "2026-05-06T04:25:32.862Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto02_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto03_high.webp": {
+      "sha256": "4dc0e3254499346e31e89252534539364f620bd2858c49e8472db16f294c1edf",
+      "size": 70142,
+      "modified": "2026-05-06T04:25:33.517Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto03_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto04_high.webp": {
+      "sha256": "3df1c7249d3d9848e8cc49df21e06659592a4a3b9dc8e2fd0a61c81391d19097",
+      "size": 112460,
+      "modified": "2026-05-06T04:25:34.267Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto04_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto05_high.webp": {
+      "sha256": "bfe61409443f97dab104f3c4b3218236b08f12eeabd82c87fc002e1fc9d6702e",
+      "size": 151050,
+      "modified": "2026-05-06T04:25:35.150Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto05_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto06_high.webp": {
+      "sha256": "2d806bd6129dfa0fbd3a712fdf2bc3d6837d7e8dfe7ca3c69c4d4fd7c28d5856",
+      "size": 114438,
+      "modified": "2026-05-06T04:25:36.002Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_foto06_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_manual_01_high.webp": {
+      "sha256": "2bf5545626f611b8d7f5c0e44033641a41487a9395ce2f93c0c777a252eb3ff6",
+      "size": 81548,
+      "modified": "2026-05-06T04:26:10.681Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_manual_01_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_manual_02_high.webp": {
+      "sha256": "32acc650452c9564db91da50c4b4f30a33eb249bb8e4884628e7cb74cc16fb09",
+      "size": 122018,
+      "modified": "2026-05-06T04:26:11.523Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_manual_02_low.webp"
+    },
+    "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_porta_high.webp": {
+      "sha256": "0cfec3e692c5686e056db59b0228a8ad79fb4be6ecfe845491925bca0c2a015a",
+      "size": 311596,
+      "modified": "2026-05-06T04:26:12.899Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/02_MICROSCÓPIO_SOLAR_A_LASER_BAUHAUS_porta_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_01_high.webp": {
+      "sha256": "e5f099250b5eff243f5ac8152ff86184e758ce49d8ea2a84f9972409be0a45a4",
+      "size": 105512,
+      "modified": "2026-05-06T04:29:09.420Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_01_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_02_high.webp": {
+      "sha256": "c860389d3d9d0dd55a4ab1dbdfd34064c11aae841a6d7ed697e00a189bbf428b",
+      "size": 139720,
+      "modified": "2026-05-06T04:29:10.094Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_02_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_02a_high.webp": {
+      "sha256": "7efca84aa5b87e7fe3eaa87ad1b61ea3da5213057f21755dd7ce12f9d78489e0",
+      "size": 131720,
+      "modified": "2026-05-06T04:29:10.812Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_02a_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_03_high.webp": {
+      "sha256": "7efca84aa5b87e7fe3eaa87ad1b61ea3da5213057f21755dd7ce12f9d78489e0",
+      "size": 131720,
+      "modified": "2026-05-06T04:29:11.498Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_03_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_04a_high.webp": {
+      "sha256": "9e77e78a69c2da46296b1f9493c5c68902baa5a02ef9797f03c2b96d5a7987dd",
+      "size": 165210,
+      "modified": "2026-05-06T04:29:12.159Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_04a_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_04b_high.webp": {
+      "sha256": "8d2028ead4a13150898faf0b5c00ade990b8ea703912552129b424a4452c2f16",
+      "size": 126796,
+      "modified": "2026-05-06T04:29:12.933Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_manual_04b_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_porta_high.webp": {
+      "sha256": "1cb19f99ca101cc4ef73c9a957e7fd2231dd31d8b03d6f4b92714a08623c8c3a",
+      "size": 756014,
+      "modified": "2026-05-06T04:29:14.318Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_porta_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_01_high.webp": {
+      "sha256": "deff7396dabef14bf9b55a2342e7a1373ae415776840aa91e9beaf0b2f36e535",
+      "size": 189094,
+      "modified": "2026-05-06T04:29:15.025Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_01_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_02_high.webp": {
+      "sha256": "9c7b6751725dae211ab511e6ce20ef3ba9751b18d008393745c85994d7eb9389",
+      "size": 108838,
+      "modified": "2026-05-06T04:29:15.738Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_02_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_03_high.webp": {
+      "sha256": "64cae565a10c36fc221f21805ad1fbc0ecca2a1ad2cd62e202930aa45fac664d",
+      "size": 144766,
+      "modified": "2026-05-06T04:29:16.432Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_03_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_03b_high.webp": {
+      "sha256": "ff33f0f603524a72eadd92353f94e304bffbdc83232c7d3de56111081c329999",
+      "size": 121222,
+      "modified": "2026-05-06T04:29:17.126Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_03b_low.webp"
+    },
+    "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_04_high.webp": {
+      "sha256": "5c56f1bfdf865683e3d74bdd3025eebeec1d36c01eede8581d299649abab879b",
+      "size": 162826,
+      "modified": "2026-05-06T04:29:17.820Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/03_MICROSCÓPIO_SOLAR_A_LASER_ESTAÇÃO_ESPACIAL_2045_foto_04_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_porta_high.webp": {
+      "sha256": "84d92c6bd08976a1e11180c99d3b811de2b73540a39f58fdc7ce7f2915bd21b8",
+      "size": 692724,
+      "modified": "2026-05-06T04:34:01.466Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_porta_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_01_high.webp": {
+      "sha256": "587aab92a2ee242dd0b681feb6693f22c838ae0a69c0e512b546ddbb2eedce59",
+      "size": 157248,
+      "modified": "2026-05-06T04:34:02.261Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_01_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_02_high.webp": {
+      "sha256": "fe52b8b3a32165b479619585a5b787ca368aa95b63faa988f123bb5835e06612",
+      "size": 110616,
+      "modified": "2026-05-06T04:34:03.038Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_02_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_03_high.webp": {
+      "sha256": "52d8c1fb86a9940340d9bf6f6378c54d202e109a74f351e716dc23b05cc7b3f8",
+      "size": 135822,
+      "modified": "2026-05-06T04:34:03.789Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_03_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_04_high.webp": {
+      "sha256": "10216cf4e55b6effee315b98caed449d6f8b46466cdb299d424b813226307a5e",
+      "size": 101700,
+      "modified": "2026-05-06T04:34:04.569Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_manual_04_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_01_high.webp": {
+      "sha256": "f05981285a94742f5cfedd353df3a8e3bc06c2a2d133b98a96e289d4fe5d4548",
+      "size": 78264,
+      "modified": "2026-05-06T04:34:05.259Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_01_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_02_high.webp": {
+      "sha256": "37d22f48ab65e9f344034a79d3eeb6acde1a3accf42c34e7ccadb12a782df1a2",
+      "size": 80098,
+      "modified": "2026-05-06T04:34:05.923Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_02_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_03_high.webp": {
+      "sha256": "6daa498bd40374c94ee076ecc81b47e4d94f1971431b1105804cbf17761ca0c5",
+      "size": 73124,
+      "modified": "2026-05-06T04:34:06.541Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_03_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_04_high.webp": {
+      "sha256": "77da16794a2173d5fe6f7499c9e14621ef0ec1e1895c3b04369c35744d25fa2f",
+      "size": 69126,
+      "modified": "2026-05-06T04:34:07.224Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_04_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_05_high.webp": {
+      "sha256": "dc5b9e64eb44aeab20ddbe8790425aacb1eba2ab9699c4ef0147012d1ad4bef8",
+      "size": 84194,
+      "modified": "2026-05-06T04:34:07.863Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_05_low.webp"
+    },
+    "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_06_high.webp": {
+      "sha256": "7c75a7edab13cef0dfaf02f5bc6f67865be445ea17d4cd8330e970359c8ab6f6",
+      "size": 108688,
+      "modified": "2026-05-06T04:34:08.629Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/04_MICROSCÓPIO_SOLAR_A_LASER_IMPÉRIO_INCA_AMÉRICA_DO_SUL_CUZCO_Vídeo_de_Objeto_em_Cuzco_foto_06_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_01_high.webp": {
+      "sha256": "64e70d6cbbe1b373c58aec628179cad776dc871e8189a06ff046664915684bd2",
+      "size": 114274,
+      "modified": "2026-05-06T04:35:59.733Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_01_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_02_high.webp": {
+      "sha256": "ac928784f9f4e71f039c71b441d093511934920ff8ff98e63c8ed40cb1e3c09c",
+      "size": 115664,
+      "modified": "2026-05-06T04:36:00.656Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_02_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_03_high.webp": {
+      "sha256": "2355a7f8e4a518acb1ad43102b3f7de61e55a020ba710f5281dedd4bc10c128f",
+      "size": 93070,
+      "modified": "2026-05-06T04:36:01.478Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_03_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_04_high.webp": {
+      "sha256": "54983cec4b4d17c474e73e98905c4b50f4e55d57f7b651017ef7ab80f825ab65",
+      "size": 136862,
+      "modified": "2026-05-06T04:36:02.388Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_manual_04_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_porta_high.webp": {
+      "sha256": "1811ef3eb27c3269a7998541d577e9ff27396a2d61bb9b54213eb1ee929f50d3",
+      "size": 545328,
+      "modified": "2026-05-06T04:36:03.604Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_porta_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_01_high.webp": {
+      "sha256": "8a3d879deb1e2d54309f30f07ab822ab7205a784903c813b4366275080de3411",
+      "size": 73140,
+      "modified": "2026-05-06T04:36:04.338Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_01_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_02_high.webp": {
+      "sha256": "877ffed7bba381165a79f989063d3ee6d75833b60fd4603ebeccccc299ab8f33",
+      "size": 73748,
+      "modified": "2026-05-06T04:36:05.040Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_02_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_03_high.webp": {
+      "sha256": "b4d04987f7335f0614984b8b72cf73486846315ed7cded76bc06443f6a92f415",
+      "size": 42928,
+      "modified": "2026-05-06T04:36:05.673Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_03_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_04_high.webp": {
+      "sha256": "aa50be9117d8badca7dc01a50c2faf5865e8baec99269510272de2b29a2f5ef0",
+      "size": 53314,
+      "modified": "2026-05-06T04:36:06.358Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_04_low.webp"
+    },
+    "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_05_high.webp": {
+      "sha256": "ef46d8c01395ed8134972ff2e04c13d471e3bc56fc623f01b345c91c920b00b9",
+      "size": 61030,
+      "modified": "2026-05-06T04:36:07.051Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/05_MICROSCÓPIO_SOLAR_A_VAPOR_ERA_VITORIANA_1880_foto_05_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_01_high.webp": {
+      "sha256": "0daa641e685bc2c1d739c13d1ffa4abceee16fd1c3d726c6091f48a3d0641598",
+      "size": 117992,
+      "modified": "2026-05-06T04:38:09.635Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_01_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_02_high.webp": {
+      "sha256": "42df495a50f1304c3c23cca4a98c1dbf93f366f80aba1c389a89f83f8e101158",
+      "size": 143218,
+      "modified": "2026-05-06T04:38:10.512Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_02_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_03_high.webp": {
+      "sha256": "2511826284eda8b302a4646f5d0d0467e529897b9843069492dbe51004a371ba",
+      "size": 141400,
+      "modified": "2026-05-06T04:38:11.299Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_03_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_04_high.webp": {
+      "sha256": "8cec5d4b2f661ffeaa5e43235cf53bc25447dc701cfdab2d6209b6dce60c3497",
+      "size": 104832,
+      "modified": "2026-05-06T04:38:12.083Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_manual_04_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_porta_high.webp": {
+      "sha256": "ce51d4983b28c2d53cfd75b041edc5f8422d901ecfc97bbb0df7243ab87fb258",
+      "size": 466938,
+      "modified": "2026-05-06T04:38:13.192Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_porta_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_01_high.webp": {
+      "sha256": "6b8c57164ca2cfd67532f8f55b5cb98f138a68ad73ca28cde720ed02d26a4c5d",
+      "size": 141242,
+      "modified": "2026-05-06T04:38:14.103Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_01_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_02_high.webp": {
+      "sha256": "1d48c9d7417f8b9df9d8c597e0511de07ac6bd2f845b5e3f556b3186784cac00",
+      "size": 89890,
+      "modified": "2026-05-06T04:38:14.850Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_02_low.webp"
+    },
+    "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_03_high.webp": {
+      "sha256": "26e60e9990465f1f8603c9c8f970e660f7909c0f37406b22a7f527f07efa5cc8",
+      "size": 66010,
+      "modified": "2026-05-06T04:38:15.521Z",
+      "storage": "local",
+      "variant": "high",
+      "pair": "assets/images/06_O_Microscópio_Solar_de_Memphis_foto_03_low.webp"
     }
   }
 }
