@@ -1,6 +1,6 @@
 {
-  "version": 61,
-  "timestamp": "2026-05-06T02:18:07.005Z",
+  "version": 72,
+  "timestamp": "2026-05-06T02:20:20.462Z",
   "device_id": "build-initial",
   "files": {
     "assets/config.json": {
@@ -252,7 +252,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_01_high.webp": {
       "sha256": "21ca008f57da3acb3e8bf67c8a064b1bbe248b0ca2e64a3f53ecf6a7c6ccf2d5",
       "size": 43044,
-      "modified": "2026-05-06T01:53:47.443Z",
+      "modified": "2026-05-06T02:20:18.614Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_01_low.webp"
@@ -268,7 +268,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_02_high.webp": {
       "sha256": "db1ccb990fa61d8806e4a3b6039e030c97e10f58255d126dcfd2cd7c256b23f1",
       "size": 44366,
-      "modified": "2026-05-06T01:53:48.116Z",
+      "modified": "2026-05-06T02:20:19.215Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_02_low.webp"
@@ -284,7 +284,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_03_high.webp": {
       "sha256": "b39f7e2cf289ae1418dc8cdd53f1210eb708c85310efe6d740dd3c5ca1144d99",
       "size": 39130,
-      "modified": "2026-05-06T01:53:48.818Z",
+      "modified": "2026-05-06T02:20:19.825Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_03_low.webp"
@@ -300,7 +300,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_04_high.webp": {
       "sha256": "95379dcb02c086af0a27902123cd475c3e23ed2ebcabc634a45972336cb8e8b8",
       "size": 67888,
-      "modified": "2026-05-06T01:53:49.634Z",
+      "modified": "2026-05-06T02:20:20.462Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_04_low.webp"
@@ -444,7 +444,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_01_high.webp": {
       "sha256": "d35a92e6c36edd617d7a719613665da7177bdc978ba31919596ad0a4807e328d",
       "size": 183784,
-      "modified": "2026-05-06T01:53:50.828Z",
+      "modified": "2026-05-06T02:19:59.341Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_01_low.webp"
@@ -452,7 +452,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_02_high.webp": {
       "sha256": "7c933b595891485e33fd182863bf7aa7952e554c0841b05cfd177f0e2409445c",
       "size": 129668,
-      "modified": "2026-05-06T01:53:51.785Z",
+      "modified": "2026-05-06T02:20:00.056Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_02_low.webp"
@@ -460,7 +460,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_03_high.webp": {
       "sha256": "6dc56d157f0128b690b9a00655e1eac2d8f42c15281f8e7fc5c4c85867bf68b2",
       "size": 104294,
-      "modified": "2026-05-06T01:53:52.620Z",
+      "modified": "2026-05-06T02:20:01.414Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_03_low.webp"
@@ -468,7 +468,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_04_high.webp": {
       "sha256": "ceb93ac63644bc10f0557944d70be6a912a40894286fba3dc471abd88726bb26",
       "size": 119902,
-      "modified": "2026-05-06T01:53:53.600Z",
+      "modified": "2026-05-06T02:20:02.187Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_04_low.webp"
@@ -476,7 +476,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_05_high.webp": {
       "sha256": "f8501fed05dd0ebb59c28f1b8ed10c1f72f3e0e0cfdeaea7655fc21690cae1b0",
       "size": 165896,
-      "modified": "2026-05-06T01:53:54.805Z",
+      "modified": "2026-05-06T02:20:15.777Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_05_low.webp"
@@ -484,7 +484,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_06_high.webp": {
       "sha256": "f79859cea0102d40058c595bd2ce91d9b784369e0418b2dc2d625aca935cbc1f",
       "size": 182238,
-      "modified": "2026-05-06T01:53:55.836Z",
+      "modified": "2026-05-06T02:20:16.518Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_manual_06_low.webp"
@@ -492,7 +492,7 @@
     "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_porta_high.webp": {
       "sha256": "05d1133dc6b72f992bdc3068b584d6ea3f11044f48b591dfdfea3d5a27584cd3",
       "size": 663738,
-      "modified": "2026-05-06T01:53:57.397Z",
+      "modified": "2026-05-06T02:20:18.018Z",
       "storage": "local",
       "variant": "high",
       "pair": "assets/images/01_MICROSCÓPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_porta_low.webp"
