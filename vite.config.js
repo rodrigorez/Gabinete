@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import { writeFileSync, existsSync, mkdirSync, copyFileSync, statSync, readdirSync } from 'node:fs';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync, statSync, readdirSync, createWriteStream } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 
 /**
@@ -78,12 +78,73 @@ function secretsWriterPlugin() {
   };
 }
 
+/**
+ * Plugin Vite: endpoint local para salvar assets (Imagens, Modelos) fisicamente no disco.
+ * POST /api/save-asset?path=assets/images/foo.webp
+ */
+function assetWriterPlugin() {
+  return {
+    name: 'asset-writer',
+    configureServer(server) {
+      server.middlewares.use('/api/save-asset', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          return res.end(JSON.stringify({ error: 'Method not allowed' }));
+        }
+        
+        const urlObj = new URL(req.url, `http://${req.headers.host}`);
+        const filePathParam = urlObj.searchParams.get('path');
+        if (!filePathParam) {
+          res.statusCode = 400;
+          return res.end(JSON.stringify({ error: 'Missing path param' }));
+        }
+
+        const absolutePath = resolve(process.cwd(), filePathParam);
+        const dir = dirname(absolutePath);
+
+        try {
+          if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+        } catch (dirErr) {
+          console.error('Erro ao criar diretorio:', dirErr);
+          res.statusCode = 500;
+          return res.end(JSON.stringify({ error: 'Directory error: ' + String(dirErr) }));
+        }
+
+        const chunks = [];
+        req.on('data', chunk => chunks.push(chunk));
+        
+        req.on('end', () => {
+          try {
+            const buffer = Buffer.concat(chunks);
+            writeFileSync(absolutePath, buffer);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true, path: filePathParam, size: buffer.length }));
+          } catch (e) {
+            console.error('Erro ao escrever arquivo local:', e);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: String(e) }));
+          }
+        });
+
+        req.on('error', (err) => {
+          console.error('Erro no stream do req:', err);
+          if (!res.headersSent) {
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: String(err) }));
+          }
+        });
+      });
+    }
+  };
+}
+
 export default defineConfig({
   base: './',
 
   plugins: [
     copyStaticFilesPlugin(),
     secretsWriterPlugin(),
+    assetWriterPlugin(),
     VitePWA({
       // injectManifest: usa o sw.js customizado e injeta a lista de assets no build.
       // O Workbox é bundlado localmente pelo Vite — sem CDN externa.

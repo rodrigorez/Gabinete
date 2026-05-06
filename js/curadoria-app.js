@@ -308,6 +308,14 @@ async function saveObra() {
     const supOk = isSupabaseReady();
     let uploadErrors = 0;
 
+    // Helper para gravar o binário no disco via server Vite
+    const saveBlobToDisk = async (blob, path) => {
+      try {
+        await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob });
+        console.log(`💾 Escrito no disco local: ${path}`);
+      } catch(e) { console.error('Erro ao gravar fisicamente local:', e); }
+    };
+
     for (const imgData of pendingImages) {
       const result = await processImage(imgData.blob);
       if (!result.success || !result.high || !result.low) continue;
@@ -318,29 +326,31 @@ async function saveObra() {
       const targetGallery = obj.panel.galleries.find(g => g.id === imgData.gallery);
       if (!targetGallery) continue;
 
+      const localPathHigh = `assets/images/${names.high}`;
+      const localPathLow = `assets/images/${names.low}`;
+
       if (supOk) {
-        // Upload direto do blob em memória para o Supabase
         const up = await uploadAsset(supPath, result.high.blob, 'image/webp');
         if (up.success && up.url) {
-          // Guarda URL pública do Supabase no config
           targetGallery.images.push(up.url);
           console.log('☁️ Imagem enviada:', up.url);
         } else {
           uploadErrors++;
           console.warn('⚠️ Falha no upload:', up.error);
-          // Fallback: guarda path local (funciona offline)
-          targetGallery.images.push(`assets/images/${names.high}`);
+          targetGallery.images.push(localPathHigh);
+          await saveBlobToDisk(result.high.blob, localPathHigh);
+          await saveBlobToDisk(result.low.blob, localPathLow);
         }
       } else {
-        // Supabase não configurado — usa path local como fallback
-        console.warn('⚠️ Supabase não disponível, usando path local.');
-        targetGallery.images.push(`assets/images/${names.high}`);
+        console.warn('⚠️ Supabase não disponível, salvando no disco local.');
+        targetGallery.images.push(localPathHigh);
+        await saveBlobToDisk(result.high.blob, localPathHigh);
+        await saveBlobToDisk(result.low.blob, localPathLow);
       }
 
       // Mantém manifesto local atualizado
-      const localPath = `assets/images/${names.high}`;
-      const highEntry = await createEntryFromBlob(localPath, result.high.blob, 'local');
-      setEntry(manifest, localPath, highEntry);
+      const highEntry = await createEntryFromBlob(localPathHigh, result.high.blob, 'local');
+      setEntry(manifest, localPathHigh, highEntry);
     }
 
     saveManifestLocal(manifest);
@@ -353,8 +363,13 @@ async function saveObra() {
 
   // ─── Upload do modelo 3D (GLB) ───────────────────────────────
   if (pendingModel) {
-    showToast('🔄 Enviando modelo 3D para o Supabase...', 'success');
+    showToast('🔄 Enviando modelo 3D...', 'success');
     const supPath = `models/${pendingModel.name}`;
+    const localModelPath = `assets/models/${pendingModel.name}`;
+
+    const saveBlobToDisk = async (blob, path) => {
+      try { await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob }); } catch(e) {}
+    };
 
     if (isSupabaseReady()) {
       const up = await uploadAsset(supPath, pendingModel, 'model/gltf-binary');
@@ -364,11 +379,13 @@ async function saveObra() {
       } else {
         console.warn('⚠️ Falha no upload do modelo:', up.error);
         showToast(`⚠️ Falha no upload do modelo: ${up.error}`, 'error');
-        obj.model = `assets/models/${pendingModel.name}`; // fallback local
+        obj.model = localModelPath; // fallback local
+        await saveBlobToDisk(pendingModel, localModelPath);
       }
     } else {
-      console.warn('⚠️ Supabase não disponível, modelo salvo como path local.');
-      obj.model = `assets/models/${pendingModel.name}`;
+      console.warn('⚠️ Supabase não disponível, modelo salvo no disco local.');
+      obj.model = localModelPath;
+      await saveBlobToDisk(pendingModel, localModelPath);
     }
 
     pendingModel = null;
@@ -376,9 +393,14 @@ async function saveObra() {
 
   // ─── Upload do vídeo ──────────────────────────────────────
   if (pendingVideo) {
-    showToast('🔄 Enviando vídeo para o Supabase...', 'success');
+    showToast('🔄 Enviando vídeo...', 'success');
     const supPath = `videos/${pendingVideo.name}`;
-    const mime    = pendingVideo.type || 'video/mp4';
+    const localVideoPath = `assets/videos/${pendingVideo.name}`;
+    const mime = pendingVideo.type || 'video/mp4';
+
+    const saveBlobToDisk = async (blob, path) => {
+      try { await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob }); } catch(e) {}
+    };
 
     if (isSupabaseReady()) {
       const up = await uploadAsset(supPath, pendingVideo, mime);
@@ -389,10 +411,15 @@ async function saveObra() {
       } else {
         console.warn('⚠️ Falha no upload do vídeo:', up.error);
         showToast(`⚠️ Falha no upload do vídeo: ${up.error}`, 'error');
-        // fallback já definido pelo handler de upload
+        if (!obj.panel) obj.panel = { title_key: '' };
+        obj.panel.video = { src: localVideoPath };
+        await saveBlobToDisk(pendingVideo, localVideoPath);
       }
     } else {
-      console.warn('⚠️ Supabase não disponível, vídeo salvo como path local.');
+      console.warn('⚠️ Supabase não disponível, vídeo salvo no disco local.');
+      if (!obj.panel) obj.panel = { title_key: '' };
+      obj.panel.video = { src: localVideoPath };
+      await saveBlobToDisk(pendingVideo, localVideoPath);
     }
 
     pendingVideo = null;
