@@ -628,19 +628,11 @@
     },
     {
       "id": "obra_movr4a1g",
-<<<<<<< HEAD
-      "name_key": "Nova Obra teste",
-      "type": "gltf-model",
-      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/armario2pH.glb",
-      "position": "0 0 0",
-      "rotation": "0 0 -1",
-=======
       "name_key": "Nova Obra",
       "type": "gltf-model",
       "model": "",
       "position": "0 0 0",
       "rotation": "0 0 0",
->>>>>>> 4fb1207eafa465a7181023b65b3550f5decbc2e4
       "scale": "1 1 1",
       "timing": {
         "doorDur": 1250,
@@ -649,31 +641,12 @@
         "waitClose": 0
       },
       "panel": {
-<<<<<<< HEAD
-        "title_key": "Nova Obra teste",
-        "description_key": "teste",
-=======
         "title_key": "Nova Obra",
         "description_key": "",
->>>>>>> 4fb1207eafa465a7181023b65b3550f5decbc2e4
         "galleries": [
           {
             "id": "gal_a",
             "images": []
-<<<<<<< HEAD
-          },
-          {
-            "id": "gal_b",
-            "images": []
-          }
-        ]
-      },
-      "children": [],
-      "isInteractive": true
-    }
-  ],
-  "_lastModified": "2026-05-07T17:22:15.199Z"
-=======
           }
         ]
       },
@@ -681,5 +654,4 @@
     }
   ],
   "_lastModified": "2026-05-07T17:19:46.900Z"
->>>>>>> 4fb1207eafa465a7181023b65b3550f5decbc2e4
 }
