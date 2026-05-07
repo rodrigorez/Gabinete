@@ -627,20 +627,12 @@
       "isInteractive": false
     },
     {
-      "id": "obra_movr4a1g",
-<<<<<<< HEAD
-      "name_key": "Nova Obra teste",
+      "id": "obra_movroonn",
+      "name_key": "obra teste",
       "type": "gltf-model",
       "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/armario2pH.glb",
-      "position": "0 0 0",
-      "rotation": "0 0 -1",
-=======
-      "name_key": "Nova Obra",
-      "type": "gltf-model",
-      "model": "",
-      "position": "0 0 0",
+      "position": "-1 0 -1",
       "rotation": "0 0 0",
->>>>>>> 4fb1207eafa465a7181023b65b3550f5decbc2e4
       "scale": "1 1 1",
       "timing": {
         "doorDur": 1250,
@@ -649,37 +641,35 @@
         "waitClose": 0
       },
       "panel": {
-<<<<<<< HEAD
-        "title_key": "Nova Obra teste",
-        "description_key": "teste",
-=======
-        "title_key": "Nova Obra",
-        "description_key": "",
->>>>>>> 4fb1207eafa465a7181023b65b3550f5decbc2e4
+        "title_key": "obra teste",
+        "description_key": "teste,.;,.;ç~ç~´p[[]´[]]]´=-=-=-",
         "galleries": [
           {
             "id": "gal_a",
-            "images": []
-<<<<<<< HEAD
+            "images": [
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_01_high_high.webp",
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_01_low_high.webp",
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_02_high_high.webp",
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_02_low_high.webp"
+            ]
           },
           {
             "id": "gal_b",
-            "images": []
+            "images": [
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_03_high_high.webp",
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_03_low_high.webp",
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_04_high_high.webp",
+              "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/images/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_foto_04_low_high.webp"
+            ]
           }
-        ]
+        ],
+        "video": {
+          "src": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/videos/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_Video.mp4"
+        }
       },
       "children": [],
       "isInteractive": true
     }
   ],
-  "_lastModified": "2026-05-07T17:22:15.199Z"
-=======
-          }
-        ]
-      },
-      "children": []
-    }
-  ],
-  "_lastModified": "2026-05-07T17:19:46.900Z"
->>>>>>> 4fb1207eafa465a7181023b65b3550f5decbc2e4
+  "_lastModified": "2026-05-07T17:36:58.852Z"
 }
