@@ -328,6 +328,15 @@ async function saveObra() {
   let hasUploadErrors = false;
   let lastErrorMsg = '';
 
+  const sanitizeFileName = (name) => {
+    const normalized = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const extMatch = normalized.match(/\.[^/.]+$/);
+    const ext = extMatch ? extMatch[0] : '';
+    const baseName = normalized.replace(/\.[^/.]+$/, "");
+    const cleanBase = baseName.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_');
+    return `${cleanBase}${ext}`;
+  };
+
   if (pendingImages.length > 0) {
     showToast('🔄 Convertendo e enviando imagens...', 'success');
     if (!obj.panel.galleries) obj.panel.galleries = [];
@@ -370,7 +379,8 @@ async function saveObra() {
   // ─── Upload do modelo 3D (GLB) ───────────────────────────────
   if (pendingModel) {
     showToast('🔄 Enviando modelo 3D...', 'success');
-    const supPath = `models/${pendingModel.name}`;
+    const safeName = sanitizeFileName(pendingModel.name);
+    const supPath = `models/${safeName}`;
 
     if (isSupabaseReady()) {
       const up = await uploadAsset(supPath, pendingModel, 'model/gltf-binary');
@@ -394,7 +404,8 @@ async function saveObra() {
   // ─── Upload do vídeo ──────────────────────────────────────
   if (pendingVideo) {
     showToast('🔄 Enviando vídeo...', 'success');
-    const supPath = `videos/${pendingVideo.name}`;
+    const safeName = sanitizeFileName(pendingVideo.name);
+    const supPath = `videos/${safeName}`;
     const mime = pendingVideo.type || 'video/mp4';
 
     if (isSupabaseReady()) {
