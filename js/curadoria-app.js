@@ -151,12 +151,13 @@ function renderGrid() {
     const hasVideo   = obj.panel?.video?.src ? '🎬' : '';
     const galCount   = obj.panel?.galleries?.reduce((sum, g) => sum + g.images.length, 0) || 0;
 
-    // ── Detecção de obra vazia (sem modelo E sem imagens) ──────────────
+    // ── Detecção de obra vazia ──────────────
     const hasModel  = !!(obj.model && obj.model.trim() !== '');
     const hasImages = galCount > 0;
-    const isEmpty   = !hasModel && !hasImages;
+    const hasVideoAsset = !!(obj.panel?.video?.src && obj.panel.video.src.trim() !== '');
+    const isEmpty   = !hasModel && !hasImages && !hasVideoAsset;
     const badgeHtml = isEmpty
-      ? '<span class="badge badge-warn" title="Obra sem modelo e sem imagens — pode estar orphan">⚠️</span>'
+      ? '<span class="badge badge-warn" title="Obra sem assets (modelo/imagens/vídeo) adicionados">⚠️</span>'
       : '<span class="badge badge-synced">✓</span>';
 
     return `
@@ -518,9 +519,8 @@ async function auditAssets() {
     obj.panel?.galleries?.forEach(g => g.images.forEach(img => refs.push(img)));
 
     if (refs.length === 0) {
-      // Obra totalmente vazia — já marcada como ⚠️ pelo renderGrid
-      card.classList.add('obra-broken');
-      broken++;
+      // Obra totalmente vazia — não possui assets para validar. Não é considerada quebrada.
+      card.classList.remove('obra-broken');
       continue;
     }
 
@@ -542,7 +542,7 @@ async function auditAssets() {
 
   const msg = broken === 0
     ? '✅ Todos os assets estão acessíveis!'
-    : `⚠️ ${broken} obra(s) com problemas. Clique em "Remover Órfãos" para limpar.`;
+    : `⚠️ ${broken} obra(s) com arquivos quebrados. Clique em "Remover Quebrados" para limpar.`;
   showToast(msg, broken === 0 ? 'success' : 'error');
 
   // Mostra botão de remoção se houver órfãos
@@ -552,7 +552,7 @@ async function auditAssets() {
 
 /**
  * Remove do config todas as obras marcadas como quebradas (obra-broken)
- * que também sejam obras vazias (sem model e sem imagens).
+ * por terem assets inacessíveis.
  */
 function removeOrphans() {
   if (!config) return;
@@ -568,11 +568,11 @@ function removeOrphans() {
   });
 
   if (brokenIndexes.length === 0) {
-    showToast('Nenhum órfão encontrado. Execute "Verificar Assets" primeiro.', 'error');
+    showToast('Nenhuma obra quebrada encontrada. Execute "Verificar Assets" primeiro.', 'error');
     return;
   }
 
-  if (!confirm(`Remover ${brokenIndexes.length} obra(s) sem assets do config?`)) return;
+  if (!confirm(`Remover ${brokenIndexes.length} obra(s) com arquivos quebrados do config?`)) return;
 
   // Remove em ordem reversa para não deslocar os índices
   [...brokenIndexes].reverse().forEach(i => config?.objects.splice(i, 1));
@@ -587,7 +587,7 @@ function removeOrphans() {
   /** @type {HTMLElement|null} */ (document.getElementById('editor-form'))?.style.setProperty('display', 'none');
   /** @type {HTMLElement|null} */ (document.getElementById('editor-empty'))?.style.setProperty('display', 'flex');
 
-  showToast(`🗑️ ${brokenIndexes.length} obra(s) órfã(s) removida(s) do config.`, 'error');
+  showToast(`🗑️ ${brokenIndexes.length} obra(s) quebrada(s) removida(s) do config.`, 'error');
 }
 
 
