@@ -419,7 +419,8 @@ function notifyConfigUpdated(config) {
 export async function resolveConfigAtBoot() {
   if (DISABLE_ALL_SYNC_FOR_TESTING) {
     console.warn('⚠️ Sync Engine: Boot Sync ignorado (DISABLE_ALL_SYNC_FOR_TESTING=true)');
-    return localStorage.getItem('gabinete_kiosk_config') ? JSON.parse(localStorage.getItem('gabinete_kiosk_config')) : null;
+    const testStored = localStorage.getItem('gabinete_kiosk_config');
+    return testStored ? JSON.parse(testStored) : null;
   }
 
   const localRaw = localStorage.getItem('gabinete_kiosk_config');
