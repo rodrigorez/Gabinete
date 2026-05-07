@@ -252,10 +252,16 @@ export async function processMultipleImages(files, options, onProgress) {
  * // → { high: '02_img_01_high.webp', low: '02_img_01_low.webp' }
  */
 export function generateVariantNames(originalName) {
-  const baseName = originalName.replace(/\.[^.]+$/, ''); // Remove extensão
+  // 1. Remove acentos e caracteres diacríticos
+  const normalized = originalName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // 2. Remove a extensão do arquivo
+  const baseName = normalized.replace(/\.[^.]+$/, '');
+  // 3. Substitui qualquer caractere não alfanumérico por underscore e remove duplos
+  const cleanBase = baseName.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_');
+  
   return {
-    high: `${baseName}_high.webp`,
-    low: `${baseName}_low.webp`
+    high: `${cleanBase}_high.webp`,
+    low: `${cleanBase}_low.webp`
   };
 }
 
