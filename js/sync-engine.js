@@ -639,25 +639,29 @@ export async function sync() {
       }
     }
 
-    // 8. Sync do config.json via GitHub
-    const configSynced = await syncConfigViaGitHub(localManifest);
-    if (!configSynced) {
-      result.errors++;
-      result.errorDetails.push('Falha ao sincronizar config.json com GitHub.');
+    // 8. Sync do config.json via GitHub (Apenas no Kiosk)
+    if (!isLocalhost) {
+      const configSynced = await syncConfigViaGitHub(localManifest);
+      if (!configSynced) {
+        result.errors++;
+        result.errorDetails.push('Falha ao sincronizar config.json com GitHub.');
+      }
     }
 
-    // 9. Push do manifesto atualizado para GitHub
+    // 9. Push do manifesto atualizado para GitHub (Apenas no Kiosk)
     const manifestJson = exportManifest(localManifest);
-    const existingManifest = await githubGet('manifest.json');
-    const manifestPushed = await githubPut(
-      'manifest.json',
-      manifestJson,
-      `sync: atualiza manifesto (v${localManifest.version})`,
-      existingManifest?.sha
-    );
-    if (!manifestPushed) {
-      result.errors++;
-      result.errorDetails.push('Falha ao enviar manifest.json para GitHub.');
+    if (!isLocalhost) {
+      const existingManifest = await githubGet('manifest.json');
+      const manifestPushed = await githubPut(
+        'manifest.json',
+        manifestJson,
+        `sync: atualiza manifesto (v${localManifest.version})`,
+        existingManifest?.sha
+      );
+      if (!manifestPushed) {
+        result.errors++;
+        result.errorDetails.push('Falha ao enviar manifest.json para GitHub.');
+      }
     }
 
     // 10. Salva manifesto local
