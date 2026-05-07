@@ -123,7 +123,9 @@ function saveConfig() {
   stampConfig(config);
   const configJson = JSON.stringify(config);
   localStorage.setItem('gabinete_kiosk_config', configJson);
-  enqueue({ action: 'push', path: 'assets/config.json', target: 'github', timestamp: Date.now(), retries: 0 });
+  
+  // O push automático via API (enqueue) foi removido.
+  // O usuário agora faz o commit manualmente via VS Code para evitar conflitos de merge!
 
   // Tenta salvar fisicamente no disco no ambiente dev para evitar dessincronização
   fetch('/api/save-config', {

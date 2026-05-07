@@ -477,17 +477,18 @@ export async function resolveConfigAtBoot() {
       localStorage.setItem('gabinete_kiosk_config', remoteData.content);
       return remoteObj;
     } else {
-      // Local vence (ou igual) → push para manter GitHub em sync
-      console.log(`📤 Local mais recente (${new Date(localTime).toLocaleString()}) → enviando para GitHub.`);
+      // Local vence (ou igual) → push para manter GitHub em sync (se não for localhost)
+      console.log(`📤 Local mais recente (${new Date(localTime).toLocaleString()}).`);
+      
       // F1.3: Garante _lastModified antes do push (proteção se curadoria não injetou)
       if (!/** @type {any} */ (localObj)._lastModified) {
         stampConfig(/** @type {any} */ (localObj));
         const updatedRaw = JSON.stringify(localObj);
         localStorage.setItem('gabinete_kiosk_config', updatedRaw);
-        await githubPut('assets/config.json', updatedRaw, 'boot: push config local mais recente', remoteData.sha);
+        if (!isLocalhost) await githubPut('assets/config.json', updatedRaw, 'boot: push config local mais recente', remoteData.sha);
         return localObj;
       }
-      await githubPut('assets/config.json', localRaw, 'boot: push config local mais recente', remoteData.sha);
+      if (!isLocalhost) await githubPut('assets/config.json', localRaw, 'boot: push config local mais recente', remoteData.sha);
       return localObj;
     }
   }
