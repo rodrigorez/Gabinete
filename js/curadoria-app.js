@@ -307,6 +307,24 @@ async function saveObra() {
   obj.timing.doorDur = parseInt(getVal('timing-door')) || 1250;
   obj.timing.fadeDur = parseInt(getVal('timing-fade')) || 1000;
 
+  const saveBlobToDisk = async (blob, path) => {
+    try {
+      const res = await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob });
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error(`Erro ao salvar ${path} localmente:`, res.status, errText);
+        showToast(`⚠️ Erro ao salvar arquivo local: ${path}`, 'error');
+        return false;
+      }
+      console.log(`💾 Escrito no disco local: ${path}`);
+      return true;
+    } catch(e) {
+      console.error(`Falha de rede ao salvar ${path}:`, e);
+      showToast(`⚠️ Falha de rede ao salvar arquivo: ${path}`, 'error');
+      return false;
+    }
+  };
+
   if (pendingImages.length > 0) {
     showToast('🔄 Convertendo e enviando imagens...', 'success');
     if (!obj.panel.galleries) obj.panel.galleries = [];
@@ -316,14 +334,6 @@ async function saveObra() {
     const manifest = await loadManifest();
     const supOk = isSupabaseReady();
     let uploadErrors = 0;
-
-    // Helper para gravar o binário no disco via server Vite
-    const saveBlobToDisk = async (blob, path) => {
-      try {
-        await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob });
-        console.log(`💾 Escrito no disco local: ${path}`);
-      } catch(e) { console.error('Erro ao gravar fisicamente local:', e); }
-    };
 
     for (const imgData of pendingImages) {
       const result = await processImage(imgData.blob);
@@ -345,16 +355,11 @@ async function saveObra() {
           console.log('☁️ Imagem enviada:', up.url);
         } else {
           uploadErrors++;
-          console.warn('⚠️ Falha no upload:', up.error);
-          targetGallery.images.push(localPathHigh);
-          await saveBlobToDisk(result.high.blob, localPathHigh);
-          await saveBlobToDisk(result.low.blob, localPathLow);
+          console.warn('⚠️ Falha no upload Supabase:', up.error);
         }
       } else {
-        console.warn('⚠️ Supabase não disponível, salvando no disco local.');
-        targetGallery.images.push(localPathHigh);
-        await saveBlobToDisk(result.high.blob, localPathHigh);
-        await saveBlobToDisk(result.low.blob, localPathLow);
+        uploadErrors++;
+        console.warn('⚠️ Supabase não disponível, upload cancelado na versão remota.');
       }
 
       // Mantém manifesto local atualizado
@@ -376,10 +381,6 @@ async function saveObra() {
     const supPath = `models/${pendingModel.name}`;
     const localModelPath = `assets/models/${pendingModel.name}`;
 
-    const saveBlobToDisk = async (blob, path) => {
-      try { await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob }); } catch(e) {}
-    };
-
     if (isSupabaseReady()) {
       const up = await uploadAsset(supPath, pendingModel, 'model/gltf-binary');
       if (up.success && up.url) {
@@ -387,14 +388,11 @@ async function saveObra() {
         console.log('☁️ Modelo 3D enviado:', up.url);
       } else {
         console.warn('⚠️ Falha no upload do modelo:', up.error);
-        showToast(`⚠️ Falha no upload do modelo: ${up.error}`, 'error');
-        obj.model = localModelPath; // fallback local
-        await saveBlobToDisk(pendingModel, localModelPath);
+        showToast(`⚠️ Falha no upload do modelo (Supabase): ${up.error}`, 'error');
       }
     } else {
-      console.warn('⚠️ Supabase não disponível, modelo salvo no disco local.');
-      obj.model = localModelPath;
-      await saveBlobToDisk(pendingModel, localModelPath);
+      console.warn('⚠️ Supabase não disponível.');
+      showToast('⚠️ Supabase não configurado. Impossível salvar arquivos grandes.', 'error');
     }
 
     pendingModel = null;
@@ -407,10 +405,6 @@ async function saveObra() {
     const localVideoPath = `assets/videos/${pendingVideo.name}`;
     const mime = pendingVideo.type || 'video/mp4';
 
-    const saveBlobToDisk = async (blob, path) => {
-      try { await fetch(`/api/save-asset?path=${encodeURIComponent(path)}`, { method: 'POST', body: blob }); } catch(e) {}
-    };
-
     if (isSupabaseReady()) {
       const up = await uploadAsset(supPath, pendingVideo, mime);
       if (up.success && up.url) {
@@ -419,16 +413,11 @@ async function saveObra() {
         console.log('☁️ Vídeo enviado:', up.url);
       } else {
         console.warn('⚠️ Falha no upload do vídeo:', up.error);
-        showToast(`⚠️ Falha no upload do vídeo: ${up.error}`, 'error');
-        if (!obj.panel) obj.panel = { title_key: '' };
-        obj.panel.video = { src: localVideoPath };
-        await saveBlobToDisk(pendingVideo, localVideoPath);
+        showToast(`⚠️ Falha no upload do vídeo (Supabase): ${up.error}`, 'error');
       }
     } else {
-      console.warn('⚠️ Supabase não disponível, vídeo salvo no disco local.');
-      if (!obj.panel) obj.panel = { title_key: '' };
-      obj.panel.video = { src: localVideoPath };
-      await saveBlobToDisk(pendingVideo, localVideoPath);
+      console.warn('⚠️ Supabase não disponível.');
+      showToast('⚠️ Supabase não configurado. Impossível salvar arquivos grandes.', 'error');
     }
 
     pendingVideo = null;
@@ -698,7 +687,7 @@ function bindEvents() {
     const el = document.getElementById('model-filename');
     if (el && pendingModel) {
       el.textContent = `📁 ${pendingModel.name} (${(pendingModel.size / 1024).toFixed(0)}KB)`;
-      if (config && selectedIndex >= 0) config.objects[selectedIndex].model = `assets/models/${pendingModel.name}`;
+      // Removido a atribuição prematura ao config
     }
   });
 
@@ -707,11 +696,7 @@ function bindEvents() {
     const el = document.getElementById('video-filename');
     if (el && pendingVideo) {
       el.textContent = `🎬 ${pendingVideo.name} (${(pendingVideo.size / 1024 / 1024).toFixed(1)}MB)`;
-      if (config && selectedIndex >= 0) {
-        const obj = config.objects[selectedIndex];
-        if (!obj.panel) obj.panel = { title_key: '' };
-        obj.panel.video = { src: `assets/videos/${pendingVideo.name}` };
-      }
+      // Removido a atribuição prematura ao config
     }
   });
 
