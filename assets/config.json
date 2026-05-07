@@ -627,11 +627,11 @@
       "isInteractive": false
     },
     {
-      "id": "obra_movr4a1g",
-      "name_key": "Nova Obra",
+      "id": "obra_movrjucj",
+      "name_key": "obra teste",
       "type": "gltf-model",
-      "model": "",
-      "position": "0 0 0",
+      "model": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/models/armario2pH.glb",
+      "position": "-0.5 0 -1",
       "rotation": "0 0 0",
       "scale": "1 1 1",
       "timing": {
@@ -641,17 +641,25 @@
         "waitClose": 0
       },
       "panel": {
-        "title_key": "Nova Obra",
-        "description_key": "",
+        "title_key": "obra teste",
+        "description_key": "~.ç.~pl~çp.~ç.pl~.ç%$#@%$!@%¨%$*&R\n\n\n\n*(&)(*&_)(*:>\n^Ç{`Ç>^`{`Ç>^Ç{Ç:",
         "galleries": [
           {
             "id": "gal_a",
             "images": []
+          },
+          {
+            "id": "gal_b",
+            "images": []
           }
-        ]
+        ],
+        "video": {
+          "src": "https://eipcmlmlnbdzhlvtxmza.supabase.co/storage/v1/object/public/gabinete-assets/videos/01_MICROSCOPIO_SOLAR_A_LASER_ANTIGO_EGITO_AMARNA_Video.mp4"
+        }
       },
-      "children": []
+      "children": [],
+      "isInteractive": true
     }
   ],
-  "_lastModified": "2026-05-07T17:19:46.900Z"
+  "_lastModified": "2026-05-07T17:33:19.065Z"
 }
