@@ -105,11 +105,11 @@ describe('saveConfig — módulo real', () => {
     expect(stored.objects[0].id).toBe('obra_1');
   });
 
-  it('deve enfileirar push para o GitHub (F1.3)', async () => {
+  it('NÃO deve enfileirar push para o GitHub (CMS local gerencia commit)', async () => {
     const { enqueue } = await import('../js/sync-engine.js');
     _test.setConfig(makeConfig());
     _test.saveConfig();
-    expect(enqueue).toHaveBeenCalledWith(
+    expect(enqueue).not.toHaveBeenCalledWith(
       expect.objectContaining({ action: 'push', path: 'assets/config.json', target: 'github' })
     );
   });

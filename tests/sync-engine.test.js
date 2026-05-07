@@ -155,14 +155,18 @@ describe('checkGithubAccess', () => {
 
 describe('resolveConfigAtBoot', () => {
   let originalOnLine;
+  let originalHostname;
   beforeEach(() => {
     originalOnLine = navigator.onLine;
+    originalHostname = window.location.hostname;
+    Object.defineProperty(window.location, 'hostname', { value: 'rodrigorez.github.io', configurable: true });
     vi.stubGlobal('fetch', vi.fn());
     localStorage.clear();
   });
   
   afterEach(() => {
     Object.defineProperty(navigator, 'onLine', { value: originalOnLine, writable: true });
+    Object.defineProperty(window.location, 'hostname', { value: originalHostname, configurable: true });
   });
 
   const mockGithubContent = (jsonObj) => {
