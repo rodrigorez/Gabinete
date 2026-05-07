@@ -325,6 +325,9 @@ async function saveObra() {
     }
   };
 
+  let hasUploadErrors = false;
+  let lastErrorMsg = '';
+
   if (pendingImages.length > 0) {
     showToast('🔄 Convertendo e enviando imagens...', 'success');
     if (!obj.panel.galleries) obj.panel.galleries = [];
@@ -333,7 +336,6 @@ async function saveObra() {
 
     const manifest = await loadManifest();
     const supOk = isSupabaseReady();
-    let uploadErrors = 0;
 
     for (const imgData of pendingImages) {
       const result = await processImage(imgData.blob);
@@ -345,41 +347,30 @@ async function saveObra() {
       const targetGallery = obj.panel.galleries.find(g => g.id === imgData.gallery);
       if (!targetGallery) continue;
 
-      const localPathHigh = `assets/images/${names.high}`;
-      const localPathLow = `assets/images/${names.low}`;
-
       if (supOk) {
         const up = await uploadAsset(supPath, result.high.blob, 'image/webp');
         if (up.success && up.url) {
           targetGallery.images.push(up.url);
           console.log('☁️ Imagem enviada:', up.url);
         } else {
-          uploadErrors++;
+          hasUploadErrors = true;
+          lastErrorMsg = up.error || 'Erro na imagem';
           console.warn('⚠️ Falha no upload Supabase:', up.error);
         }
       } else {
-        uploadErrors++;
+        hasUploadErrors = true;
+        lastErrorMsg = 'Supabase não configurado';
         console.warn('⚠️ Supabase não disponível, upload cancelado na versão remota.');
       }
-
-      // Mantém manifesto local atualizado
-      const highEntry = await createEntryFromBlob(localPathHigh, result.high.blob, 'local');
-      setEntry(manifest, localPathHigh, highEntry);
     }
 
-    saveManifestLocal(manifest);
     pendingImages = [];
-
-    if (uploadErrors > 0) {
-      showToast(`⚠️ ${uploadErrors} imagem(ns) com falha no upload. Verifique o Supabase.`, 'error');
-    }
   }
 
   // ─── Upload do modelo 3D (GLB) ───────────────────────────────
   if (pendingModel) {
     showToast('🔄 Enviando modelo 3D...', 'success');
     const supPath = `models/${pendingModel.name}`;
-    const localModelPath = `assets/models/${pendingModel.name}`;
 
     if (isSupabaseReady()) {
       const up = await uploadAsset(supPath, pendingModel, 'model/gltf-binary');
@@ -387,12 +378,14 @@ async function saveObra() {
         obj.model = up.url; // URL pública do Supabase
         console.log('☁️ Modelo 3D enviado:', up.url);
       } else {
+        hasUploadErrors = true;
+        lastErrorMsg = up.error || 'Erro no modelo';
         console.warn('⚠️ Falha no upload do modelo:', up.error);
-        showToast(`⚠️ Falha no upload do modelo (Supabase): ${up.error}`, 'error');
       }
     } else {
+      hasUploadErrors = true;
+      lastErrorMsg = 'Supabase não configurado';
       console.warn('⚠️ Supabase não disponível.');
-      showToast('⚠️ Supabase não configurado. Impossível salvar arquivos grandes.', 'error');
     }
 
     pendingModel = null;
@@ -402,7 +395,6 @@ async function saveObra() {
   if (pendingVideo) {
     showToast('🔄 Enviando vídeo...', 'success');
     const supPath = `videos/${pendingVideo.name}`;
-    const localVideoPath = `assets/videos/${pendingVideo.name}`;
     const mime = pendingVideo.type || 'video/mp4';
 
     if (isSupabaseReady()) {
@@ -412,12 +404,14 @@ async function saveObra() {
         obj.panel.video = { src: up.url }; // URL pública do Supabase
         console.log('☁️ Vídeo enviado:', up.url);
       } else {
+        hasUploadErrors = true;
+        lastErrorMsg = up.error || 'Erro no vídeo';
         console.warn('⚠️ Falha no upload do vídeo:', up.error);
-        showToast(`⚠️ Falha no upload do vídeo (Supabase): ${up.error}`, 'error');
       }
     } else {
+      hasUploadErrors = true;
+      lastErrorMsg = 'Supabase não configurado';
       console.warn('⚠️ Supabase não disponível.');
-      showToast('⚠️ Supabase não configurado. Impossível salvar arquivos grandes.', 'error');
     }
 
     pendingVideo = null;
@@ -426,7 +420,12 @@ async function saveObra() {
   saveConfig();
   renderGrid();
   selectObra(selectedIndex);
-  showToast('✅ Obra salva com sucesso!', 'success');
+  
+  if (hasUploadErrors) {
+    showToast(`⚠️ Obra salva, mas falha no upload: ${lastErrorMsg}`, 'error');
+  } else {
+    showToast('✅ Obra salva com sucesso!', 'success');
+  }
 }
 
 // ─── New Obra ────────────────────────────────────────────────
