@@ -92,7 +92,7 @@ export async function checkConnectivity() {
     // Isso fará a resposta ser "opaque" (status 0), o que é suficiente para provar conectividade.
     const res = await fetch(target, { method: 'GET', mode: 'no-cors', signal: controller.signal });
     clearTimeout(timeout);
-    
+
     // Se o fetch resolveu (mesmo opaque) e não caiu no catch, há internet.
     return res.type === 'opaque' || res.ok || res.status === 401;
   } catch {
@@ -172,7 +172,7 @@ async function checkDevLock() {
     return _devLockCache.locked;
   }
 
-  const repo  = getSecret('GITHUB_REPO') || 'rodrigorez/Gabinete';
+  const repo = getSecret('GITHUB_REPO') || 'rodrigorez/Gabinete';
   const token = getSecret('GITHUB_TOKEN');
   if (!repo) return false;
 
@@ -284,7 +284,7 @@ async function githubPut(path, content, message, existingSha) {
     return false;
   }
 
-  const repo  = getSecret('GITHUB_REPO');
+  const repo = getSecret('GITHUB_REPO');
   const token = getSecret('GITHUB_TOKEN');
 
   // 1. Arquitetura Serverless Direta (MVP): Usa o Token do GitHub do secrets.json (Criptografado)
@@ -464,8 +464,8 @@ export async function resolveConfigAtBoot() {
     try { localObj = JSON.parse(localRaw); } catch { return JSON.parse(remoteData.content); }
     try { remoteObj = JSON.parse(remoteData.content); } catch { return localObj; }
 
-    const localTime  = /** @type {any} */ (localObj)._lastModified  ? new Date(/** @type {any} */ (localObj)._lastModified).getTime()  : 0;
-    const remoteTime = /** @type {any} */ (remoteObj)._lastModified ? new Date(/** @type {any} */ (remoteObj)._lastModified).getTime() : 0;
+    const localTime = /** @type {any} */ (localObj)._lastModified ? new Date(/** @type {any} */(localObj)._lastModified).getTime() : 0;
+    const remoteTime = /** @type {any} */ (remoteObj)._lastModified ? new Date(/** @type {any} */(remoteObj)._lastModified).getTime() : 0;
 
     // F1.1: Critério único: timestamp wins.
     // 🛡️ MODO DEV LOCAL: Se estiver rodando no localhost, evita que o GitHub sobrescreva a config local para não perder o trabalho
@@ -479,10 +479,10 @@ export async function resolveConfigAtBoot() {
     } else {
       // Local vence (ou igual) → push para manter GitHub em sync (se não for localhost)
       console.log(`📤 Local mais recente (${new Date(localTime).toLocaleString()}).`);
-      
+
       // F1.3: Garante _lastModified antes do push (proteção se curadoria não injetou)
       if (!/** @type {any} */ (localObj)._lastModified) {
-        stampConfig(/** @type {any} */ (localObj));
+        stampConfig(/** @type {any} */(localObj));
         const updatedRaw = JSON.stringify(localObj);
         localStorage.setItem('gabinete_kiosk_config', updatedRaw);
         if (!isLocalhost) await githubPut('assets/config.json', updatedRaw, 'boot: push config local mais recente', remoteData.sha);
@@ -506,11 +506,11 @@ function updateStatusUI(status) {
   if (!el) return;
 
   const map = {
-    synced:  { emoji: '🟢', text: 'Sincronizado' },
+    synced: { emoji: '🟢', text: 'Sincronizado' },
     pending: { emoji: '🟡', text: 'Pendente' },
     offline: { emoji: '🔴', text: 'Offline' },
     syncing: { emoji: '🔄', text: 'Sincronizando...' },
-    error:   { emoji: '❌', text: 'Erro de Sync' }
+    error: { emoji: '❌', text: 'Erro de Sync' }
   };
 
   const info = map[status] || map.offline;
@@ -709,7 +709,7 @@ async function syncConfigViaGitHub(_localManifest) {
       try { localObj = JSON.parse(localConfigRaw); } catch { return false; }
       try { remoteObj = JSON.parse(remoteConfig.content); } catch { return false; }
 
-      const localTime  = localObj._lastModified  ? new Date(localObj._lastModified).getTime()  : 0;
+      const localTime = localObj._lastModified ? new Date(localObj._lastModified).getTime() : 0;
       const remoteTime = remoteObj._lastModified ? new Date(remoteObj._lastModified).getTime() : 0;
 
       // F1.1: Critério único: timestamp wins.
