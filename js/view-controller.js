@@ -137,16 +137,38 @@ export class ViewController {
 
             const tempObj = new THREE.Object3D();
             tempObj.position.copy(targetPos);
-            tempObj.lookAt(cabinetPos.x, targetPos.y, cabinetPos.z);
+            
+            if (obj.panel && obj.panel.camera_rotation && obj.panel.camera_rotation.trim() !== '') {
+                const rParts = obj.panel.camera_rotation.split(' ').map(Number);
+                if (rParts.length === 3 && !isNaN(rParts[0])) {
+                    const localEuler = new THREE.Euler(
+                        THREE.MathUtils.degToRad(rParts[0]), 
+                        THREE.MathUtils.degToRad(rParts[1]), 
+                        THREE.MathUtils.degToRad(rParts[2])
+                    );
+                    const localQuat = new THREE.Quaternion().setFromEuler(localEuler);
+                    const parentQuat = new THREE.Quaternion();
+                    parentEl.object3D.getWorldQuaternion(parentQuat);
+                    const finalQuat = parentQuat.multiply(localQuat);
+                    tempObj.setRotationFromQuaternion(finalQuat);
+                } else {
+                    tempObj.lookAt(cabinetPos.x, targetPos.y, cabinetPos.z);
+                }
+            } else {
+                tempObj.lookAt(cabinetPos.x, targetPos.y, cabinetPos.z);
+            }
 
             // Evitar pirueta (Gimbal lock / Euler flip) - Shortest Path Rotation
             let currentY = 0;
+            let currentX = 0;
             // @ts-ignore
             const look = cameraEl.components['look-controls'];
             if (look && look.yawObject) {
                 currentY = look.yawObject.rotation.y;
+                currentX = look.pitchObject.rotation.x;
             } else {
                 currentY = cameraEl.object3D.rotation.y;
+                currentX = cameraEl.object3D.rotation.x;
             }
 
             let targetY = tempObj.rotation.y;
@@ -155,9 +177,15 @@ export class ViewController {
             while (diff < -Math.PI) diff += Math.PI * 2;
             targetY = currentY + diff;
 
+            let targetX = tempObj.rotation.x;
+            let diffX = targetX - currentX;
+            while (diffX > Math.PI) diffX -= Math.PI * 2;
+            while (diffX < -Math.PI) diffX += Math.PI * 2;
+            targetX = currentX + diffX;
+
             cameraRig.animate(
                 { x: targetPos.x, y: targetPos.y, z: targetPos.z },
-                { x: 0, y: targetY, z: 0 },
+                { x: targetX, y: targetY, z: tempObj.rotation.z },
                 timing.doorDur,
                 () => { stateManager.setIdle(); }
             );

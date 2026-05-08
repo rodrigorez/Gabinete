@@ -75,11 +75,13 @@ export class DevEditor {
                     Y: <input type="number" step="0.1" id="dev-panel-y" style="width: 40px;">
                     Z: <input type="number" step="0.1" id="dev-panel-z" style="width: 40px;"><br>
                     Start Scale: <input type="number" step="0.1" id="dev-panel-s" style="width: 60px;">
-                    End Scale: <input type="number" step="0.1" id="dev-panel-end-s" style="width: 60px;">
-                    <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Posição da Câmera (Destino XYZ)</strong><br>
-                    Cam X: <input type="number" step="0.1" id="dev-cam-x" style="width: 40px;">
+                    <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Posição da Câmera (Destino XYZ e Rotação)</strong><br>
+                    Pos X: <input type="number" step="0.1" id="dev-cam-x" style="width: 40px;">
                     Y: <input type="number" step="0.1" id="dev-cam-y" style="width: 40px;">
-                    Z: <input type="number" step="0.1" id="dev-cam-z" style="width: 40px;">
+                    Z: <input type="number" step="0.1" id="dev-cam-z" style="width: 40px;"><br>
+                    Rot X: <input type="number" step="1" id="dev-cam-rx" style="width: 40px;">
+                    Y: <input type="number" step="1" id="dev-cam-ry" style="width: 40px;">
+                    Z: <input type="number" step="1" id="dev-cam-rz" style="width: 40px;">
                     <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Tempos e Transições (Local)</strong><br>
                     Voo da Câmera (ms): <input type="number" step="50" id="dev-cam-dur" style="width: 60px;"><br>
                     Fade da Tela (ms): <input type="number" step="50" id="dev-fade-dur" style="width: 60px;">
@@ -335,8 +337,6 @@ export class DevEditor {
             document.getElementById('dev-panel-z').value = pz.toFixed(2);
             // @ts-ignore
             document.getElementById('dev-panel-s').value = (configObj.panel.start_scale || 1).toFixed(2);
-            // @ts-ignore
-            document.getElementById('dev-panel-end-s').value = (configObj.panel.end_scale !== undefined ? configObj.panel.end_scale : 1.0).toFixed(2);
             
             let cx=0, cy=1.6, cz=2.0;
             if (configObj.panel.camera_offset) {
@@ -349,6 +349,19 @@ export class DevEditor {
             document.getElementById('dev-cam-y').value = cy.toFixed(2);
             // @ts-ignore
             document.getElementById('dev-cam-z').value = cz.toFixed(2);
+
+            let hasCustomRot = false;
+            let crx=0, cry=0, crz=0;
+            if (configObj.panel.camera_rotation && configObj.panel.camera_rotation.trim() !== '') {
+                const rParts = configObj.panel.camera_rotation.split(' ').map(Number);
+                if (rParts.length === 3 && !isNaN(rParts[0])) { crx = rParts[0]; cry = rParts[1]; crz = rParts[2]; hasCustomRot = true; }
+            }
+            // @ts-ignore
+            document.getElementById('dev-cam-rx').value = hasCustomRot ? crx.toFixed(1) : '';
+            // @ts-ignore
+            document.getElementById('dev-cam-ry').value = hasCustomRot ? cry.toFixed(1) : '';
+            // @ts-ignore
+            document.getElementById('dev-cam-rz').value = hasCustomRot ? crz.toFixed(1) : '';
 
             let tDoor = 1000, tFade = 500;
             if (configObj.timing) {
@@ -415,16 +428,24 @@ export class DevEditor {
                     configObj.panel.start_scale = parseFloat(ps_scale);
                     
                     // @ts-ignore
-                    const pe_scale = document.getElementById('dev-panel-end-s').value;
-                    configObj.panel.end_scale = parseFloat(pe_scale);
-                    
-                    // @ts-ignore
                     const ccx = document.getElementById('dev-cam-x').value;
                     // @ts-ignore
                     const ccy = document.getElementById('dev-cam-y').value;
                     // @ts-ignore
                     const ccz = document.getElementById('dev-cam-z').value;
                     configObj.panel.camera_offset = `${ccx} ${ccy} ${ccz}`;
+                    
+                    // @ts-ignore
+                    const crx_raw = document.getElementById('dev-cam-rx').value;
+                    // @ts-ignore
+                    const cry_raw = document.getElementById('dev-cam-ry').value;
+                    // @ts-ignore
+                    const crz_raw = document.getElementById('dev-cam-rz').value;
+                    if (crx_raw !== '' && cry_raw !== '' && crz_raw !== '') {
+                        configObj.panel.camera_rotation = `${crx_raw} ${cry_raw} ${crz_raw}`;
+                    } else {
+                        configObj.panel.camera_rotation = '';
+                    }
                     
                     if (!configObj.timing) configObj.timing = { doorDur: 1000, fadeDur: 500, waitOpen: 0, waitClose: 0 };
                     // @ts-ignore
@@ -441,6 +462,14 @@ export class DevEditor {
                     }
                     if (this.cameraHelperEl) {
                         this.cameraHelperEl.setAttribute('position', `${ccx} ${ccy} ${ccz}`);
+                        if (crx_raw !== '' && cry_raw !== '' && crz_raw !== '') {
+                            this.cameraHelperEl.setAttribute('rotation', `${crx_raw} ${cry_raw} ${crz_raw}`);
+                        } else {
+                            const dummy = new THREE.Object3D();
+                            dummy.position.set(parseFloat(ccx), parseFloat(ccy), parseFloat(ccz));
+                            dummy.lookAt(0, parseFloat(ccy), 0);
+                            this.cameraHelperEl.setAttribute('rotation', `${THREE.MathUtils.radToDeg(dummy.rotation.x)} ${THREE.MathUtils.radToDeg(dummy.rotation.y)} ${THREE.MathUtils.radToDeg(dummy.rotation.z)}`);
+                        }
                     }
                 }
                 
@@ -733,6 +762,23 @@ export class DevEditor {
                 if (parts.length === 3 && !isNaN(parts[0])) { cx = parts[0]; cy = parts[1]; cz = parts[2]; }
             }
             this.cameraHelperEl.setAttribute('position', `${cx} ${cy} ${cz}`);
+            
+            let hasCRot = false;
+            let crx=0, cry=0, crz=0;
+            if (configObj.panel.camera_rotation && configObj.panel.camera_rotation.trim() !== '') {
+                const rParts = configObj.panel.camera_rotation.split(' ').map(Number);
+                if (rParts.length === 3 && !isNaN(rParts[0])) { crx = rParts[0]; cry = rParts[1]; crz = rParts[2]; hasCRot = true; }
+            }
+            if (hasCRot) {
+                this.cameraHelperEl.setAttribute('rotation', `${crx} ${cry} ${crz}`);
+            } else {
+                // Cálculo temporário para mostrar a rotação padrão (lookAt o objeto no Y original)
+                const dummy = new THREE.Object3D();
+                dummy.position.set(cx, cy, cz);
+                dummy.lookAt(0, cy, 0);
+                this.cameraHelperEl.setAttribute('rotation', `${THREE.MathUtils.radToDeg(dummy.rotation.x)} ${THREE.MathUtils.radToDeg(dummy.rotation.y)} ${THREE.MathUtils.radToDeg(dummy.rotation.z)}`);
+            }
+            
             el.appendChild(this.cameraHelperEl);
         }
     }
