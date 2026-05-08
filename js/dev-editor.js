@@ -70,12 +70,12 @@ export class DevEditor {
                     <input type="number" step="0.1" id="dev-scale-z" style="width: 60px;">
                 </div>
                 <div class="dev-group" id="dev-panel-settings" style="margin-top: 10px; display: none; border-top: 1px dashed #0f0; padding-top: 5px;">
-                    <strong>UI Panel (Ponto Inicial XYZ)</strong><br>
+                    <strong style="color:#ff00ff;">UI Panel (Ponto Inicial XYZ - Magenta)</strong><br>
                     Anchor X: <input type="number" step="0.1" id="dev-panel-x" style="width: 40px;">
                     Y: <input type="number" step="0.1" id="dev-panel-y" style="width: 40px;">
                     Z: <input type="number" step="0.1" id="dev-panel-z" style="width: 40px;"><br>
                     Start Scale: <input type="number" step="0.1" id="dev-panel-s" style="width: 60px;">
-                    <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Posição da Câmera (Destino XYZ e Rotação)</strong><br>
+                    <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Câmera (Destino XYZ e Rotação - Ciano)</strong><br>
                     Pos X: <input type="number" step="0.1" id="dev-cam-x" style="width: 40px;">
                     Y: <input type="number" step="0.1" id="dev-cam-y" style="width: 40px;">
                     Z: <input type="number" step="0.1" id="dev-cam-z" style="width: 40px;"><br>

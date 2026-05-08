@@ -35,7 +35,7 @@ export class SpatialTracker {
             let progress = elapsed / duration;
             if (progress > 1) progress = 1;
 
-            const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+            const ease = progress;
 
             const currentScale = isClosing 
                 ? endScale - (endScale - startScale) * ease 
