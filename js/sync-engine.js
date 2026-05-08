@@ -313,6 +313,10 @@ async function githubPut(path, content, message, existingSha) {
         console.warn(`⏳ GitHub rate limit em PUT ${path}. Retry após ${retryAfter}s.`);
         return false;
       }
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error(`❌ [githubPut] Falha ao enviar "${path}": HTTP ${res.status} - ${errText}`);
+      }
       return res.ok;
     } catch (err) {
       console.error('Erro na API do GitHub:', err);
