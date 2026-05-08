@@ -35,7 +35,7 @@ export class SpatialTracker {
             let progress = elapsed / duration;
             if (progress > 1) progress = 1;
 
-            const ease = progress;
+            const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
             const currentScale = isClosing 
                 ? endScale - (endScale - startScale) * ease 
@@ -59,18 +59,10 @@ export class SpatialTracker {
             
             let angleY = -Math.atan2(camPos.x, camPos.z);
 
-            let blendY = 0;
-            const blendMultiplier = 1 / (1 - blendYRatio);
-            if (!isClosing) {
-                if (progress > blendYRatio) blendY = (progress - blendYRatio) * blendMultiplier;
-            } else {
-                if (progress < (1 - blendYRatio)) blendY = 1.0 - (progress * blendMultiplier);
-            }
-            
-            const smoothBlendY = blendY * blendY * (3 - 2 * blendY);
-            const finalTop = targetTop + (50 - targetTop) * smoothBlendY;
-            const finalLeft = targetLeft + (50 - targetLeft) * smoothBlendY;
-            const finalAngleY = angleY + (0 - angleY) * smoothBlendY;
+            let blendFactor = isClosing ? (1.0 - ease) : ease;
+            const finalTop = targetTop + (50 - targetTop) * blendFactor;
+            const finalLeft = targetLeft + (50 - targetLeft) * blendFactor;
+            const finalAngleY = angleY + (0 - angleY) * blendFactor;
 
             panelEl.style.left = `${finalLeft}%`;
             panelEl.style.top = `${finalTop}%`;
