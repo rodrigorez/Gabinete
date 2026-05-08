@@ -27,6 +27,7 @@ import {
 // ─── Constantes ───────────────────────────────────────────────
 
 export const DISABLE_ALL_SYNC_FOR_TESTING = false; // 🔄 Bloqueio removido para produção
+export const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
 const SYNC_QUEUE_KEY = 'gabinete_sync_queue_v1';
 const CONFIG_BACKUP_KEY = 'gabinete_config_backups_v1';
@@ -473,7 +474,6 @@ export async function resolveConfigAtBoot() {
 
     // F1.1: Critério único: timestamp wins.
     // 🛡️ MODO DEV LOCAL: Se estiver rodando no localhost, evita que o GitHub sobrescreva a config local para não perder o trabalho
-    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
     if (remoteTime > localTime && !isLocalhost) {
       // GitHub vence → pull
@@ -718,7 +718,6 @@ async function syncConfigViaGitHub(_localManifest) {
 
       // F1.1: Critério único: timestamp wins.
       // 🛡️ MODO DEV LOCAL: Bloqueia pull automático do GitHub para não perder as imagens que você acabou de adicionar.
-      const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
       if (remoteTime > localTime && !isLocalhost) {
         console.log(`📥 Config remoto mais recente (${new Date(remoteTime).toLocaleString()}) — pull`);
