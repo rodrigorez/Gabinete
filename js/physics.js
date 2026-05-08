@@ -14,7 +14,8 @@ AFRAME.registerComponent('kiosk-physics', {
   schema: {
     height: { type: 'number', default: 1.6 },
     radius: { type: 'number', default: 0.6 },
-    collideSelector: { type: 'string', default: '.clickable' }
+    collideSelector: { type: 'string', default: '.clickable' },
+    suspend: { type: 'boolean', default: false }
   },
 
   init: function () {
@@ -52,7 +53,7 @@ AFRAME.registerComponent('kiosk-physics', {
   },
 
   tick: function (/** @type {number} */ time, /** @type {number} */ timeDelta) {
-    if (!timeDelta) return;
+    if (!timeDelta || this.data.suspend) return;
     const dt = timeDelta / 1000;
     const el = this.el;
     // @ts-ignore

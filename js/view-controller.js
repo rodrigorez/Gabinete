@@ -54,6 +54,9 @@ export class ViewController {
             savedState.rot.y = currentY + diff;
 
             cameraRig.animate(savedState.pos, savedState.rot, timing.doorDur, () => {
+                if (cameraEl && cameraEl.hasAttribute('kiosk-physics')) {
+                    cameraEl.setAttribute('kiosk-physics', 'suspend: false');
+                }
                 stateManager.setIdle();
             });
             stateManager.clearCameraState();
@@ -110,6 +113,9 @@ export class ViewController {
         const cameraEl = document.querySelector('[camera]');
 
         if (cameraEl && parentEl) {
+            if (cameraEl.hasAttribute('kiosk-physics')) {
+                cameraEl.setAttribute('kiosk-physics', 'suspend: true');
+            }
             if (!stateManager.getCameraState()) {
                 // @ts-ignore
                 const look = cameraEl.components['look-controls'];
