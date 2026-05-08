@@ -75,6 +75,14 @@ export class DevEditor {
                     Y: <input type="number" step="0.1" id="dev-panel-y" style="width: 40px;">
                     Z: <input type="number" step="0.1" id="dev-panel-z" style="width: 40px;"><br>
                     Start Scale: <input type="number" step="0.1" id="dev-panel-s" style="width: 60px;">
+                    End Scale: <input type="number" step="0.1" id="dev-panel-end-s" style="width: 60px;">
+                    <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Posição da Câmera (Destino XYZ)</strong><br>
+                    Cam X: <input type="number" step="0.1" id="dev-cam-x" style="width: 40px;">
+                    Y: <input type="number" step="0.1" id="dev-cam-y" style="width: 40px;">
+                    Z: <input type="number" step="0.1" id="dev-cam-z" style="width: 40px;">
+                    <br><strong style="color:#00D1FF; margin-top:5px; display:inline-block;">Tempos e Transições (Local)</strong><br>
+                    Voo da Câmera (ms): <input type="number" step="50" id="dev-cam-dur" style="width: 60px;"><br>
+                    Fade da Tela (ms): <input type="number" step="50" id="dev-fade-dur" style="width: 60px;">
                 </div>
 
                 <div id="dev-children-container" style="margin-top: 15px; border-top: 1px dashed #0f0; padding-top: 10px; display: none;">
@@ -327,6 +335,30 @@ export class DevEditor {
             document.getElementById('dev-panel-z').value = pz.toFixed(2);
             // @ts-ignore
             document.getElementById('dev-panel-s').value = (configObj.panel.start_scale || 1).toFixed(2);
+            // @ts-ignore
+            document.getElementById('dev-panel-end-s').value = (configObj.panel.end_scale !== undefined ? configObj.panel.end_scale : 1.0).toFixed(2);
+            
+            let cx=0, cy=1.6, cz=2.0;
+            if (configObj.panel.camera_offset) {
+                const cParts = configObj.panel.camera_offset.split(' ').map(Number);
+                if (cParts.length === 3 && !isNaN(cParts[0])) { cx = cParts[0]; cy = cParts[1]; cz = cParts[2]; }
+            }
+            // @ts-ignore
+            document.getElementById('dev-cam-x').value = cx.toFixed(2);
+            // @ts-ignore
+            document.getElementById('dev-cam-y').value = cy.toFixed(2);
+            // @ts-ignore
+            document.getElementById('dev-cam-z').value = cz.toFixed(2);
+
+            let tDoor = 1000, tFade = 500;
+            if (configObj.timing) {
+                tDoor = configObj.timing.doorDur !== undefined ? configObj.timing.doorDur : 1000;
+                tFade = configObj.timing.fadeDur !== undefined ? configObj.timing.fadeDur : 500;
+            }
+            // @ts-ignore
+            document.getElementById('dev-cam-dur').value = tDoor;
+            // @ts-ignore
+            document.getElementById('dev-fade-dur').value = tFade;
         } else {
             if (panelGroup) panelGroup.style.display = 'none';
         }
@@ -382,12 +414,33 @@ export class DevEditor {
                     configObj.panel.anchor_offset = `${pax} ${pay} ${paz}`;
                     configObj.panel.start_scale = parseFloat(ps_scale);
                     
+                    // @ts-ignore
+                    const pe_scale = document.getElementById('dev-panel-end-s').value;
+                    configObj.panel.end_scale = parseFloat(pe_scale);
+                    
+                    // @ts-ignore
+                    const ccx = document.getElementById('dev-cam-x').value;
+                    // @ts-ignore
+                    const ccy = document.getElementById('dev-cam-y').value;
+                    // @ts-ignore
+                    const ccz = document.getElementById('dev-cam-z').value;
+                    configObj.panel.camera_offset = `${ccx} ${ccy} ${ccz}`;
+                    
+                    if (!configObj.timing) configObj.timing = { doorDur: 1000, fadeDur: 500, waitOpen: 0, waitClose: 0 };
+                    // @ts-ignore
+                    configObj.timing.doorDur = parseInt(document.getElementById('dev-cam-dur').value) || 1000;
+                    // @ts-ignore
+                    configObj.timing.fadeDur = parseInt(document.getElementById('dev-fade-dur').value) || 500;
+
                     if (this.anchorHelperEl) {
                         this.anchorHelperEl.setAttribute('position', `${pax} ${pay} ${paz}`);
                         const planeChild = this.anchorHelperEl.querySelector('a-plane');
                         if (planeChild) {
                             planeChild.setAttribute('scale', `${ps_scale} ${ps_scale} ${ps_scale}`);
                         }
+                    }
+                    if (this.cameraHelperEl) {
+                        this.cameraHelperEl.setAttribute('position', `${ccx} ${ccy} ${ccz}`);
                     }
                 }
                 
@@ -467,6 +520,7 @@ export class DevEditor {
                     </select><br>
                     Start Angle: <input type="number" class="anim-start" value="${childConfig.anim_start || 0}" style="width: 50px;">º<br>
                     End Angle: <input type="number" class="anim-end" value="${childConfig.anim_end || 0}" style="width: 50px;">º<br>
+                    Duration: <input type="number" class="anim-dur" value="${childConfig.anim_dur !== undefined ? childConfig.anim_dur : 1000}" style="width: 50px;"> ms<br>
                     <button class="btn-test-anim" style="margin-top: 5px; background: #0a0; color: #000; border: none; cursor: pointer; padding: 4px 8px; font-weight:bold;">Testar Animação ▶</button>
                 </div>
             `;
@@ -497,6 +551,7 @@ export class DevEditor {
                     c.anim_axis = item.querySelector('.anim-axis').value;
                     c.anim_start = parseFloat(item.querySelector('.anim-start').value || 0);
                     c.anim_end = parseFloat(item.querySelector('.anim-end').value || 0);
+                    c.anim_dur = parseFloat(item.querySelector('.anim-dur').value || 1000);
                 }
 
                 if (c.role === 'static') {
@@ -652,6 +707,33 @@ export class DevEditor {
             }
             this.anchorHelperEl.setAttribute('position', `${px} ${py} ${pz}`);
             el.appendChild(this.anchorHelperEl);
+
+            // Camera Helper (Azul Claro)
+            this.cameraHelperEl = document.createElement('a-entity');
+            
+            const camBox = document.createElement('a-box');
+            camBox.setAttribute('width', '0.4');
+            camBox.setAttribute('height', '0.2');
+            camBox.setAttribute('depth', '0.3');
+            camBox.setAttribute('material', 'wireframe: true; color: #00D1FF; opacity: 0.8');
+            
+            const camLens = document.createElement('a-cylinder');
+            camLens.setAttribute('radius', '0.1');
+            camLens.setAttribute('height', '0.2');
+            camLens.setAttribute('rotation', '90 0 0');
+            camLens.setAttribute('position', '0 0 -0.2');
+            camLens.setAttribute('material', 'wireframe: true; color: #00D1FF');
+            
+            this.cameraHelperEl.appendChild(camBox);
+            this.cameraHelperEl.appendChild(camLens);
+
+            let cx=0, cy=1.6, cz=2.0;
+            if (configObj.panel.camera_offset) {
+                const parts = configObj.panel.camera_offset.split(' ').map(Number);
+                if (parts.length === 3 && !isNaN(parts[0])) { cx = parts[0]; cy = parts[1]; cz = parts[2]; }
+            }
+            this.cameraHelperEl.setAttribute('position', `${cx} ${cy} ${cz}`);
+            el.appendChild(this.cameraHelperEl);
         }
     }
 
@@ -665,6 +747,11 @@ export class DevEditor {
             this.anchorHelperEl.parentNode.removeChild(this.anchorHelperEl);
         }
         this.anchorHelperEl = null;
+
+        if (this.cameraHelperEl && this.cameraHelperEl.parentNode) {
+            this.cameraHelperEl.parentNode.removeChild(this.cameraHelperEl);
+        }
+        this.cameraHelperEl = null;
     }
 
     exportConfig() {

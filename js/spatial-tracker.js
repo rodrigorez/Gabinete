@@ -20,6 +20,7 @@ export class SpatialTracker {
         
         const startTime = performance.now();
         const startScale = parseFloat(panelConfig.start_scale !== undefined ? panelConfig.start_scale : 0.2);
+        const endScale = parseFloat(panelConfig.end_scale !== undefined ? panelConfig.end_scale : 1.0);
         const anchorY = parseFloat(panelConfig.anchor_y_offset !== undefined ? panelConfig.anchor_y_offset : 1.2);
         const blendYRatio = parseFloat(panelConfig.blend_y_ratio !== undefined ? panelConfig.blend_y_ratio : 0.5);
         
@@ -37,8 +38,8 @@ export class SpatialTracker {
             const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
             const currentScale = isClosing 
-                ? 1.0 - (1.0 - startScale) * ease 
-                : startScale + (1.0 - startScale) * ease;
+                ? endScale - (endScale - startScale) * ease 
+                : startScale + (endScale - startScale) * ease;
 
             const anchorVector = new THREE.Vector3(0, anchorY, 0);
             if (panelConfig.anchor_offset) {
@@ -81,7 +82,7 @@ export class SpatialTracker {
                 if (!isClosing) {
                     panelEl.style.left = '50%';
                     panelEl.style.top = '50%';
-                    panelEl.style.transform = `translate(-50%, -50%) perspective(1500px) rotateY(0rad) scale(1)`;
+                    panelEl.style.transform = `translate(-50%, -50%) perspective(1500px) rotateY(0rad) scale(${endScale})`;
                     
                     requestAnimationFrame(() => {
                         panelEl.style.transition = ''; 

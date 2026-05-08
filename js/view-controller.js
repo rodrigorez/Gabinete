@@ -38,6 +38,21 @@ export class ViewController {
 
         const savedState = stateManager.getCameraState();
         if (savedState) {
+            const cameraEl = document.querySelector('[camera]');
+            let currentY = 0;
+            if (cameraEl) {
+                // @ts-ignore
+                const look = cameraEl.components['look-controls'];
+                currentY = look && look.yawObject ? look.yawObject.rotation.y : cameraEl.object3D.rotation.y;
+            }
+            
+            // Shortest Path para voltar sem piruetas
+            let targetY = savedState.rot.y;
+            let diff = targetY - currentY;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+            while (diff < -Math.PI) diff += Math.PI * 2;
+            savedState.rot.y = currentY + diff;
+
             cameraRig.animate(savedState.pos, savedState.rot, timing.doorDur, () => {
                 stateManager.setIdle();
             });
@@ -109,6 +124,12 @@ export class ViewController {
             }
 
             const targetPos = new THREE.Vector3(0, 1.6, 2.0);
+            if (obj.panel && obj.panel.camera_offset) {
+                const cParts = obj.panel.camera_offset.split(' ').map(Number);
+                if (cParts.length === 3 && !isNaN(cParts[0])) {
+                    targetPos.set(cParts[0], cParts[1], cParts[2]);
+                }
+            }
             targetPos.applyMatrix4(parentEl.object3D.matrixWorld);
 
             const cabinetPos = new THREE.Vector3();
@@ -118,9 +139,25 @@ export class ViewController {
             tempObj.position.copy(targetPos);
             tempObj.lookAt(cabinetPos.x, targetPos.y, cabinetPos.z);
 
+            // Evitar pirueta (Gimbal lock / Euler flip) - Shortest Path Rotation
+            let currentY = 0;
+            // @ts-ignore
+            const look = cameraEl.components['look-controls'];
+            if (look && look.yawObject) {
+                currentY = look.yawObject.rotation.y;
+            } else {
+                currentY = cameraEl.object3D.rotation.y;
+            }
+
+            let targetY = tempObj.rotation.y;
+            let diff = targetY - currentY;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+            while (diff < -Math.PI) diff += Math.PI * 2;
+            targetY = currentY + diff;
+
             cameraRig.animate(
                 { x: targetPos.x, y: targetPos.y, z: targetPos.z },
-                { x: 0, y: tempObj.rotation.y, z: 0 },
+                { x: 0, y: targetY, z: 0 },
                 timing.doorDur,
                 () => { stateManager.setIdle(); }
             );
@@ -169,7 +206,7 @@ export class ViewController {
                     animFound = true;
                     if (window.GABINETE_DEBUG) console.log(`🎬 Componente encontrado: ${compName} em <${child.tagName.toLowerCase()} id="${child.id}">`);
                     const comp = child.components[compName];
-                    child.setAttribute(compName, 'dur', String(timing.doorDur));
+                    // Respeita a duração local da animação definida no painel
                     if (comp && typeof comp.toggle === 'function') {
                         if (window.GABINETE_DEBUG) console.log(`▶️ Acionando toggle() em ${compName}`);
                         comp.toggle();
